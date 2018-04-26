@@ -93,6 +93,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       padding: .7em 1em;
     }
     .comment_list .item{
+      position: relative;
       display: flex;
       flex-direction:row;
       padding: 10px;
@@ -125,19 +126,19 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     }
     /* 举报 */
     .report{
-      height: 13px;
+      height: 15px;
       margin-right: .75em; 
       vertical-align: middle;
     }
     /* 点赞 */
     .likes{
-      height: 13px;
+      height: 16px;
       vertical-align: middle;
     }
     /* 点赞数 */
     .likes_num{
       color: #B9B9B9;
-      font-size: .85em;
+      font-size: .95em;
       vertical-align: bottom;
     }
     /* 评论内容 */
@@ -174,4 +175,39 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       color: #FCBA2A;
       float: right;
       margin-top: 1em;
+    }
+    /* 问题详情 title */
+    .wtxq_tit{
+      display: inline-block;
+      width: 84%;
+    }
+    .wtxq_moon{
+      float: right;
+      margin-top: 5px;
+    }
+    .wtxq_moon img{
+      width: 1.2em;
+      vertical-align: middle;
+      margin-right: 2px;
+    }
+    .wtxq_moon span{
+      font-size: 1em;
+      color: #FCBA2A;
+      vertical-align: middle;
+    }
+    /* 个人中心-我的问题详情 */
+    .ycn{
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      width: 12%;
+    }
+    .cn_btn{
+      background: #4CD3A6;
+      color:#fff;
+      font-size: 12px;
+      border-radius: 100px;
+      padding: 4px 10px;
+      float: right;
     }
