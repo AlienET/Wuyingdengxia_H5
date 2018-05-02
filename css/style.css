@@ -124,6 +124,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     .mt-sm{
       margin-top: .4em;
     }
+    .mr-sm{
+      margin-right: 10px;
+    }
     /* 举报 */
     .report{
       height: 15px;
@@ -211,3 +214,67 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       padding: 4px 10px;
       float: right;
     }
+
+    /* 播放页 */
+    .box-sizing {
+      -moz-box-sizing: border-box; 
+      -webkit-box-sizing: border-box;  
+      -o-box-sizing: border-box;  
+      -ms-box-sizing: border-box;  
+      box-sizing: border-box;
+    }
+    .pd10{
+      padding: 10px;
+    }
+    .v_tit{
+      font-size: 1em;
+      font-weight: bold;
+    }
+    .mt-xs{
+      margin-top: 2%;
+    }
+    .v_speaker{
+      color: #666;
+      font-size: 13px;
+    }
+    .v_speaker + div{
+      margin-top: 1%
+    }
+    .v_num{
+      color: #BDBDBD;
+      font-size: .65em;
+    }
+    .v_row{
+      margin-top: 20px;
+    }
+    .v_row h4{
+      font-size: 1em;
+    }
+    .v_list{
+      flex-wrap:nowrap;
+      overflow-x:scroll;
+      white-space:nowrap;
+      box-sizing:border-box;
+      margin-top: .8em;
+    }
+    .v_list::-webkit-scrollbar {display: none;}
+    .v_item{
+      font-size: .75em;
+      flex-wrap:wrap;
+      white-space:normal;
+      margin-right:5px;
+      display: inline-block;
+      width: 140px;
+      height: 70px;
+      background: #F5F5F5;
+      border-radius: 5px;
+      padding: 7px 10px;
+      text-align: justify;
+      border: 1px solid #F5F5F5;
+    }
+    .active{
+      border-color: #1397FF;
+      color: #1397FF;
+      background: #fff;
+    }
+    /* Vue */
