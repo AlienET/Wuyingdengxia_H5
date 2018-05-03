@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div id="app">
-		<video width="100%" controls v-bind:src="VideoAddress">
+		<video width="100%" controls v-bind:src="VideoAddress[Vaddress]">
 	        <source src="images/homepage-hero-video.mp4">
 	        <source src="images/homepage-hero-video.webm">
 	    </video>		
@@ -33,8 +33,8 @@
 			<div class="v_row">
 				<h4>精彩片段</h4>
 				<div class="v_list"><!-- ::-webkit-scrollbar {display: none;} -->
-					<div class="box-sizing v_item" @click='VideoItem'  v-for="item in VideoList"><!-- active -->
-						{{item}}
+					<div class="box-sizing v_item" :class="item.Vactive?'active':''" @click='VideoItem(item,index)'  v-for="(item,index) in VideoList">
+						{{item.txt}}
 					</div>
 					<!-- <div class="box-sizing v_item">
 						2手术剪的多种使用方法及在实际应用过程中的避免错误示范
@@ -52,7 +52,7 @@
 			<div class="comment_num">
 				全部评论 324
 			</div>
-			<div class="item">
+			<div class="item" v-for="(item,index) in VideoList">
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
@@ -61,7 +61,7 @@
 						<span class="item_name">Gallen Meklda</span>
 						<div class="fl-r">
 							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
+							<img class="likes" @click='commentLike(item,index)' v-bind:src="CommentLikeIcon">
 							<span class="likes_num">
 								5
 							</span>
@@ -76,7 +76,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item">
+			<!-- <div class="item">
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
@@ -123,7 +123,7 @@
 						<span class="item_hf">回复</span>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
@@ -150,18 +150,28 @@
 		    	Collection:false,
 		    	// 收藏icon地址
 		    	CollectionIcon:'images/icon/shoucang.png',
-		    	// 视频播放地址
-		    	VideoAddress:'images/homepage-hero-video.mp4',
+		    	// 评论用户点赞状态
+		    	CommentLike:false,
+		    	// 评论用户点赞icon
+		    	CommentLikeIcon:'images/icon/dianzan.png',
+		    	// 视频播放地址列表
+		    	VideoAddress:[
+		    		'images/homepage-hero-video.mp4',
+		    		'images/qwer.mp4',
+		    		'images/homepage-hero-video.mp4',
+		    		'images/qwer.mp4',
+		    		'images/homepage-hero-video.mp4'
+		    	],
 		    	// 视频列表
 		    	VideoList:[
-		    			'1手术剪的多种使用方法及在实际应用过程中的避免错误示范',
-		    			'2手术剪的多种使用方法及在实际应用过程中的避免错误示范',
-		    			'3手术剪的多种使用方法及在实际应用过程中的避免错误示范',
-		    			'4手术剪的多种使用方法及在实际应用过程中的避免错误示范',
-		    			'5手术剪的多种使用方法及在实际应用过程中的避免错误示范',
+		   			{txt:'1手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
+		   			{txt:'2手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
+		   			{txt:'3手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
+		    		{txt:'4手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
+		    		{txt:'5手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false}
 		    	],
-		    	// 视频列表 active
-		    	Vactive:0,
+		    	// 视频地址
+		    	Vaddress:0,
 		    	
 
 
@@ -187,8 +197,24 @@
 			    	this.Collection = !this.Collection;
 			    },
 			    // 视频简介item
-			    VideoItem:function (event) {
-			    	
+			    VideoItem:function (item,index) {
+			    	for (var i = 0;i < this.VideoList.length;i++) {
+			    		this.VideoList[i].Vactive = false;
+			    	}
+			    	item.Vactive = true;
+			    	this.Vaddress = index;
+			    	// console.log(this.VideoAddress[this.Vaddress]);
+
+			    },
+			    // 用户评论点赞
+			    commentLike:function (item,index) {	
+			    	console.log(item,index);
+			    	if (this.CommentLike) {
+				        this.CommentLikeIcon = 'images/icon/dianzan.png'
+				    }else{
+				      	this.CommentLikeIcon = 'images/icon/dadianzan.png'
+				    }
+				    this.CommentLike = !this.CommentLike;
 			    }
 			},
 			// 页面加载
@@ -201,19 +227,10 @@
 			},
 			mounted:function (argument) {
 				// 视频简介
-				$('.v_item:first-child').addClass('active').siblings().removeClass('active');
+				this.VideoList[0].Vactive = true;
+				// console.log(this.Vaddress);
 			}
 		})
-		// 视频列表
-		// $('.v_item').click(function(argument) {
-		// 	$(this).addClass('active').siblings().removeClass('active');
-
-		// })
-		// 点赞
-		// $('.likes').click(function(argument) {
-		// 	console.log($(this).next().text());
-		// 	parseInt($(this).next().text());
-		// })
 	</script>
 </body>
 </html>
