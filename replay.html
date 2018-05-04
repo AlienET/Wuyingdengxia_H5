@@ -8,53 +8,27 @@
 </head>
 <body>
 	<div id="app">
-		<div class="article">
-			<!-- 讨论详情 DiscussDetails -->
-			<span class="zztl" v-if='DiscussDetails'>正在讨论</span>
-			<div> <!-- 问题详情 加 wtxq_ -->
-				<h1 class="title" :class='{wtxq_tit:DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy}'>只能停诊！三甲医院儿科医生集体累至病倒！</h1>
-				<div class="wtxq_moon" v-if='DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy'>
-					<img src="images/icon/yueliangbi.png">
-					<span>15</span>
-				</div>
-			</div>
-			<div class="author" v-if='DetailsArticle||DetailsProblem||DetailsArticleMy'>
-				<span class="author_img">
-					<img width="100%" height="100%" src="images/black.jpg" alt="">
-				</span>
-				<div class="author_xx">
-					<div>
-						<span class="author_name">Gallen Meklda</span>
+		<div class="comment_list">
+			<div class="item">
+				<a href="javascript:;" style="margin-top: 0.4em;">
+					<img src="images/black.jpg">
+				</a>
+				<div class="item_xx" style="border-bottom: 0;">
+					<div style="overflow: hidden;">
+						<span class="item_name">Gallen Meklda</span><br>
+						<span class="item_time">30分钟前</span>
+						<button class="author_btn fl-r" style="margin-top: -1em">关注</button>
 					</div>
-					<div>
-						<span class="author_time">2018-1-24</span>
+					<div class="item_inner">
+						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
 					</div>
 				</div>
-				<button class="author_btn" v-if='DetailsArticle'>关注</button>
-				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
-			</div>
-			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
-			<div class="article_content">
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
-				<p class="article_content_img">
-					<img src="images/dog.jpg" alt="">
-				</p>
-				<p>由于孩子身体发育不成熟，病情变化快，又不会准确表达，因此诊断风险高，而家长们又对孩子分外重视发生在儿科医生的医疗纠纷和投诉特别多。一名儿科医生表示，不少孩子是夜晚来就诊，而夜晚往往医生比较少，有时候忙不过来，家长就医心切就会以为医生怠慢，投诉甚至动手殴打医生。</p>
-				<p class="article_content_img">
-					<img src="images/black.jpg" alt="">
-				</p>
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
-			</div>
-			<div class="article_content_label" v-if='!DiscussDetails'>
-				<span>头条</span>
-				<span>儿科医生</span>
-				<span>资讯</span>
 			</div>
 		</div>
-		<div style="height: 20px;background: #F3F4F8;"></div>
+		<div style="height: 15px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 324
+				全部回复
 			</div>
 			<div class="item">
 				<a href="javascript:;">
@@ -76,33 +50,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
-					</div>
-				</div>
-				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
-			</div>
-			<div class="item">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
-				</a>
-				<div class="item_xx">
-					<div>
-						<span class="item_name">Gallen Meklda</span>
-						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
-							<span class="likes_num">
-								5
-							</span>
-						</div>
-					</div>
-					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
-					</div>
-					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
-						<span class="cn_btn" v-if='DetailsProblemMy'>采纳</span>
+						<span class="item_hf">回复</span>
 					</div>
 				</div>
 			</div>
@@ -126,22 +74,36 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
+						<span class="item_hf">回复</span>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<a href="javascript:;">
+					<img src="images/black.jpg">
+				</a>
+				<div class="item_xx">
+					<div>
+						<span class="item_name">Gallen Meklda</span>
+						<div class="fl-r">
+							<img class="report" src="images/icon/jubao.png">
+							<img class="likes" src="images/icon/dianzan.png">
+							<span class="likes_num">
+								5
+							</span>
+						</div>
+					</div>
+					<div class="item_inner">
+						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
+					</div>
+					<div class="mt-sm">
+						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
+						<span class="item_hf">回复</span>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- 
-		讨论详情 			  DiscussDetails
-		文章详情 			  DetailsArticle
-		回复	 			  Reply
-		问题详情/匿名 		  DetailsProblemAnonym
-		问题详情/未匿名 	  DetailsProblem
-		文章详情/个人中心 	  DetailsArticleMy
-		我的问题详情/个人中心 DetailsProblemMy
-		我的回答详情/个人中心 AnswerDetailsMy
-	 -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vue.min.js"></script>
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
@@ -151,22 +113,6 @@
 		new Vue({
 	     el: '#app',
 	     data:{
-	     	// 讨论详情
-	     	DiscussDetails:'',
-	     	//文章详情
-	     	DetailsArticle:'1',
-	     	//回复
-	     	// Reply:'',
-	     	//问题详情/匿名
-	     	DetailsProblemAnonym:'',
-	     	//问题详情/未匿名
-	     	DetailsProblem:'',
-	     	//文章详情/个人中心
-	     	DetailsArticleMy:'',
-	     	//我的问题详情/个人中心
-	     	DetailsProblemMy:'',
-	     	//我的回答详情/个人中心
-	     	AnswerDetailsMy:'',
 	     	//接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
 	     },
