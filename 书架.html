@@ -6,46 +6,103 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <title>播放页</title> 
   <style type="text/css">
-  	
+  	html{
+  		background: #F5F5F5;
+  	}
+  	.messageBox{
+  		background: #F5F5F5;
+  		text-align: right;
+  		padding: 10px;
+  	}
+  	.messageBox .item{
+  		padding: 10px 0;
+  	}
+  	.item-inner{
+  		text-align:justify;
+  		display: inline-flex;
+  		background: #fff;
+  		border-radius: 5px;
+  		vertical-align: middle;
+  		padding: 10px;
+  		font-size: 14px;
+  		width: 150px;
+  		position: relative;
+  	}
+  	.item-inner .arrow{
+  		position: absolute;
+  		right: -4px;
+  		bottom: 50%;
+  		background: #fff;
+  		width: 8px;
+  		height: 8px;
+  		transform:rotate(45deg);
+  	}
+  	.item-inner img{
+  		margin-right: 10px;
+  	}
+  	.item-inner .item-text{
+  		font-size: 10px;
+  		display: -webkit-box;
+  		-webkit-box-orient: vertical;
+  		overflow: hidden;
+  		/*-webkit-line-clamp: 3;*/  /* 限定显示行数 */
+  	}
+  	.item-user{
+  		display:inline-block;
+  		position: relative;
+  		vertical-align: middle;
+  		margin-left: 5px;
+  	}
+  	.item-user img{
+  		width: 28px;
+  		height: 28px;
+  		border-radius: 50%;
+  	}
+  	.item-user span{
+  		background: #FCBA2A;
+  		font-size: 6px;
+  		color: #fff;
+  		border-radius: 100px;
+  		padding: 2px 4px;
+  		position: absolute;
+  		bottom: 0px;
+  		right: 0px;
+  	}
   </style>
 </head>
 <body>
-	<div id="app" style="background: #F5F5F5;text-align: right;padding: 10px;">
-		<div style="padding:10px 0;">
-			<div style="display: inline-block;background: #fff;border-radius: 5px;vertical-align: middle;padding: 10px;font-size: 14px;width: 150px;">
-				阿萨大大十大
+	<div id="app" class="messageBox">
+		<div class="item">
+			<div class="item-inner">
+				<img src="images/black.jpg" height="30px">
+				<span class="item-text">阿三大苏打大大大实打实大苏打实打实阿三大苏打大大大实打实大苏打实打实</span>
+				<b class="arrow"></b>
 			</div>
-			<div style="display:inline-block;position: relative;vertical-align: middle;margin-left: 5px;">
-				<img src="images/black.jpg" style="width: 28px;height: 28px;border-radius: 50%">
-				<span style="background: #FCBA2A;font-size: 6px;color: #fff;border-radius: 100px;padding: 2px 4px;position: absolute;bottom: 0px;right: 0px;">房主</span>
-			</div>
-		</div>
-		<div style="padding:10px 0;">
-			<div style="display: inline-block;background: #fff;border-radius: 5px;vertical-align: middle;padding: 10px;font-size: 14px;width: 150px;">
-				阿萨大大十大
-			</div>
-			<div style="display:inline-block;position: relative;vertical-align: middle;margin-left: 5px;">
-				<img src="images/black.jpg" style="width: 28px;height: 28px;border-radius: 50%">
-				<span style="background: #FCBA2A;font-size: 6px;color: #fff;border-radius: 100px;padding: 2px 4px;position: absolute;bottom: 0px;right: 0px;">房主</span>
+			<div class="item-user">
+				<img src="images/black.jpg">
+				<span>房主</span>
 			</div>
 		</div>
-		<div style="padding:10px 0;">
-			<div style="display: inline-block;background: #fff;border-radius: 5px;vertical-align: middle;padding: 10px;font-size: 14px;width: 150px;">
-				<img src="images/black.jpg" style="height: 50px;">
+		<div class="item">
+			<div class="item-inner">
+				<img src="images/black.jpg" height="30px">
+				<span class="item-text">阿三大苏打大大大实打实大苏打实打实阿三大苏打大大大实打实大苏打实打实</span>
+				<b class="arrow"></b>
 			</div>
-			<div style="display:inline-block;position: relative;vertical-align: middle;margin-left: 5px;">
-				<img src="images/black.jpg" style="width: 28px;height: 28px;border-radius: 50%">
-				<span style="background: #FCBA2A;font-size: 6px;color: #fff;border-radius: 100px;padding: 2px 4px;position: absolute;bottom: 0px;right: 0px;">房主</span>
+			<div class="item-user">
+				<img src="images/black.jpg">
+				<span>房主</span>
 			</div>
 		</div>
-		<div style="padding:10px 0;">
-			<div style="text-align:justify;display: inline-flex;background: #fff;border-radius: 5px;vertical-align: middle;padding: 10px;font-size: 14px;width: 150px;">
-				<img src="images/black.jpg" style="height: 30px;margin-right: 10px;">
-				<span style="font-size: 10px;">阿三大苏打大大大实打实大苏打实打实</span>
+		<div class="item">
+			<div class="item-inner">
+				<img src="images/black.jpg" height="30px">
+				<span class="item-text">阿三大苏打大大大实打实大苏打实打实阿三大苏打大大大实打实大苏打实打实</span>
+				<b class="arrow"></b>
 			</div>
-			<div style="display:inline-block;position: relative;vertical-align: middle;margin-left: 5px;">
-				<img src="images/black.jpg" style="width: 28px;height: 28px;border-radius: 50%">
-				<span style="background: #FCBA2A;font-size: 6px;color: #fff;border-radius: 100px;padding: 2px 4px;position: absolute;bottom: 0px;right: 0px;">房主</span>
+			<div class="item-user">
+				<img src="images/black.jpg">
+				<span>房主</span>
 			</div>
 		</div>
 	</div>

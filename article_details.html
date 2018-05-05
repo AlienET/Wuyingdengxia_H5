@@ -9,10 +9,9 @@
 <body>
 	<div id="app">
 		<div class="article">
-			<!-- 讨论详情 DiscussDetails -->
 			<span class="zztl" v-if='DiscussDetails'>正在讨论</span>
-			<div> <!-- 问题详情 加 wtxq_ -->
-				<h1 class="title" :class='{wtxq_tit:DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy}'>只能停诊！三甲医院儿科医生集体累至病倒！</h1>
+			<div> 
+				<h1 class="title" :class='{wtxq_tit:DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy}'>{{aboutData.article_title}}</h1>
 				<div class="wtxq_moon" v-if='DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy'>
 					<img src="images/icon/yueliangbi.png">
 					<span>15</span>
@@ -24,64 +23,56 @@
 				</span>
 				<div class="author_xx">
 					<div>
-						<span class="author_name">Gallen Meklda</span>
+						<span class="author_name">{{aboutData.article_author}}</span>
 					</div>
 					<div>
-						<span class="author_time">2018-1-24</span>
+						<span class="author_time">{{aboutData.ctime}}</span>
 					</div>
 				</div>
-				<button class="author_btn" v-if='DetailsArticle'>关注</button>
+				<button class="author_btn" v-if='DetailsArticle' @click='follow'>关注</button>
 				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
 			</div>
 			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
-			<div class="article_content">
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
-				<p class="article_content_img">
-					<img src="images/dog.jpg" alt="">
-				</p>
-				<p>由于孩子身体发育不成熟，病情变化快，又不会准确表达，因此诊断风险高，而家长们又对孩子分外重视发生在儿科医生的医疗纠纷和投诉特别多。一名儿科医生表示，不少孩子是夜晚来就诊，而夜晚往往医生比较少，有时候忙不过来，家长就医心切就会以为医生怠慢，投诉甚至动手殴打医生。</p>
-				<p class="article_content_img">
-					<img src="images/black.jpg" alt="">
-				</p>
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
+			<div class="article_content" v-html='aboutData.article_content'>
+				
 			</div>
 			<div class="article_content_label" v-if='!DiscussDetails'>
-				<span>头条</span>
-				<span>儿科医生</span>
-				<span>资讯</span>
+				<span v-for='item in aboutData.article_tags'>{{item}}</span>
+				<!-- <span>儿科医生</span> -->
+				<!-- <span>资讯</span> -->
 			</div>
 		</div>
 		<div style="height: 20px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 324
+				全部评论 {{commentData.length}}
 			</div>
-			<div class="item">
+			<div class="item" v-for='(item,index) in commentData'>
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">Gallen Meklda</span>
+						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
 							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
+							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
 							<span class="likes_num">
-								5
+								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
+						{{item.comment_content}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
+						<span class="item_time">{{item.ctime}} &nbsp; &bull; &nbsp;</span>
 						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
 					</div>
 				</div>
 				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
 			</div>
-			<div class="item">
+			<!-- <div class="item">
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
@@ -129,13 +120,12 @@
 						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	<!-- 
 		讨论详情 			  DiscussDetails
 		文章详情 			  DetailsArticle
-		回复	 			  Reply
 		问题详情/匿名 		  DetailsProblemAnonym
 		问题详情/未匿名 	  DetailsProblem
 		文章详情/个人中心 	  DetailsArticleMy
@@ -155,8 +145,6 @@
 	     	DiscussDetails:'',
 	     	//文章详情
 	     	DetailsArticle:'1',
-	     	//回复
-	     	// Reply:'',
 	     	//问题详情/匿名
 	     	DetailsProblemAnonym:'',
 	     	//问题详情/未匿名
@@ -167,24 +155,95 @@
 	     	DetailsProblemMy:'',
 	     	//我的回答详情/个人中心
 	     	AnswerDetailsMy:'',
-	     	//接口数据
+	     	//文章接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	//评论接口数据
+	      	commentData:[],
+	      	// 没点赞
+	      	likeIconN:'images/icon/dianzan.png',
+	      	// 已点赞
+	      	likeIcon:'images/icon/dadianzan.png',
+	      	// 传参
+	      	articleid:'',
+	      	// 用户id
+	      	Userid:''
 	     },
 	     created: function () {
-	      this.getRoute()
+	      this.getRoute();
+	      this.allcomment();
+
+	      this.Obtain();
 	     },
 	     methods: {
+	     	// 文章内容
 	     	getRoute: function () {
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_articleinfo_byid?articleid=1' //这里填写刚刚后台设置的接口
+		         	url: 'http://10.0.0.43/hospitalprojectphp/index.php/articleAPI/get_articleinfo_byid?articleid='+this.articleid //这里填写刚刚后台设置的接口,
 		        }).then(function(response){
-		         	this.aboutData = response.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
-		         	console.log(this.aboutData)
+		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	var articleTags = this.aboutData.article_tags;
+		         	this.aboutData.article_tags = articleTags.split(',');
+		         	// console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
+	      	},
+	      	// 评论列表
+	      	allcomment:function (argument) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://10.0.0.43/hospitalprojectphp/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
+	      		}).then(function(response){
+		         	this.commentData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	// var articleTags = this.commentData.article_tags;
+		         	// this.commentData.article_tags = articleTags.split(',');
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	Obtain:function (argument) {
+	      		this.articleid = window.location.pathname;
+	      		var index = this.articleid.lastIndexOf("="); 
+	      		this.articleid  = this.articleid.substring(index + 1, this.articleid.length);
+	      		// console.log(this.articleid)
+	      	},
+	      	// 关注
+	      	follow:function (argument) {
+	      		// console.log(argument)
+	      		// alert(window.location.pathname);
+
+	      	},
+	      	// 点赞
+	      	like:function (item,index) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://10.0.0.43/hospitalprojectphp/index.php/API/get_support?userid='+this.Userid+'&toid='+item.user_id+'&supType=1',
+	      			data:{
+	      				is_support:item.is_support
+	      			},
+	      			// emulateJSON:true
+	      		}).then(function(response){
+	      			console.log(response.body)
+	      			if (item.is_support == true) {
+		      			item.support_num -=1;
+		      			item.is_support = false;
+		      		}else{
+		      			item.support_num = parseInt(item.support_num);
+		      			item.support_num +=1;
+		      			item.is_support = true;
+		      		}
+	      		},function(error) {
+	      			// body...
+	      			console.log(error)
+	      		})
+	      		
+	      		
+
 	      	}
 	     }
 
