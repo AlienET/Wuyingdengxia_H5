@@ -109,29 +109,54 @@
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
 	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
 	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<!-- <script type="text/javascript" src="js/vue-router.min.js"></script> -->
+	<script type="text/javascript" src="js/vue-router.js"></script>
 	<script type="text/javascript">
 		new Vue({
 	     el: '#app',
 	     data:{
 	     	//接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	// 评论ID
+	      	commentid:''
 	     },
 	     created: function () {
-	      this.getRoute()
+	      this.getRoute();
+	      this.getUrlParam();
 	     },
 	     methods: {
 	     	getRoute: function () {
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_articleinfo_byid?articleid=1' //这里填写刚刚后台设置的接口
+		         	url: 'http://39.106.2.216/index.php/API/get_recomment?commentid='+this.commentid //这里填写刚刚后台设置的接口
 		        }).then(function(response){
-		         	this.aboutData = response.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
-	      	}
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		                // console.log(value)
+		            }
+		        }
+		        this.commentid = value;
+		        // console.log(this.commentid)
+		    },
 	     }
 
 	   })

@@ -53,9 +53,9 @@
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">{{item.user_name}}</span>
+						<span class="item_name" v-text='item.user_name == ""?"匿名用户":item.user_name'></span>
 						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
+							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
 							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
@@ -67,62 +67,17 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime}} &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
+						<a :href="'replay.html?commentid='+item.comment_id" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
 					</div>
 				</div>
 				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
 			</div>
-			<!-- <div class="item">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
-				</a>
-				<div class="item_xx">
-					<div>
-						<span class="item_name">Gallen Meklda</span>
-						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
-							<span class="likes_num">
-								5
-							</span>
-						</div>
-					</div>
-					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
-					</div>
-					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
-						<span class="cn_btn" v-if='DetailsProblemMy'>采纳</span>
-					</div>
-				</div>
+			<div v-if='commentData.length ==0' style="color: #999;text-align: center;padding: 20px;">
+				暂无评论...
 			</div>
-			<div class="item">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
-				</a>
-				<div class="item_xx">
-					<div>
-						<span class="item_name">Gallen Meklda</span>
-						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
-							<span class="likes_num">
-								5
-							</span>
-						</div>
-					</div>
-					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
-					</div>
-					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</span>
-					</div>
-				</div>
-			</div> -->
 		</div>
 	</div>
+	
 	<!-- 
 		讨论详情 			  DiscussDetails
 		文章详情 			  DetailsArticle
@@ -137,6 +92,8 @@
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
 	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
 	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<!-- <script type="text/javascript" src="js/vue-router.min.js"></script> -->
+	<script type="text/javascript" src="js/vue-router.js"></script>
 	<script type="text/javascript">
 		new Vue({
 	     el: '#app',
@@ -166,13 +123,13 @@
 	      	// 传参
 	      	articleid:'',
 	      	// 用户id
-	      	Userid:''
+	      	Userid:'',
 	     },
 	     created: function () {
+	      this.getUrlParam()
 	      this.getRoute();
 	      this.allcomment();
-
-	      this.Obtain();
+	      // console.log(this.articleid)
 	     },
 	     methods: {
 	     	// 文章内容
@@ -180,12 +137,12 @@
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://10.0.0.43/hospitalprojectphp/index.php/articleAPI/get_articleinfo_byid?articleid='+this.articleid //这里填写刚刚后台设置的接口,
+		         	url: 'http://39.106.2.216/index.php/articleAPI/get_articleinfo_byid?articleid='+this.articleid //这里填写刚刚后台设置的接口,
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.article_tags;
 		         	this.aboutData.article_tags = articleTags.split(',');
-		         	// console.log(this.aboutData)
+		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -195,26 +152,52 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://10.0.0.43/hospitalprojectphp/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
+	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
 	      		}).then(function(response){
 		         	this.commentData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         	// var articleTags = this.commentData.article_tags;
-		         	// this.commentData.article_tags = articleTags.split(',');
 		        },function (error) {
 		         	console.log(error);
 		        })
 	      	},
 	      	// 获取参数
-	      	Obtain:function (argument) {
-	      		this.articleid = window.location.pathname;
-	      		var index = this.articleid.lastIndexOf("="); 
-	      		this.articleid  = this.articleid.substring(index + 1, this.articleid.length);
-	      		// console.log(this.articleid)
-	      	},
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		                console.log(value)
+		            }
+		        }
+		        // console.log(arr[value])
+		        this.articleid = value;
+		    },
+
+
 	      	// 关注
 	      	follow:function (argument) {
-	      		// console.log(argument)
-	      		// alert(window.location.pathname);
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/post_follow?userid='+this.Userid+'&befollid=1',
+	      			data:{
+	      				// is_support:item.is_support
+	      			},
+	      			emulateJSON:true
+	      		}).then(function(response){
+	      			// console.log(response.body)
+	      			alert('已关注');
+	      		},function(error) {
+	      			// body...
+	      			console.log(error)
+	      		})
 
 	      	},
 	      	// 点赞
@@ -222,13 +205,13 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://10.0.0.43/hospitalprojectphp/index.php/API/get_support?userid='+this.Userid+'&toid='+item.user_id+'&supType=1',
+	      			url:'http://39.106.2.216/index.php/API/get_support?userid='+this.Userid+'&toid='+item.user_id+'&supType=1',
 	      			data:{
 	      				is_support:item.is_support
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			console.log(response.body)
+	      			// console.log(response.body)
 	      			if (item.is_support == true) {
 		      			item.support_num -=1;
 		      			item.is_support = false;
@@ -237,13 +220,28 @@
 		      			item.support_num +=1;
 		      			item.is_support = true;
 		      		}
+		      		console.log(item.is_support)
 	      		},function(error) {
-	      			// body...
 	      			console.log(error)
 	      		})
-	      		
-	      		
-
+	      	},
+	      	// 举报Icon
+	      	report:function(item,index) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/post_report',
+	      			data:{
+	      				user_id:this.Userid,
+	      				to_id:item.user_id,
+	      				type:1,
+	      				content:item.comment_content
+	      			}
+	      		}).then(function (argument) {
+	      			alert('举报成功')
+	      		},function(argument) {
+	      			console.log(argument)
+	      		})
 	      	}
 	     }
 
