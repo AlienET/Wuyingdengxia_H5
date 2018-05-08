@@ -10,10 +10,10 @@
 	<div id="app">
 		<div class="article">
 			<div> 
-				<h1 class="title wtxq_tit">{{aboutData.article_title}}</h1>
+				<h1 class="title wtxq_tit">{{aboutData.question_title}}</h1>
 				<div class="wtxq_moon">
 					<img src="images/icon/yueliangbi.png">
-					<span>15</span>
+					<span>{{aboutData.moon_cash}}</span>
 				</div>
 			</div>
 			<div class="author">
@@ -22,118 +22,51 @@
 				</span>
 				<div class="author_xx">
 					<div>
-						<span class="author_name">{{aboutData.article_author}}</span>
+						<span class="author_name">{{aboutData.username}}</span>
 					</div>
 					<div>
 						<span class="author_time">{{aboutData.ctime}}</span>
 					</div>
 				</div>
 			</div>
-			<div class="article_content" v-html='aboutData.article_content'>
-				<!-- <p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
-				<p class="article_content_img">
-					<img src="images/dog.jpg" alt="">
-				</p>
-				<p>由于孩子身体发育不成熟，病情变化快，又不会准确表达，因此诊断风险高，而家长们又对孩子分外重视发生在儿科医生的医疗纠纷和投诉特别多。一名儿科医生表示，不少孩子是夜晚来就诊，而夜晚往往医生比较少，有时候忙不过来，家长就医心切就会以为医生怠慢，投诉甚至动手殴打医生。</p>
-				<p class="article_content_img">
-					<img src="images/black.jpg" alt="">
-				</p>
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p> -->
+			<div class="article_content" v-html='aboutData.question_content'>
+				
 			</div>
 			<div class="article_content_label">
-				<span v-for='item in aboutData.article_tags'>{{item}}</span>
-				<!-- <span>儿科医生</span> -->
-				<!-- <span>资讯</span> -->
+				<span v-for='item in aboutData.question_tags'>{{item}}</span>
 			</div>
 		</div>
 		<div style="height: 20px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 {{aboutData.support_num}}
+				全部评论 {{quesData.length}}
 			</div>
-			<div class="item">
+			<div class="item" v-for='(item,index) in quesData'>
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">Gallen Meklda</span>
+						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
+							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
+							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
 							<span class="likes_num">
-								5
+								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
+						{{item.comment_content}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf">回复</span>
-					</div>
-				</div>
-			</div>
-			<div class="item">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
-				</a>
-				<div class="item_xx">
-					<div>
-						<span class="item_name">Gallen Meklda</span>
-						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
-							<span class="likes_num">
-								5
-							</span>
-						</div>
-					</div>
-					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
-					</div>
-					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf">回复</span>
-					</div>
-				</div>
-			</div>
-			<div class="item">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
-				</a>
-				<div class="item_xx">
-					<div>
-						<span class="item_name">Gallen Meklda</span>
-						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" src="images/icon/dianzan.png">
-							<span class="likes_num">
-								5
-							</span>
-						</div>
-					</div>
-					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
-					</div>
-					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf">回复</span>
+						<span class="item_time">{{item.ctime}} &nbsp; &bull; &nbsp;</span>
+						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id" class="item_hf">回复</a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- 
-		讨论详情 			  DiscussDetails
-		文章详情 			  DetailsArticle
-		问题详情/匿名 		  DetailsProblemAnonym
-		问题详情/未匿名 	  DetailsProblem
-		文章详情/个人中心 	  DetailsArticleMy
-		我的问题详情/个人中心 DetailsProblemMy
-		我的回答详情/个人中心 AnswerDetailsMy
-	 -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vue.min.js"></script>
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
@@ -145,24 +78,94 @@
 	     data:{
 	     	//接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	// 问题id
+	      	quesid:'1',
+	      	// 评论列表
+	      	quesData:[],
+	      	//用户id
+	      	Userid:'1',
+	      	// 没点赞
+	      	likeIconN:'images/icon/dianzan.png',
+	      	// 已点赞
+	      	likeIcon:'images/icon/dadianzan.png',
 	     },
 	     created: function () {
-	      this.getRoute()
+	      this.getRoute();
+	      this.allcomment();
 	     },
 	     methods: {
+	     	// 问题内容
 	     	getRoute: function () {
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://10.0.0.43/hospitalprojectphp/index.php/articleAPI/get_articleinfo_byid?articleid=1' //这里填写刚刚后台设置的接口
+		         	url: 'http://39.106.2.216/index.php/API/get_question_byquesid?quesid=2' //这里填写刚刚后台设置的接口
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
-		         	var articleTags = this.aboutData.article_tags;
-		         	this.aboutData.article_tags = articleTags.split(',');
+		         	var questionTags = this.aboutData.question_tags;
+		         	this.aboutData.question_tags = questionTags.split(',');
 		         	console.log(this.aboutData)
+		        },function (error) {
+		         	alert(error);
+		        })
+	      	},
+	      	// 评论列表
+	      	allcomment:function (argument) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.quesid+'&comType=0&comment_to_type=0'
+	      		}).then(function(response){
+		         	this.quesData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	console.log(this.quesData)
 		        },function (error) {
 		         	console.log(error);
 		        })
+	      	},
+	      	//点赞
+	      	like:function(item,index) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/get_support',
+	      			data:{
+	      				userid:this.Userid,
+	      				toid:item.user_id,
+	      				supType:4
+	      			},
+	      			emulateJSON:true
+	      		}).then(function(response){
+	      			// console.log(response.body)
+	      			if (item.is_support == true) {
+		      			item.support_num -=1;
+		      			item.is_support = false;
+		      		}else{
+		      			item.support_num = parseInt(item.support_num);
+		      			item.support_num +=1;
+		      			item.is_support = true;
+		      		}
+		      		console.log(item.is_support)
+	      		},function(error) {
+	      			console.log(error)
+	      		})
+	      	},
+	      	// 举报Icon
+	      	report:function(item,index) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/post_report',
+	      			data:{
+	      				user_id:this.Userid,
+	      				to_id:item.user_id,
+	      				type:1,
+	      				content:item.comment_content
+	      			}
+	      		}).then(function (argument) {
+	      			alert('举报成功')
+	      		},function(argument) {
+	      			console.log(argument)
+	      		})
 	      	}
 	     }
 

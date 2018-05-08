@@ -67,7 +67,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime}} &nbsp; &bull; &nbsp;</span>
-						<a :href="'replay.html?commentid='+item.comment_id" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
+						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
 					</div>
 				</div>
 				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
@@ -205,9 +205,11 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_support?userid='+this.Userid+'&toid='+item.user_id+'&supType=1',
+	      			url:'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
-	      				is_support:item.is_support
+	      				userid:this.Userid,
+	      				toid:item.user_id,
+	      				supType:1
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
