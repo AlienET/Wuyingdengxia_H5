@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <title>问题详情/未匿名</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  </style>
 </head>
 <body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<div class="article">
 			<div> 
 				<h1 class="title wtxq_tit">{{aboutData.question_title}}</h1>
@@ -25,7 +30,7 @@
 						<span class="author_name">{{aboutData.username}}</span>
 					</div>
 					<div>
-						<span class="author_time">{{aboutData.ctime}}</span>
+						<span class="author_time">{{aboutData.ctime | DateDiff}}</span>
 					</div>
 				</div>
 			</div>
@@ -60,7 +65,7 @@
 						{{item.comment_content}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">{{item.ctime}} &nbsp; &bull; &nbsp;</span>
+						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
 						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id" class="item_hf">回复</a>
 					</div>
 				</div>
@@ -116,8 +121,11 @@
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.quesid+'&comType=0&comment_to_type=0'
 	      		}).then(function(response){
-		         	this.quesData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         	console.log(this.quesData)
+		         	// this.quesData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		this.quesData.push(response.data.data[i])
+		         	}
+		         	// console.log(this.quesData)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -169,7 +177,41 @@
 	      	}
 	     }
 
-	   })
+	   });
+		// 自定义过滤器
+		Vue.filter('DateDiff',function(input) {
+			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if(diffValue < 0){return;}
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+				result="" + parseInt(monthC) + " 月前";
+			}
+			else if(weekC>=1){
+				result="" + parseInt(weekC) + " 周前";
+			}
+			else if(dayC>=1){
+				result=""+ parseInt(dayC) +" 天前";
+			}
+			else if(hourC>=1){
+				result=""+ parseInt(hourC) +" 小时前";
+			}
+			else if(minC>=1){
+				result=""+ parseInt(minC) +" 分钟前";
+			}else
+			result="刚刚";
+			return result;
+		})
 	</script>
 </body>
 </html>

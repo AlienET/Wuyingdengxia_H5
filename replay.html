@@ -16,7 +16,7 @@
 				<div class="item_xx" style="border-bottom: 0;">
 					<div style="overflow: hidden;">
 						<span class="item_name">{{username}}</span><br>
-						<span class="item_time">{{ctime}}</span>
+						<span class="item_time">{{ctime | DateDiff}}</span>
 						<button @click='follow' class="author_btn fl-r" style="margin-top: -1em">{{btn_follow?'关注':'已关注'}}</button>
 					</div>
 					<div class="item_inner">
@@ -44,7 +44,7 @@
 							<img class="report" src="images/icon/jubao.png">
 							<img class="likes" src="images/icon/dianzan.png">
 							<span class="likes_num">
-								5
+								{{item.support_num}}
 							</span>
 						</div>
 					</div>
@@ -52,7 +52,7 @@
 						{{item.comContent}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">{{item.retimes}} &nbsp; &bull; &nbsp;</span>
+						<span class="item_time">{{item.retimes | DateDiff}} &nbsp; &bull; &nbsp;</span>
 						<span class="item_hf">回复</span>
 					</div>
 				</div>
@@ -88,8 +88,10 @@
 		        	method: 'GET',
 		         	url: 'http://39.106.2.216/index.php/API/get_recomment?commentid='+this.commentid //这里填写刚刚后台设置的接口
 		        }).then(function(response){
-		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
-		         	console.dir(this.aboutData)
+		         	 // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		this.aboutData.push(response.data.data[i])
+		         	}
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -131,7 +133,41 @@
 		    }
 	     }
 
-	   })
+	   });
+		// 自定义过滤器
+		Vue.filter('DateDiff',function(input) {
+			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if(diffValue < 0){return;}
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+				result="" + parseInt(monthC) + " 月前";
+			}
+			else if(weekC>=1){
+				result="" + parseInt(weekC) + " 周前";
+			}
+			else if(dayC>=1){
+				result=""+ parseInt(dayC) +" 天前";
+			}
+			else if(hourC>=1){
+				result=""+ parseInt(hourC) +" 小时前";
+			}
+			else if(minC>=1){
+				result=""+ parseInt(minC) +" 分钟前";
+			}else
+			result="刚刚";
+			return result;
+		})
 	</script>
 </body>
 </html>
