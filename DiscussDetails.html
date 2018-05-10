@@ -109,7 +109,7 @@
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	// var articleTags = this.aboutData.article_tags;
 		         	// this.aboutData.article_tags = articleTags.split(',');
-		         	// console.log(this.aboutData)
+		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -118,7 +118,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_key_dis_by_dis_id?key_dis_id='+this.key_dis_id
+	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
 	      		}).then(function(response){
 	      			for (var i = response.data.data.length - 1; i >= 0; i--) {
 	      				this.DiscussListsData.push(response.data.data[i])
@@ -142,7 +142,7 @@
 		                name=arr[i].substring(0,num);
 		                value=arr[i].substr(num+1);
 		                this[name]=value;
-		                console.log(name)
+		                // console.log(name)
 		            }
 		        }
 		    },
@@ -168,7 +168,7 @@
 		      			item.support_num +=1;
 		      			item.is_support = true;
 		      		}
-		      		console.log(item.is_support)
+		      		// console.log(item.is_support)
 	      		},function(error) {
 	      			console.log(error)
 	      		})

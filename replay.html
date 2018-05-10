@@ -126,7 +126,8 @@
 		    			userid:this.userid //用户id
 		    		}
 		    	}).then(function(response) {
-		    		this.btn_follow = false
+		    		this.btn_follow = false;
+		    		console.log(response)
 		    	},function(error) {
 		    		console.log(error)
 		    	})

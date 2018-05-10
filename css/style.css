@@ -182,6 +182,14 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       float: right;
       margin-top: .7em;
     }
+    /*通过*/
+    .tg{
+      color: #1397FF;
+    }
+    /*未通过*/
+    .wtg{
+      color: #e4393c;
+    }
     /* 问题详情 title */
     .wtxq_tit{
       display: inline-block;
