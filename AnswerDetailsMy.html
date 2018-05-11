@@ -155,7 +155,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_support',
+	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
 	      				userid:this.Userid,
 	      				toid:item.user_id,
@@ -163,7 +163,6 @@
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			// console.log(response.body)
 	      			if (item.is_support == true) {
 		      			item.support_num -=1;
 		      			item.is_support = false;
@@ -174,7 +173,7 @@
 		      		}
 		      		console.log(response)
 	      		},function(error) {
-	      			console.log('error'+ error)
+	      			console.log(error)
 	      		})
 	      	},
 	      	// 举报Icon
@@ -188,7 +187,8 @@
 	      				to_id:item.user_id,
 	      				type:1,
 	      				content:item.comment_content
-	      			}
+	      			},
+		      		emulateJSON:true
 	      		}).then(function (argument) {
 	      			alert('举报成功');
 	      			console.log(argument)

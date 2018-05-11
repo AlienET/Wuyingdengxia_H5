@@ -15,16 +15,8 @@
 				<h1 class="title">{{aboutData.key_dis_title}}</h1>
 			</div>
 			<div class="author_time m-tb-md">{{aboutData.key_ctime}}</div>
-			<div class="article_content">
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
-				<p class="article_content_img">
-					<img src="images/dog.jpg" alt="">
-				</p>
-				<p>由于孩子身体发育不成熟，病情变化快，又不会准确表达，因此诊断风险高，而家长们又对孩子分外重视发生在儿科医生的医疗纠纷和投诉特别多。一名儿科医生表示，不少孩子是夜晚来就诊，而夜晚往往医生比较少，有时候忙不过来，家长就医心切就会以为医生怠慢，投诉甚至动手殴打医生。</p>
-				<p class="article_content_img">
-					<img src="images/black.jpg" alt="">
-				</p>
-				<p>“因我院儿科医生超负荷工作，目前均已病倒，自今日起儿科不得不停诊，何日开诊尚不能确定，特此通知，请理解见谅！请就近就诊其他医院儿科门诊，谢谢您的配合！”</p>
+			<div class="article_content" v-html='aboutData.key_dis_content'>
+				<!-- 讨论内容 -->
 			</div>
 		</div>
 		<div style="height: 20px;background: #F3F4F8;"></div>
@@ -109,7 +101,7 @@
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	// var articleTags = this.aboutData.article_tags;
 		         	// this.aboutData.article_tags = articleTags.split(',');
-		         	console.log(this.aboutData)
+		         	// console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -120,8 +112,8 @@
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
 	      		}).then(function(response){
-	      			for (var i = response.data.data.length - 1; i >= 0; i--) {
-	      				this.DiscussListsData.push(response.data.data[i])
+	      			for (var i = response.data.data.user_dis.length - 1; i >= 0; i--) {
+	      				this.DiscussListsData.push(response.data.data.user_dis[i])
 	      			}
 	      			console.log(this.DiscussListsData)
 	      		},function(error) {
@@ -151,7 +143,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_support',
+	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
 	      				userid:this.Userid,
 	      				toid:item.user_id,
@@ -159,7 +151,6 @@
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			// console.log(response.body)
 	      			if (item.is_support == true) {
 		      			item.support_num -=1;
 		      			item.is_support = false;
@@ -168,7 +159,7 @@
 		      			item.support_num +=1;
 		      			item.is_support = true;
 		      		}
-		      		// console.log(item.is_support)
+		      		console.log(response)
 	      		},function(error) {
 	      			console.log(error)
 	      		})
@@ -183,10 +174,12 @@
 	      				user_id:this.Userid,
 	      				to_id:item.user_id,
 	      				type:1,
-	      				content:item.key_dis_content
-	      			}
+	      				content:item.comment_content
+	      			},
+		      		emulateJSON:true
 	      		}).then(function (argument) {
 	      			alert('举报成功');
+	      			console.log(argument)
 	      		},function(argument) {
 	      			console.log(argument)
 	      		})

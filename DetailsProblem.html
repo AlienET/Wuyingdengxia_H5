@@ -21,7 +21,7 @@
 					<span>{{aboutData.moon_cash}}</span>
 				</div>
 			</div>
-			<div class="author">
+			<div class="author" v-show='aboutData.is_public == 1'>
 				<span class="author_img">
 					<img width="100%" height="100%" src="images/black.jpg" alt="">
 				</span>
@@ -34,6 +34,7 @@
 					</div>
 				</div>
 			</div>
+			<div class="author_time m-tb-md" v-show='aboutData.is_public == 0 '>{{aboutData.ctime | DateDiff}}</div>
 			<div class="article_content" v-html='aboutData.question_content'>
 				
 			</div>
@@ -66,7 +67,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
-						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id" class="item_hf">回复</a>
+						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id+'&userid='+Userid" class="item_hf">回复</a>
 					</div>
 				</div>
 			</div>
@@ -88,7 +89,7 @@
 	      	// 评论列表
 	      	quesData:[],
 	      	//用户id
-	      	Userid:'1',
+	      	Userid:'1003',
 	      	// 没点赞
 	      	likeIconN:'images/icon/dianzan.png',
 	      	// 已点赞
@@ -109,7 +110,7 @@
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var questionTags = this.aboutData.question_tags;
 		         	this.aboutData.question_tags = questionTags.split(',');
-		         	console.log(this.aboutData)
+		         	console.log(this.aboutData.is_public)
 		        },function (error) {
 		         	alert(error);
 		        })
@@ -130,20 +131,19 @@
 		         	console.log(error);
 		        })
 	      	},
-	      	//点赞
-	      	like:function(item,index) {
+	      	// 点赞
+	      	like:function (item,index) {
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_support',
+	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
 	      				userid:this.Userid,
 	      				toid:item.user_id,
-	      				supType:4
+	      				supType:1
 	      			},
-	      			emulateJSON:true
+	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			// console.log(response.body)
 	      			if (item.is_support == true) {
 		      			item.support_num -=1;
 		      			item.is_support = false;
@@ -152,7 +152,7 @@
 		      			item.support_num +=1;
 		      			item.is_support = true;
 		      		}
-		      		console.log(item.is_support)
+		      		console.log(response)
 	      		},function(error) {
 	      			console.log(error)
 	      		})
@@ -161,16 +161,18 @@
 	      	report:function(item,index) {
 	      		var that = this;
 	      		that.$http({
-	      			method:'GET',
+	      			method:'POST',
 	      			url:'http://39.106.2.216/index.php/API/post_report',
 	      			data:{
 	      				user_id:this.Userid,
 	      				to_id:item.user_id,
 	      				type:1,
 	      				content:item.comment_content
-	      			}
+	      			},
+		      		emulateJSON:true
 	      		}).then(function (argument) {
-	      			alert('举报成功')
+	      			alert('举报成功');
+	      			console.log(argument)
 	      		},function(argument) {
 	      			console.log(argument)
 	      		})
