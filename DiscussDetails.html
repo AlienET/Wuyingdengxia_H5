@@ -14,7 +14,7 @@
 			<div> 
 				<h1 class="title">{{aboutData.key_dis_title}}</h1>
 			</div>
-			<div class="author_time m-tb-md">{{aboutData.key_ctime}}</div>
+			<div class="author_time m-tb-md">{{aboutData.key_ctime | DateDiff}}</div>
 			<div class="article_content" v-html='aboutData.key_dis_content'>
 				<!-- 讨论内容 -->
 			</div>
@@ -28,15 +28,15 @@
 				暂无评论 ...
 			</div>
 			<div class="item" v-for='(item,index) in DiscussListsData'>
-				<a href="javascript:;">
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">{{item.user_name}}</span>
+						<span class="item_name" @click='UserInformation(item.user_id)'>{{item.user_name}}</span>
 						<div class="fl-r">
 							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
@@ -79,9 +79,9 @@
 	      	// 已点赞
 	      	likeIcon:'images/icon/dadianzan.png',
 	      	// 我的id
-	      	Userid:'',
+	      	// Userid:'',
 	      	// 讨论的id 获取的参数
-	      	key_dis_id:'6'
+	      	// key_dis_id:'6'
 	     },
 	     created: function () {
 	     	//获取参数
@@ -101,7 +101,7 @@
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	// var articleTags = this.aboutData.article_tags;
 		         	// this.aboutData.article_tags = articleTags.split(',');
-		         	// console.log(this.aboutData)
+		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -115,7 +115,7 @@
 	      			for (var i = response.data.data.user_dis.length - 1; i >= 0; i--) {
 	      				this.DiscussListsData.push(response.data.data.user_dis[i])
 	      			}
-	      			console.log(this.DiscussListsData)
+	      			console.log(this.DiscussListsData[0].is_support)
 	      		},function(error) {
 	      			console.log(error)
 	      		})
@@ -138,26 +138,30 @@
 		            }
 		        }
 		    },
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+		    },
 	      	// 点赞
 	      	like:function (item,index) {
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
+	      			url:item.is_support>0?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
-	      				userid:this.Userid,
-	      				toid:item.user_id,
-	      				supType:1
+	      				userid:this.userid,
+	      				toid:item.key_dis_list_id,
+	      				supType:5
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			if (item.is_support == true) {
+	      			if (item.is_support > 0) {
 		      			item.support_num -=1;
-		      			item.is_support = false;
+		      			item.is_support = 0;
 		      		}else{
 		      			item.support_num = parseInt(item.support_num);
 		      			item.support_num +=1;
-		      			item.is_support = true;
+		      			item.is_support = 1;
 		      		}
 		      		console.log(response)
 	      		},function(error) {
@@ -171,9 +175,9 @@
 	      			method:'POST',
 	      			url:'http://39.106.2.216/index.php/API/post_report',
 	      			data:{
-	      				user_id:this.Userid,
-	      				to_id:item.user_id,
-	      				type:1,
+	      				user_id:this.userid,
+	      				to_id:item.key_dis_list_id,
+	      				type:5,
 	      				content:item.comment_content
 	      			},
 		      		emulateJSON:true

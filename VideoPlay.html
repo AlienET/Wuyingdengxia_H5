@@ -6,27 +6,29 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <title>播放页</title> 
   <style type="text/css">
-  	
+  	[v-cloak]{
+  		display: none;
+  	}
   </style>
 </head>
 <body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<video width="100%" controls v-bind:src="VideoAddress[Vaddress]">
 	        <source src="images/homepage-hero-video.mp4">
 	        <source src="images/homepage-hero-video.webm">
 	    </video>		
 		<div class="pd10">
 			<div class="v_tit">
-				<!-- 视频标题 -->{{aboutData.replay_title}}
+				<!-- 视频标题 -->{{aboutData.meeting_title}}
 			</div>
 			<div class="mt-xs">
-				<p class="v_speaker" v-text='"主讲："+aboutData.maintalk'><!-- 主讲：刘教授 --></p>
+				<p class="v_speaker" v-text='"主讲："+aboutData.meeting_specialist'><!-- 主讲：刘教授 --></p>
 				<div>
-					<span class="v_num" v-html='"播放数 "+aboutData.playnum+" &nbsp; &bull; &nbsp; 获赞数 "+aboutData.suport_num'></span>
+					<span class="v_num" v-html='"播放数 "+aboutData.play_num+" &nbsp; &bull; &nbsp; 获赞数 "+aboutData.support_num'></span>
 					<div class="fl-r">
-						<img class="mr-sm" @click='praise' v-bind:src="PraiseIcon" height="20em">
-						<img class="mr-sm" @click='collection' v-bind:src="CollectionIcon" height="20em">
-						<img class="mr-sm" src="images/icon/fenxiang.png" height="20em">
+						<img class="mr-sm" @click='praise' v-bind:src="aboutData.is_support>0?PraiseIcon:PraiseIconN" height="20em">
+						<img class="mr-sm" @click='collection' v-bind:src="aboutData.is_collection>0?CollectionIcon:CollectionIconN" height="20em">
+						<img class="mr-sm" @click='share' src="images/icon/fenxiang.png" height="20em">
 					</div>
 				</div>
 			</div>
@@ -34,35 +36,38 @@
 				<h4>精彩片段</h4>
 				<div class="v_list"><!-- ::-webkit-scrollbar {display: none;} -->
 					<div class="box-sizing v_item" :class="item.Vactive?'active':''" @click='VideoItem(item,index)'  v-for="(item,index) in VideoList">
-						{{item.txt}}
+						{{item.meeting_title}}
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 324
+				全部评论 {{commentData.length}}
 			</div>
-			<div class="item" v-for="(item,index) in VideoList">
+			<div v-show='commentData.length ==0' style="color: #999;text-align: center;padding: 20px;">
+				暂无评论...
+			</div>
+			<div class="item" v-for="(item,index) in commentData">
 				<a href="javascript:;">
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">Gallen Meklda</span>
+						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
-							<img class="report" src="images/icon/jubao.png">
-							<img class="likes" @click='commentLike(item,index)' v-bind:src="CommentLikeIcon">
+							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
+							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
 							<span class="likes_num">
-								5
+								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						我们卫生局不作为，职业证就发我们一张复印纸，该报考中级换证还要卡我们，要上点菜，才给换证，县级卫生局都是些喝茶看报没事干也不给换。
+						{{item.comment_content}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">30分钟前 &nbsp; &bull; &nbsp;</span>
+						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
 						<span class="item_hf">回复</span>
 					</div>
 				</div>
@@ -88,61 +93,80 @@
 		    	// 视频点赞
 		    	Praise:true,
 		    	// 点赞地址
-		    	PraiseIcon:'images/icon/dadianzai.png',
+		    	PraiseIcon:'images/icon/dadianzan.png',
+		    	// 点赞地址
+		    	PraiseIconN:'images/icon/dadianzai.png',
 		    	// 收藏
-		    	Collection:false,
 		    	// 收藏icon地址
-		    	CollectionIcon:'images/icon/shoucang.png',
-		    	// 评论用户点赞状态
-		    	CommentLike:false,
-		    	// 评论用户点赞icon
-		    	CommentLikeIcon:'images/icon/dianzan.png',
+		    	CollectionIcon:'images/icon/yishoucang.png',
+		    	CollectionIconN:'images/icon/shoucang.png',
+		    	// 没点赞
+		      	likeIconN:'images/icon/dianzan.png',
+		      	// 已点赞
+		      	likeIcon:'images/icon/dadianzan.png',
 		    	// 视频播放地址列表
-		    	VideoAddress:[
-		    		'images/homepage-hero-video.mp4',
-		    		'images/qwer.mp4',
-		    		'images/homepage-hero-video.mp4',
-		    		'images/qwer.mp4',
-		    		'images/homepage-hero-video.mp4'
-		    	],
+		    	VideoAddress:[],
 		    	// 视频列表
-		    	VideoList:[
-		   			{txt:'1手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
-		   			{txt:'2手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
-		   			{txt:'3手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
-		    		{txt:'4手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false},
-		    		{txt:'5手术剪的多种使用方法及在实际应用过程中的避免错误示范',Vactive:false}
-		    	],
+		    	VideoList:[],
 		    	// 视频地址 下标
 		    	Vaddress:0,
 		    	// -------------------------------------------------------------
 		    	//回顾id
-		    	replay_id:'6',
+		    	replay_sub_id:'',
+		    	//用户id
+		    	user_id:'',
 		    	// 详情数据列
-		    	aboutData:[]
+		    	aboutData:[],
+		    	//评论列 数据
+		    	commentData:[]
 		    	
 
 
 		  	},
+		  	// 页面加载
+			created:function(){
+				//获取参数
+				this.getUrlParam();
+				// 讨论详情
+	      		this.getRoute();
+	      		// 讨论评论
+	      		this.allcomment();
+
+			},
 		  	// 在 `methods` 对象中定义方法
 			methods: {
 				// 点赞
 			    praise: function (event) {
-			      if (this.Praise) {
-			        this.PraiseIcon = 'images/icon/dadianzai.png'
-			      }else{
-			      	this.PraiseIcon = 'images/icon/dadianzan.png'
-			      }
-			      this.Praise = !this.Praise;
+			      var that = this;
+		      		that.$http({
+		      			method:'GET',
+		      			url:this.aboutData.is_support>0?'http://39.106.2.216/index.php/API/get_cel_support?userid='+this.userid+'&toid='+this.aboutData.replay_sub_id+'&supType=3':'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+this.aboutData.replay_sub_id+'&supType=3',
+		      			
+		      			// emulateJSON:true
+		      		}).then(function(response){
+		      			if (this.aboutData.is_support >0) {
+			      			this.aboutData.is_support = 0;
+			      		}else{
+			      			this.aboutData.is_support = 1;
+			      		}
+			      		console.log(response)
+		      		},function(error) {
+		      			console.log(error)
+		      		})
 			    },
 			    // 收藏
 			    collection: function (event) {
-			    	if (this.Collection) {
-			    		this.CollectionIcon = 'images/icon/shoucang.png'
-			    	}else{
-			    		this.CollectionIcon = 'images/icon/yishoucang.png'
-			    	}
-			    	this.Collection = !this.Collection;
+			    	var that = this;
+		      		that.$http.post('http://39.106.2.216/index.php/API/post_collection',{userid:this.userid,toid:this.aboutData.replay_sub_id,type:3},{emulateJSON: true}).then(function(response){
+		      			if (this.aboutData.is_collection >0) {
+			      			this.aboutData.is_collection = 0;
+			      		}else{
+			      			this.aboutData.is_collection = 1;
+			      		}
+			      		console.log(response)
+		      		},function(error) {
+		      			console.log(error)
+		      		})
 			    },
 			    // 视频简介item
 			    VideoItem:function (item,index) {
@@ -152,49 +176,146 @@
 			    	item.Vactive = true;
 			    	this.Vaddress = index;
 			    	// console.log(this.VideoAddress[this.Vaddress]);
-
 			    },
-			    // 用户评论点赞
-			    commentLike:function (item,index) {	
-			    	console.log(item,index);
-			    	if (this.CommentLike) {
-				        this.CommentLikeIcon = 'images/icon/dianzan.png'
-				    }else{
-				      	this.CommentLikeIcon = 'images/icon/dadianzan.png'
-				    }
-				    this.CommentLike = !this.CommentLike;
+			    // 获取参数
+		      	getUrlParam: function () {
+			        var name,value;
+			        var str=location.href; //取得整个地址栏
+			        var num=str.indexOf("?");
+			        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+			    
+			        var arr=str.split("&"); //各个参数放到数组里
+			        for(var i=0;i < arr.length;i++){
+			            num=arr[i].indexOf("=");
+			            if(num>0){
+			                name=arr[i].substring(0,num);
+			                value=arr[i].substr(num+1);
+			                this[name]=value;
+			            }
+			        }
+			        // console.log(arr[value])
 			    },
+			    // 分享 与ios交互
+			    share:function () {
+			    	window.webkit.messageHandlers.share.postMessage();
+			    },
+			    // 点赞
+		      	like:function (item,index) {
+		      		var that = this;
+		      		that.$http({
+		      			method:'GET',
+		      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
+		      			data:{
+		      				userid:this.userid,
+		      				toid:item.user_id,
+		      				supType:1
+		      			},
+		      			// emulateJSON:true
+		      		}).then(function(response){
+		      			if (item.is_support == true) {
+			      			item.support_num -=1;
+			      			item.is_support = false;
+			      		}else{
+			      			item.support_num = parseInt(item.support_num);
+			      			item.support_num +=1;
+			      			item.is_support = true;
+			      		}
+			      		console.log(response)
+		      		},function(error) {
+		      			console.log(error)
+		      		})
+		      	},
+		      	// 举报Icon
+		      	report:function(item,index) {
+		      		var that = this;
+		      		that.$http({
+		      			method:'POST',
+		      			url:'http://39.106.2.216/index.php/API/post_report',
+		      			data:{
+		      				user_id:this.userid,
+		      				to_id:item.user_id,
+		      				type:1,
+		      				content:item.comment_content
+		      			},
+			      		emulateJSON:true
+		      		}).then(function (argument) {
+		      			alert('举报成功');
+		      			console.log(argument)
+		      		},function(argument) {
+		      			console.log(argument)
+		      		})
+		      	},
 			    // ----------------------------------------------------------
 			    getRoute: function () {
-		        var that = this; 
-		        that.$http({           //get_hot_labelList_detail
-		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_allreplay_byid?replay_id='+this.replay_id //这里填写刚刚后台设置的接口
-		        }).then(function(response){
-		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
-		         	// var articleTags = this.aboutData.article_tags;
-		         	// this.aboutData.article_tags = articleTags.split(',');
-		         	// console.log(this.aboutData)
-		        },function (error) {
-		         	console.log(error);
-		        })
-	      	},
+			        var that = this; 
+			        that.$http({           //get_hot_labelList_detail
+			        	method: 'GET',
+			         	url: 'http://39.106.2.216/index.php/API/get_replay_detail?replay_sub_id='+this.replay_sub_id //这里填写刚刚后台设置的接口
+			        }).then(function(response){
+			         	this.aboutData = response.data.data.active; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+			         	// var articleTags = this.aboutData.article_tags;
+			         	// this.aboutData.article_tags = articleTags.split(',');
+			         	for (var i = response.data.data.relative.length - 1; i >= 0; i--) {
+			         		response.data.data.relative[i].Vactive = false;
+			         		response.data.data.relative[0].Vactive = true;
+			         		this.VideoAddress.push(response.data.data.relative[i].video_url);
+			         	}
+			         	this.VideoList=response.data.data.relative;
+			         	console.log()
+			        },function (error) {
+			         	console.log(error);
+			        })
+		      	},
+		      	// 评论列表
+		      	allcomment:function (argument) {
+		      		var that = this;
+		      		that.$http({
+		      			method:'GET',
+		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4'
+		      		}).then(function(response){
+			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+			         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+			         		this.commentData.push(response.data.data[i])
+			         	}
+			        },function (error) {
+			         	console.log(error);
+			        })
+		      	},
 			},
-			// 页面加载
-			created:function(){
-				// 点赞
-				this.Praise==true?this.PraiseIcon='images/icon/dadianzan.png':this.PraiseIcon='images/icon/dadianzai.png',
-				//收藏
-				this.Collection==true?this.CollectionIcon='images/icon/yishoucang.png':this.CollectionIcon='images/icon/shoucang.png';
-				// 讨论详情
-	      		this.getRoute();
-			},
-			
-			mounted:function (argument) {
-				// 视频简介
-				this.VideoList[0].Vactive = true;
-				// console.log(this.Vaddress);
+		});
+		// 自定义过滤器
+		Vue.filter('DateDiff',function(input) {
+			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if(diffValue < 0){return;}
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+				result="" + parseInt(monthC) + " 月前";
 			}
+			else if(weekC>=1){
+				result="" + parseInt(weekC) + " 周前";
+			}
+			else if(dayC>=1){
+				result=""+ parseInt(dayC) +" 天前";
+			}
+			else if(hourC>=1){
+				result=""+ parseInt(hourC) +" 小时前";
+			}
+			else if(minC>=1){
+				result=""+ parseInt(minC) +" 分钟前";
+			}else
+			result="刚刚";
+			return result;
 		})
 	</script>
 </body>

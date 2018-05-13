@@ -35,6 +35,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	    background: #FCBA2A;
 	    border-radius: 100px;
   	}
+    .y-author_btn{
+      background: #E9E9E9;
+    }
     .author_img{
       display: inline-block;
       height: 30px;

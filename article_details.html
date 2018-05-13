@@ -23,10 +23,10 @@
 				</div>
 			</div>
 			<div class="author" v-if='DetailsArticle||DetailsProblem||DetailsArticleMy'>
-				<span class="author_img">
+				<span @click='UserInformation(aboutData.article_id)' class="author_img">
 					<img width="100%" height="100%" src="images/black.jpg" alt="">
 				</span>
-				<div class="author_xx">
+				<div class="author_xx" @click='UserInformation(aboutData.article_id)'>
 					<div>
 						<span class="author_name">{{aboutData.article_author}}</span>
 					</div>
@@ -34,7 +34,7 @@
 						<span class="author_time">{{aboutData.ctime | DateDiff}}</span>
 					</div>
 				</div>
-				<button class="author_btn" v-if='DetailsArticle' @click='follow'>{{btn_follow?'已关注':'关注'}}</button>
+				<button class="author_btn" :class="btn_follow?'y-author_btn':''" v-if='DetailsArticle' @click='follow'>{{btn_follow?'已关注':'关注'}}</button>
 				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
 			</div>
 			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
@@ -53,12 +53,12 @@
 				全部评论 {{commentData.length}}
 			</div>
 			<div class="item" v-for='(item,index) in commentData'>
-				<a href="javascript:;">
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name" v-text='item.user_name == ""?"匿名用户":item.user_name'></span>
+						<span @click='UserInformation(item.user_id)' class="item_name" v-text='item.user_name == ""?"匿名用户":item.user_name'></span>
 						<div class="fl-r">
 							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
 							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
@@ -72,7 +72,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
-						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id+'&userid='+Userid" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
+						<a :href="'replay.html?comment_id='+item.comment_id+'&userid='+userid" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
 					</div>
 				</div>
 				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
@@ -128,7 +128,7 @@
 	      	// 传参
 	      	articleid:'',
 	      	// 用户id
-	      	Userid:'10003',
+	      	userid:'',
 	      	// 关注btn
 	      	btn_follow:false
 	     },
@@ -136,7 +136,7 @@
 	      this.getUrlParam()
 	      this.getRoute();
 	      this.allcomment();
-	      // console.log(this.articleid)
+	      console.log(this.aboutData)
 	     },
 	     methods: {
 	     	// 文章内容
@@ -190,14 +190,17 @@
 		        this.articleid = value;
 		    },
 
-
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+		    },
 	      	// 关注
 	      	follow:function (argument) {
 	      		var that = this;
 	      		if (this.btn_follow == false) {
 	      			that.$http({
 		      			method:'POST',
-		      			url:'http://39.106.2.216/index.php/API/post_follow?userid='+this.Userid+'&befollid='+this.aboutData.user_id,
+		      			url:'http://39.106.2.216/index.php/API/post_follow?userid='+this.userid+'&befollid='+this.aboutData.user_id,
 		      			data:{
 		      				// is_support:item.is_support
 		      			},
@@ -211,7 +214,7 @@
 	      		}else{
 	      			that.$http({
 		      			method:'POST',
-		      			url:'http://39.106.2.216/index.php/API/post_cel_follow?userid='+this.Userid+'&befollid='+this.aboutData.user_id,
+		      			url:'http://39.106.2.216/index.php/API/post_cel_follow?userid='+this.userid+'&befollid='+this.aboutData.user_id,
 		      			data:{
 		      				// is_support:item.is_support
 		      			},
@@ -233,7 +236,7 @@
 	      			method:'GET',
 	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
-	      				userid:this.Userid,
+	      				userid:this.userid,
 	      				toid:item.user_id,
 	      				supType:1
 	      			},
@@ -259,7 +262,7 @@
 	      			method:'POST',
 	      			url:'http://39.106.2.216/index.php/API/post_report',
 	      			data:{
-	      				user_id:this.Userid,
+	      				user_id:this.userid,
 	      				to_id:item.user_id,
 	      				type:1,
 	      				content:item.comment_content

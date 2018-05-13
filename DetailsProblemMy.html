@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <title>我的问题详情/个人中心</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  </style>
 </head>
 <body>
 	<div id="app" v-cloak>
@@ -41,21 +46,21 @@
 						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
 							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						{{item.comment_content}}
+						{{item.answer_content}}
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}}</span>
-						<span class="cn_btn" >采纳</span>
+						<span v-show='item.is_take == 0' class="cn_btn" @click='caina(item,index)' >采纳</span>
 					</div>
 				</div>
-				<img  class="ycn" src="images/icon/cainaicon.png">
+				<img v-show='item.is_take > 0' class="ycn" src="images/icon/cainaicon.png">
 			</div>
 		</div>
 	</div>
@@ -87,6 +92,8 @@
 	      	likeIconN:'images/icon/dianzan.png',
 	      	// 已点赞
 	      	likeIcon:'images/icon/dadianzan.png',
+	      	// 当前用户id
+	      	Userid:''
 	     },
 	     created: function () {
 	     	// 获取 Url 参数
@@ -105,8 +112,8 @@
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.question_tags;
-		         	this.aboutData.question_tags = articleTags.split(',');
-		         	console.log(this.aboutData)
+		         	this.aboutData.question_tags = articleTags.split('，');
+		         	console.log(this.aboutData.question_tags)
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -116,7 +123,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.quesid+'&comType=0&comment_to_type=0'
+	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.Userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
@@ -146,27 +153,31 @@
 		        }
 		        // console.log(arr[value])
 		    },
+		    // 采纳
+		    caina:function (item,index) {
+		    	item.is_take = 1;
+		    },
 		    // 点赞
 	      	like:function (item,index) {
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_support',
+	      			url:'http://39.106.2.216/index.php/API/post_support',
 	      			data:{
 	      				userid:this.Userid,
 	      				toid:item.user_id,
-	      				supType:1
+	      				supType:4
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
 	      			// console.log(response.body)
-	      			if (item.is_support == true) {
+	      			if (item.is_support > 0) {
 		      			item.support_num -=1;
-		      			item.is_support = false;
+		      			item.is_support = 0;
 		      		}else{
 		      			item.support_num = parseInt(item.support_num);
 		      			item.support_num +=1;
-		      			item.is_support = true;
+		      			item.is_support = 1;
 		      		}
 		      		console.log(response)
 	      		},function(error) {
@@ -182,7 +193,7 @@
 	      			data:{
 	      				user_id:this.Userid,
 	      				to_id:item.user_id,
-	      				type:1,
+	      				type:4,
 	      				content:item.comment_content
 	      			}
 	      		}).then(function (argument) {

@@ -18,10 +18,10 @@
 				<h1 class="title" >{{aboutData.article_title}}</h1>
 			</div>
 			<div class="author">
-				<span class="author_img">
+				<span class="author_img" @click='UserInformation(aboutData.user_id)'>
 					<img width="100%" height="100%" src="images/black.jpg" alt="">
 				</span>
-				<div class="author_xx">
+				<div class="author_xx" @click='UserInformation(aboutData.user_id)'>
 					<div>
 						<span class="author_name">{{aboutData.article_author}}</span>
 					</div>
@@ -47,12 +47,12 @@
 				暂无评论...
 			</div>
 			<div class="item" v-for='(item,indx) in commentData'>
-				<a href="javascript:;">
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">{{item.user_name}}</span>
+						<span class="item_name" @click='UserInformation(item.user_id)'>{{item.user_name}}</span>
 						<div class="fl-r">
 							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
 							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
@@ -159,6 +159,11 @@
 		                console.log(value)
 		            }
 		        }
+		    },
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+
 		    },
 		    // 点赞
 	      	like:function (item,index) {

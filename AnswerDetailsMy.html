@@ -21,7 +21,7 @@
 					<span>{{aboutData.moon_cash}}</span>
 				</div>
 			</div>
-			<div class="author_time m-tb-md">{{aboutData.ctime}}</div>
+			<div class="author_time m-tb-md">{{aboutData.ctime | DateDiff}}</div>
 			<div class="article_content" v-html='aboutData.question_content'>
 				
 			</div>
@@ -38,28 +38,28 @@
 				暂无评论 ...
 			</div>
 			<div class="item" v-for='(item,index) in commentData'>
-				<a href="javascript:;">
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
 					<img src="images/black.jpg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">{{item.user_name}}</span>
+						<span class="item_name" @click='UserInformation(item.user_id)'>{{item.user_name}}</span>
 						<div class="fl-r">
 							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						{{item.comment_content}}
+						{{item.answer_content}}
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}}</span>
 					</div>
 				</div>
-				<img  class="ycn" src="images/icon/cainaicon.png">
+				<img v-show='item.is_solve > 0' class="ycn" src="images/icon/cainaicon.png">
 			</div>
 		</div>
 	</div>
@@ -91,6 +91,8 @@
 	      	likeIconN:'images/icon/dianzan.png',
 	      	// 已点赞
 	      	likeIcon:'images/icon/dadianzan.png',
+	      	// 用户id
+	      	Userid:''
 	     },
 	     created: function () {
 	     	// 获取 Url 参数
@@ -109,7 +111,7 @@
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.question_tags;
-		         	this.aboutData.question_tags = articleTags.split(',');
+		         	this.aboutData.question_tags = articleTags.split('，');
 		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
@@ -120,7 +122,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.quesid+'&comType=0&comment_to_type=2'
+	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.Userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
@@ -150,12 +152,17 @@
 		        }
 		        // console.log(arr[value])
 		    },
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+
+		    },
 		    // 点赞
 	      	like:function (item,index) {
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
+	      			url:item.is_support>0?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
 	      			data:{
 	      				userid:this.Userid,
 	      				toid:item.user_id,
@@ -163,13 +170,13 @@
 	      			},
 	      			// emulateJSON:true
 	      		}).then(function(response){
-	      			if (item.is_support == true) {
+	      			if (item.is_support > 0) {
 		      			item.support_num -=1;
-		      			item.is_support = false;
+		      			item.is_support = 0;
 		      		}else{
 		      			item.support_num = parseInt(item.support_num);
 		      			item.support_num +=1;
-		      			item.is_support = true;
+		      			item.is_support = 1;
 		      		}
 		      		console.log(response)
 	      		},function(error) {
