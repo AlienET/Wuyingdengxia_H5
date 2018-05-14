@@ -45,7 +45,12 @@
 					<div>
 						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
-							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
+							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
+								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
+								<span class="report" v-show='item.jubao' @click='report(item,index)'>
+									举报
+								</span>
+							</span>
 							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
@@ -61,6 +66,11 @@
 					</div>
 				</div>
 				<img v-show='item.is_take > 0' class="ycn" src="images/icon/cainaicon.png">
+			</div>
+		</div>
+		<div style="position: fixed;top: 0;right: 0;bottom: 0;left: 0;text-align: center;background-color: rgba(0,0,0,0.2);" @click='mask=false' v-show='mask'>
+			<div style="margin:60% auto 0 auto;background: #F9F9F9;padding: 20px;display: inline-block;border-radius: 5px;color: #000;">
+				举报成功，感谢您的监督。
 			</div>
 		</div>
 	</div>
@@ -93,7 +103,9 @@
 	      	// 已点赞
 	      	likeIcon:'images/icon/dadianzan.png',
 	      	// 当前用户id
-	      	Userid:''
+	      	userid:'',
+	      	//遮罩层
+	      	mask:''
 	     },
 	     created: function () {
 	     	// 获取 Url 参数
@@ -123,10 +135,11 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.Userid
+	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		response.data.data[i].jubao = false;
 		         		this.commentData.push(response.data.data[i])
 		         	}
 		         	console.log(this.commentData);
@@ -148,7 +161,6 @@
 		                name=arr[i].substring(0,num);
 		                value=arr[i].substr(num+1);
 		                this[name]=value;
-		                console.log(value)
 		            }
 		        }
 		        // console.log(arr[value])
@@ -160,44 +172,38 @@
 		    // 点赞
 	      	like:function (item,index) {
 	      		var that = this;
-	      		that.$http({
-	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/post_support',
-	      			data:{
-	      				userid:this.Userid,
-	      				toid:item.user_id,
-	      				supType:4
-	      			},
-	      			// emulateJSON:true
-	      		}).then(function(response){
-	      			// console.log(response.body)
-	      			if (item.is_support > 0) {
-		      			item.support_num -=1;
-		      			item.is_support = 0;
-		      		}else{
-		      			item.support_num = parseInt(item.support_num);
-		      			item.support_num +=1;
+
+	      		if (item.is_support>0) {
+	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.user_id,supType:4},{emulateJSON:true}).then(function(response) {
+	      				item.support_num -=1;
+	      				item.is_support = 0;
+	      				console.log(response)
+	      			},function(error) {
+	      				console.log(error)
+	      			})
+	      		}else{
+	      			that.$http({
+	      				method:'GET',
+	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.user_id+'&supType=4',
+	      			}).then(function(response) {
+	      				item.support_num = parseInt(item.support_num);
+	      				item.support_num +=1;
 		      			item.is_support = 1;
-		      		}
-		      		console.log(response)
-	      		},function(error) {
-	      			console.log('error'+ error)
-	      		})
+	      			},function(error) {
+	      				console.log(error)
+	      			})
+	      		}
 	      	},
+	      	// 举报切换
+	     	luelue:function (item,index) {
+	     		item.jubao = !item.jubao
+	     	},
 	      	// 举报Icon
 	      	report:function(item,index) {
 	      		var that = this;
-	      		that.$http({
-	      			method:'POST',
-	      			url:'http://39.106.2.216/index.php/API/post_report',
-	      			data:{
-	      				user_id:this.Userid,
-	      				to_id:item.user_id,
-	      				type:4,
-	      				content:item.comment_content
-	      			}
-	      		}).then(function (argument) {
-	      			alert('举报成功');
+	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:4,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+	      			this.mask = true;
+	      			item.jubao = !item.jubao;
 	      			console.log(argument)
 	      		},function(argument) {
 	      			console.log(argument)

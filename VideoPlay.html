@@ -56,7 +56,12 @@
 					<div>
 						<span class="item_name">{{item.user_name}}</span>
 						<div class="fl-r">
-							<img class="report" @click='report(item,index)' src="images/icon/jubao.png">
+							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
+								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
+								<span class="report" v-show='item.jubao' @click='report(item,index)'>
+									举报
+								</span>
+							</span>
 							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
@@ -71,6 +76,11 @@
 						<span class="item_hf">回复</span>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div style="position: fixed;top: 0;right: 0;bottom: 0;left: 0;text-align: center;background-color: rgba(0,0,0,0.2);" @click='mask=false' v-show='mask'>
+			<div style="margin:60% auto 0 auto;background: #F9F9F9;padding: 20px;display: inline-block;border-radius: 5px;color: #000;">
+				举报成功，感谢您的监督。
 			</div>
 		</div>
 	</div>
@@ -118,10 +128,9 @@
 		    	// 详情数据列
 		    	aboutData:[],
 		    	//评论列 数据
-		    	commentData:[]
-		    	
-
-
+		    	commentData:[],
+		    	//遮罩层
+	      		mask:''
 		  	},
 		  	// 页面加载
 			created:function(){
@@ -202,44 +211,37 @@
 			    // 点赞
 		      	like:function (item,index) {
 		      		var that = this;
-		      		that.$http({
-		      			method:'GET',
-		      			url:item.is_support?'http://39.106.2.216/index.php/API/post_cel_support':'http://39.106.2.216/index.php/API/get_support',
-		      			data:{
-		      				userid:this.userid,
-		      				toid:item.user_id,
-		      				supType:1
-		      			},
-		      			// emulateJSON:true
-		      		}).then(function(response){
-		      			if (item.is_support == true) {
-			      			item.support_num -=1;
-			      			item.is_support = false;
-			      		}else{
-			      			item.support_num = parseInt(item.support_num);
-			      			item.support_num +=1;
-			      			item.is_support = true;
-			      		}
-			      		console.log(response)
-		      		},function(error) {
-		      			console.log(error)
-		      		})
+		      		if (item.is_support>0) {
+		      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.user_id,supType:1},{emulateJSON:true}).then(function(response) {
+		      				item.support_num -=1;
+		      				item.is_support = 0;
+		      				console.log(response)
+		      			},function(error) {
+		      				console.log(error)
+		      			})
+		      		}else{
+		      			that.$http({
+		      				method:'GET',
+		      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.user_id+'&supType=1',
+		      			}).then(function(response) {
+		      				item.support_num = parseInt(item.support_num);
+		      				item.support_num +=1;
+			      			item.is_support = 1;
+		      			},function(error) {
+		      				console.log(error)
+		      			})
+		      		}
 		      	},
+		      	// 举报切换
+		     	luelue:function (item,index) {
+		     		item.jubao = !item.jubao
+		     	},
 		      	// 举报Icon
 		      	report:function(item,index) {
 		      		var that = this;
-		      		that.$http({
-		      			method:'POST',
-		      			url:'http://39.106.2.216/index.php/API/post_report',
-		      			data:{
-		      				user_id:this.userid,
-		      				to_id:item.user_id,
-		      				type:1,
-		      				content:item.comment_content
-		      			},
-			      		emulateJSON:true
-		      		}).then(function (argument) {
-		      			alert('举报成功');
+		      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:1,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+		      			this.mask = true;
+	      				item.jubao = !item.jubao;
 		      			console.log(argument)
 		      		},function(argument) {
 		      			console.log(argument)
