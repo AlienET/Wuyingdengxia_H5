@@ -64,14 +64,14 @@
 									举报
 								</span>
 							</span>
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
 						</div>
 					</div>
 					<div class="item_inner">
-						{{item.comment_content}}
+						{{item.answer_content}}
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
@@ -137,7 +137,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.quesid+'&comType=0&comment_to_type=0'
+	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.userid
 	      		}).then(function(response){
 		         	// this.quesData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {

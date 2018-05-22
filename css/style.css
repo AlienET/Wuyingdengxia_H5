@@ -18,7 +18,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     	font-weight: 600;
   	}
   	.author{
-  		margin:.5em 0;
+  		margin:0.5em 0;
   	}
   	.author_btn{
       margin-top: .3em;
@@ -85,7 +85,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   	}
   	.article_content_label span{
   		display: inline-block;
-	    border: 1px solid #ddd;
+	    border: 0.5px solid #ddd;
 	    border-radius: 100px;
 	    font-size: 13px;
 	    color: #999;
@@ -95,7 +95,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     /*评论*/
     .comment_list .comment_num{
       font-size: .95rem;
-      border-bottom: 1px solid #E7E7E7;
+      border-bottom: 0.5px solid #E7E7E7;
       padding: .7em 1em;
     }
     .comment_list .item{
@@ -115,7 +115,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       width: 100%;
       padding: 5px 10px 15px 0;
       margin-left:5px;
-      border-bottom: 1px solid #EBEBEB;
+      border-bottom: 0.5px solid #EBEBEB;
     }
     .item_name{
       font-size: 13px;
@@ -136,7 +136,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     /* 举报 */
     .report{
       position: absolute;
-      border: .5px solid #B9B9B9;
+      border: 0.5px solid #B9B9B9;
       color: #B9B9B9;
       font-size: .75em;
       bottom: -0.5px;
@@ -180,7 +180,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       font-size: 10px;
       color: #0A93FF;
       border-radius: 2px;
-      border: 1px solid #0A93FF;
+      border: 0.5px solid #0A93FF;
       padding:1px 2px;
       margin-bottom: 5px;
       display: inline-block;
@@ -291,7 +291,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       border-radius: 5px;
       padding: 7px 10px;
       text-align: justify;
-      border: 1px solid #F5F5F5;
+      border: 0.5px solid #F5F5F5;
     }
     .active{
       border-color: #1397FF;
