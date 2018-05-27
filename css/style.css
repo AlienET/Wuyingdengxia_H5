@@ -79,6 +79,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	    padding-bottom: 24px;
 	    line-height: 1.4em;
   	}
+    .article_content img{
+      width: 100%
+    }
   	.article_content_img img{
   		width: 100%;
   		margin: 2% auto;
