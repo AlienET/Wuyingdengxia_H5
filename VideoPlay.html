@@ -14,8 +14,7 @@
 <body>
 	<div id="app" v-cloak>
 		<video width="100%" controls v-bind:src="VideoAddress[Vaddress]">
-	        <source src="images/homepage-hero-video.mp4">
-	        <source src="images/homepage-hero-video.webm">
+	        <source v-bind:src="VideoAddress[Vaddress]">
 	    </video>		
 		<div class="pd10">
 			<div class="v_tit">
