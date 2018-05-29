@@ -124,7 +124,7 @@
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.question_tags;
-		         	this.aboutData.question_tags = articleTags.split('，');
+		         	this.aboutData.question_tags = articleTags.split(','||'，');
 		         	console.log(this.aboutData.question_tags)
 		        },function (error) {
 		         	console.log(error);
@@ -167,7 +167,16 @@
 		    },
 		    // 采纳
 		    caina:function (item,index) {
-		    	item.is_take = 1;
+		    	var that = this;
+		    	that.$http({
+	      				method:'GET',
+	      				url:'http://39.106.2.216/index.php/API/accept_answer?questionid='+this.quesid+'&answerid='+item.answer_id,
+	      			}).then(function(response) {
+	      				item.is_take = 1;
+	      				console.log(response)
+	      			},function(error) {
+	      				console.log(error)
+	      			})
 		    },
 		    // 点赞
 	      	like:function (item,index) {
