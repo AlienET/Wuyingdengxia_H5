@@ -189,6 +189,22 @@
 		         	console.log(error);
 		        })
 	      	},
+	      	// 评论列表
+	      	refreshcomment:function (argument) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
+	      		}).then(function(response){
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	console.log(response.data.data[response.data.data.length-1])
+		         		response.data.data[response.data.data.length-1].jubao = false;
+		         	this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	console.log(this.commentData)
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
 	      	// 获取参数
 	      	getUrlParam: function () {
 		        var name,value;
