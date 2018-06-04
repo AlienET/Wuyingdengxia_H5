@@ -131,6 +131,7 @@
 		    	//遮罩层
 	      		mask:''
 		  	},
+		  	mounted:function () { window.refreshcomment = this.refreshcomment; },
 		  	// 页面加载
 			created:function(){
 				//获取参数
@@ -207,7 +208,7 @@
 			    share:function () {
 			    	window.webkit.messageHandlers.share.postMessage();
 			    },
-			    // 点赞
+			    // 点赞 
 		      	like:function (item,index) {
 		      		var that = this;
 		      		if (item.is_support>0) {
@@ -267,6 +268,22 @@
 			         	console.log(error);
 			        })
 		      	},
+
+		      	// 评论列表
+		      	refreshcomment:function (argument) {
+		      		var that = this;
+		      		that.$http({
+		      			method:'GET',
+		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4'
+		      		}).then(function(response){
+			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+			         		response.data.data[response.data.data.length-1].jubao = false;
+			         	this.commentData.unshift(response.data.data[response.data.data.length-1])
+			        },function (error) {
+			         	console.log(error);
+			        })
+		      	},
+
 		      	// 评论列表
 		      	allcomment:function (argument) {
 		      		var that = this;

@@ -75,7 +75,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
-						<a :href="'replay.html?commentid='+item.comment_id+'&commentContent='+item.comment_content+'&username='+item.user_name+'&ctime='+item.ctime+'&befollid='+item.user_id+'&userid='+userid" class="item_hf">回复</a>
+						<a :href="'replay.html?comment_id='+item.answer_id" class="item_hf">回复</a>
 					</div>
 				</div>
 			</div>
@@ -110,6 +110,7 @@
 	      	//遮罩层
 	      	mask:''
 	     },
+	     mounted:function () { window.refreshcomment = this.refreshcomment; },
 	     created: function () {
 	     	this.getUrlParam();
 	      this.getRoute();
@@ -132,6 +133,22 @@
 		         	alert(error);
 		        })
 	      	},
+
+	      	// 评论列表
+	      	refreshcomment:function (argument) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.userid
+	      		}).then(function(response){
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         		response.data.data[response.data.data.length-1].jubao = false;
+		         	this.quesData.unshift(response.data.data[response.data.data.length-1])
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+
 	      	// 评论列表
 	      	allcomment:function (argument) {
 	      		var that = this;
@@ -143,6 +160,7 @@
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 		         		response.data.data[i].jubao = false;
 		         		this.quesData.push(response.data.data[i])
+		         		console.log(this.quesData)
 		         	}
 		         	// console.log(this.quesData)
 		        },function (error) {

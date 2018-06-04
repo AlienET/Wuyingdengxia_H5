@@ -24,7 +24,7 @@
 			</div>
 			<div class="author" v-if='DetailsArticle||DetailsProblem||DetailsArticleMy'>
 				<span @click='UserInformation(aboutData.article_id)' class="author_img">
-					<img width="100%" height="100%" src="images/black.jpg" alt="">
+					<img width="100%" height="100%" :src="aboutData.headimg" alt="">
 				</span>
 				<div class="author_xx" @click='UserInformation(aboutData.article_id)'>
 					<div>
@@ -54,7 +54,7 @@
 			</div>
 			<div class="item" v-for='(item,index) in commentData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>
-					<img src="images/black.jpg">
+					<img :src="item.headimg">
 				</a>
 				<div class="item_xx">
 					<div>

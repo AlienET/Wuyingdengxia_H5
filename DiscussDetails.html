@@ -100,6 +100,7 @@
 	      	//遮罩层
 	      	mask:''
 	     },
+	     mounted:function () { window.refreshDiscussList = this.refreshDiscussList; },
 	     created: function () {
 	     	//获取参数
 	     	this.getUrlParam();
@@ -127,6 +128,23 @@
 		         	console.log(error);
 		        })
 	      	},
+
+	      	// 评论列表
+	      	refreshDiscussList:function (argument) {
+	      		var that = this;
+	      		that.$http({
+	      			method:'GET',
+	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
+	      		}).then(function(response){
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	console.log(response.data.data[response.data.data.length-1])
+		         		response.data.data.user_dis[response.data.data.user_dis.length-1].jubao = false;
+		         	this.DiscussListsData.unshift(response.data.data.user_dis[response.data.data.user_dis.length-1])
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+
 	      	getDiscussLists:function (argument) {
 	      		var that = this;
 	      		that.$http({
