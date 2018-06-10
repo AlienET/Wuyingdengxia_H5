@@ -8,6 +8,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     a{
       text-decoration: none;
     }
+    a:focus{
+      outline:none;
+    }
   	.article{
   		padding:15px;
   		text-align:justify;
@@ -300,5 +303,11 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       border-color: #1397FF;
       color: #1397FF;
       background: #fff;
+    }
+    .inner_img{
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      margin-top: 15px;
     }
     /* Vue */

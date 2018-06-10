@@ -34,7 +34,7 @@
 			</div>
 			<div class="item" v-for='(item,index) in DiscussListsData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>
-					<img src="images/black.jpg">
+					<img :src="item.headimg">
 				</a>
 				<div class="item_xx">
 					<div>
@@ -211,7 +211,7 @@
 	      	// 举报Icon
 	      	report:function(item,index) {
 	      		var that = this;
-	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.key_dis_list_id,type:5,content:item.key_dis_content},{emulateJSON:true}).then(function (Response) {
+	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.key_dis_list_id,type:0,to_type:1,content:item.key_dis_content},{emulateJSON:true}).then(function (Response) {
 	      			this.mask = true;
 	      			item.jubao = !item.jubao
 	      			console.log(Response)

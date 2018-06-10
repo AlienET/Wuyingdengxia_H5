@@ -21,9 +21,9 @@
 					<span>{{aboutData.moon_cash}}</span>
 				</div>
 			</div>
-			<div class="author" v-show='aboutData.is_public == 1'>
+			<div class="author" v-show='aboutData.is_public > 0'>
 				<a href="javascript:;" class="author_img"  @click='UserInformation(aboutData.user_id)'>
-					<img width="100%" height="100%" src="images/black.jpg" alt="">
+					<img width="100%" height="100%" :src="aboutData.headimg" alt="">
 				</a>
 				<a href="javascript:;" class="author_xx" style="display: inline-block;" @click='UserInformation(aboutData.user_id)'>
 					<div>
@@ -34,9 +34,10 @@
 					</div>
 				</a>
 			</div>
-			<div class="author_time m-tb-md" v-show='aboutData.is_public == 0 '>{{aboutData.ctime | DateDiff}}</div>
-			<div class="article_content" v-html='aboutData.question_content'>
-				
+			<div class="author_time m-tb-md" v-show='aboutData.is_public < 1 '>{{aboutData.ctime | DateDiff}}</div>
+			<div class="article_content" >
+				<div v-html='aboutData.question_content'></div>
+				<img class="inner_img" v-for='item in aboutData.question_image' :src="item">
 			</div>
 			<div class="article_content_label">
 				<span v-for='item in aboutData.question_tags'>{{item}}</span>
@@ -52,7 +53,7 @@
 			</div>
 			<div class="item" v-for='(item,index) in quesData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>
-					<img src="images/black.jpg">
+					<img :src="item.headimg">
 				</a>
 				<div class="item_xx">
 					<div>
@@ -75,7 +76,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
-						<a :href="'replay.html?comment_id='+item.answer_id" class="item_hf">回复</a>
+						<a :href="'replay.html?comment_id='+item.answer_id+'&userid='+userid" class="item_hf">回复</a>
 					</div>
 				</div>
 			</div>
@@ -129,6 +130,11 @@
 		         	if (questionTags) {
 		         		this.aboutData.question_tags = questionTags.split(',');
 		         	}
+		         	if (this.aboutData.question_image != '') {
+		         		var question_image = this.aboutData.question_image;
+		         		this.aboutData.question_image = question_image.split(',');
+		         	}
+		         	console.log(this.aboutData)
 		        },function (error) {
 		         	alert(error);
 		        })
@@ -194,7 +200,7 @@
 	      	like:function (item,index) {
 	      		var that = this;
 	      		if (item.is_support>0) {
-	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.user_id,supType:1},{emulateJSON:true}).then(function(response) {
+	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.answer_id,supType:6},{emulateJSON:true}).then(function(response) {
 	      				item.support_num -=1;
 	      				item.is_support = 0;
 	      				console.log(response)
@@ -204,7 +210,7 @@
 	      		}else{
 	      			that.$http({
 	      				method:'GET',
-	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.user_id+'&supType=1',
+	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.answer_id+'&supType=6',
 	      			}).then(function(response) {
 	      				item.support_num = parseInt(item.support_num);
 	      				item.support_num +=1;
@@ -222,10 +228,10 @@
 	      	// 举报Icon
 	      	report:function(item,index) {
 	      		var that = this;
-	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:1,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.answer_id,type:0,content:item.answer_content,to_type:5},{emulateJSON:true}).then(function (argument) {
 	      			this.mask = true;
 	      			item.jubao = !item.jubao;
-	      			console.log(argument)
+	      			console.log(argument) 
 	      		},function(argument) {
 	      			console.log(argument)
 	      		})

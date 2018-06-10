@@ -48,12 +48,12 @@
 				暂无评论...
 			</div>
 			<div class="item" v-for="(item,index) in commentData">
-				<a href="javascript:;">
-					<img src="images/black.jpg">
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
+					<img :src="item.headimg">
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name">{{item.user_name}}</span>
+						<span class="item_name" @click='UserInformation(item.user_id)'>{{item.user_name}}</span>
 						<div class="fl-r">
 							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
 								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
@@ -61,7 +61,7 @@
 									举报
 								</span>
 							</span>
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
@@ -72,7 +72,7 @@
 					</div>
 					<div class="mt-sm">
 						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
-						<span class="item_hf">回复</span>
+						<a class="item_hf" :href="'replay.html?comment_id='+item.comment_id+'&userid='+user_id">回复</a>
 					</div>
 				</div>
 			</div>
@@ -129,7 +129,8 @@
 		    	//评论列 数据
 		    	commentData:[],
 		    	//遮罩层
-	      		mask:''
+	      		mask:'',
+	      		jubao:false
 		  	},
 		  	mounted:function () { window.refreshcomment = this.refreshcomment; },
 		  	// 页面加载
@@ -144,12 +145,17 @@
 			},
 		  	// 在 `methods` 对象中定义方法
 			methods: {
+				// 跳转用户首页
+				UserInformation:function(u) {
+					// event.preventDefault();
+					window.webkit.messageHandlers.asd.postMessage(u);
+				},
 				// 点赞
 			    praise: function (event) {
 			      var that = this;
 		      		that.$http({
 		      			method:'GET',
-		      			url:this.aboutData.is_support>0?'http://39.106.2.216/index.php/API/get_cel_support?userid='+this.userid+'&toid='+this.aboutData.replay_sub_id+'&supType=3':'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+this.aboutData.replay_sub_id+'&supType=3',
+		      			url:this.aboutData.is_support>0?'http://39.106.2.216/index.php/API/get_cel_support?userid='+this.user_id+'&toid='+this.aboutData.replay_sub_id+'&supType=3':'http://39.106.2.216/index.php/API/get_support?userid='+this.user_id+'&toid='+this.aboutData.replay_sub_id+'&supType=3',
 		      			
 		      			// emulateJSON:true
 		      		}).then(function(response){
@@ -166,16 +172,21 @@
 			    // 收藏
 			    collection: function (event) {
 			    	var that = this;
-		      		that.$http.post('http://39.106.2.216/index.php/API/post_collection',{userid:this.userid,toid:this.aboutData.replay_sub_id,type:3},{emulateJSON: true}).then(function(response){
-		      			if (this.aboutData.is_collection >0) {
-			      			this.aboutData.is_collection = 0;
-			      		}else{
-			      			this.aboutData.is_collection = 1;
-			      		}
-			      		console.log(response)
-		      		},function(error) {
-		      			console.log(error)
-		      		})
+			    	if (this.aboutData.is_collection >0){
+			    		that.$http.post('http://39.106.2.216/index.php/API/post_cel_collect',{userid:this.user_id,toid:this.aboutData.replay_sub_id,type:3},{emulateJSON: true}).then(function(response){
+				      			this.aboutData.is_collection = 0;
+				      		console.log(response)
+			      		},function(error) {
+			      			console.log(error)
+			      		})
+			    	}else{
+			      		that.$http.post('http://39.106.2.216/index.php/API/post_collection',{userid:this.user_id,toid:this.aboutData.replay_sub_id,type:3},{emulateJSON: true}).then(function(response){
+				      			this.aboutData.is_collection = 1;
+				      		console.log(response)
+			      		},function(error) {
+			      			console.log(error)
+			      		})
+		      		}
 			    },
 			    // 视频简介item
 			    VideoItem:function (item,index) {
@@ -202,7 +213,7 @@
 			                this[name]=value;
 			            }
 			        }
-			        // console.log(arr[value])
+			        console.log(this.user_id)
 			    },
 			    // 分享 与ios交互
 			    share:function () {
@@ -212,7 +223,7 @@
 		      	like:function (item,index) {
 		      		var that = this;
 		      		if (item.is_support>0) {
-		      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.user_id,supType:1},{emulateJSON:true}).then(function(response) {
+		      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.user_id,toid:item.comment_id,supType:5},{emulateJSON:true}).then(function(response) {
 		      				item.support_num -=1;
 		      				item.is_support = 0;
 		      				console.log(response)
@@ -222,11 +233,12 @@
 		      		}else{
 		      			that.$http({
 		      				method:'GET',
-		      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.user_id+'&supType=1',
+		      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.user_id+'&toid='+item.comment_id+'&supType=5',
 		      			}).then(function(response) {
 		      				item.support_num = parseInt(item.support_num);
 		      				item.support_num +=1;
 			      			item.is_support = 1;
+			      			console.log(response)
 		      			},function(error) {
 		      				console.log(error)
 		      			})
@@ -234,12 +246,13 @@
 		      	},
 		      	// 举报切换
 		     	luelue:function (item,index) {
-		     		item.jubao = !item.jubao
+		     		item.jubao = !item.jubao;
+		     		console.log(item.jubao)
 		     	},
 		      	// 举报Icon
 		      	report:function(item,index) {
 		      		var that = this;
-		      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:1,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+		      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.user_id,to_id:item.comment_id,type:0,to_type:4,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
 		      			this.mask = true;
 	      				item.jubao = !item.jubao;
 		      			console.log(argument)
@@ -252,7 +265,7 @@
 			        var that = this; 
 			        that.$http({           //get_hot_labelList_detail
 			        	method: 'GET',
-			         	url: 'http://39.106.2.216/index.php/API/get_replay_detail?replay_sub_id='+this.replay_sub_id //这里填写刚刚后台设置的接口
+			         	url: 'http://39.106.2.216/index.php/API/get_replay_detail?replay_sub_id='+this.replay_sub_id+'&user_id='+this.user_id //这里填写刚刚后台设置的接口
 			        }).then(function(response){
 			         	this.aboutData = response.data.data.active; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 			         	// var articleTags = this.aboutData.article_tags;
@@ -263,18 +276,17 @@
 			         		this.VideoAddress.push(response.data.data.relative[i].video_url);
 			         	}
 			         	this.VideoList=response.data.data.relative;
-			         	console.log()
+			         	console.log(this.aboutData)
 			        },function (error) {
 			         	console.log(error);
 			        })
 		      	},
-
-		      	// 评论列表
+		      	// 刷新评论列
 		      	refreshcomment:function (argument) {
 		      		var that = this;
 		      		that.$http({
 		      			method:'GET',
-		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4'
+		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4&user_id='+this.user_id
 		      		}).then(function(response){
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 			         		response.data.data[response.data.data.length-1].jubao = false;
@@ -283,17 +295,18 @@
 			         	console.log(error);
 			        })
 		      	},
-
 		      	// 评论列表
 		      	allcomment:function (argument) {
 		      		var that = this;
 		      		that.$http({
 		      			method:'GET',
-		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4'
+		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4&user_id='+this.user_id
 		      		}).then(function(response){
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 			         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+			         		response.data.data[i].jubao = false;
 			         		this.commentData.push(response.data.data[i])
+			         		console.log(this.commentData)
 			         	}
 			        },function (error) {
 			         	console.log(error);

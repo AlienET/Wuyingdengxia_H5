@@ -16,7 +16,7 @@
 		<div class="comment_list">
 			<div class="item">
 				<a href="javascript:;" style="margin-top: 0.4em;">
-					<img src="images/black.jpg" @click='UserInformation(befollid)'>
+					<img src="DetailData.headimg" @click='UserInformation(befollid)'>
 				</a>
 				<div class="item_xx" style="border-bottom: 0;">
 					<div style="overflow: hidden;">
@@ -66,11 +66,11 @@
 						<span class="item_hf">回复</span>
 					</div>
 					<div style="display: flex;flex-direction: row;">
-						<a href="#" class="item_inner" style="margin-right: 5px;">
+						<a href="javascript:;" class="item_inner" style="margin-right: 5px;">
 							<img src="images/black.jpg" style="width: 28px;height: 28px;border-radius: 50%;">
 						</a>
 						<div class="item_inner">
-							<a href="#" class="item_name">名称</a> 回复 <a href="#" class="item_name">NAME</a>
+							<a href="javascript:;" class="item_name">名称</a> 回复 <a href="#" class="item_name">NAME</a>
 							<div class="item_inner">阿三打了发 啊大范围丰盛的饭菜送到啊 <span class="item_time">刚刚</span></div>
 						</div>
 					</div>
@@ -115,7 +115,7 @@
 	      this.getUrlParam();
 	      this.getCommentDetail();
 	      this.getRoute();
-	      this.UserCommentId();
+	      // this.UserCommentId();
 	     },
 	     methods: {
 	     	// 回复评论
@@ -196,7 +196,7 @@
 		    // 关注
 		    follow:function(argument) {
 		    	var that = this;
-	      		if (this.DetailData.is_follow == 0) {
+	      		if (this.DetailData.is_follow < 1) {
 	      			that.$http.post('http://39.106.2.216/index.php/API/post_follow',{userid:this.userid,befollid:this.DetailData.user_id},{emulateJSON:true}).then(function(response){
 		      			console.log(response)
 		      			this.DetailData.is_follow = 1;

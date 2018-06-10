@@ -38,8 +38,9 @@
 				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
 			</div>
 			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
-			<div class="article_content" v-html='aboutData.article_content'>
-				
+			<div class="article_content">
+				<div v-html='aboutData.article_content'></div>
+				<img v-for='item in aboutData.article_img' :src="item">
 			</div>
 			<div class="article_content_label" v-if='!DiscussDetails'>
 				<span v-for='item in aboutData.article_tags'>{{item}}</span>
@@ -67,7 +68,7 @@
 								</span>
 							</span>
 							
-							<img class="likes" @click='like(item,index)' :src="item.is_support?likeIcon:likeIconN">
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
 								{{item.support_num}}
 							</span>
@@ -169,7 +170,11 @@
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.article_tags;
 		         	this.aboutData.article_tags = articleTags.split(',');
-		         	console.log(this.aboutData)
+		         	console.log(this.aboutData);
+		         	if (this.aboutData.article_img != '') {
+		         		var article_img = this.aboutData.article_img;
+		         		this.aboutData.article_img = article_img.split(',')
+		         	}
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -179,7 +184,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
+	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0&user_id='+this.userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
@@ -195,7 +200,7 @@
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
-	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0'
+	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0&user_id='+this.userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	console.log(response.data.data[response.data.data.length-1])
@@ -255,8 +260,8 @@
 	      	like:function (item,index) {
 	      		var that = this;
 
-	      		if (item.is_support) {
-	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.user_id,supType:1},{emulateJSON:true}).then(function (response) {
+	      		if (item.is_support>0) {
+	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.comment_id,supType:5},{emulateJSON:true}).then(function (response) {
 	      				item.support_num -=1;
 	      				item.is_support = false;
 	      				console.log(response)
@@ -266,7 +271,7 @@
 	      		}else{
 	      			that.$http({
 	      				method:'GET',
-	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.user_id+'&supType=1',
+	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.comment_id+'&supType=5',
 	      			}).then(function (response) {
 	      				item.support_num = parseInt(item.support_num);
 		      			item.support_num +=1;
@@ -280,7 +285,7 @@
 	      	// 举报Icon
 	      	report:function(item,index) {
 	      		var that = this;
-	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:1,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.comment_id,type:0,to_type:0,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
 	      			this.mask = true;
 	      			item.jubao = !item.jubao;
 	      			console.log(argument)
