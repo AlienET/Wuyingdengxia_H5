@@ -35,16 +35,16 @@
 			<div class="comment_num">
 				全部回复 {{aboutData.length}}
 			</div>
-			<div v-show='aboutData.length == 0' style="padding: 1em;color: #B9B9B9;text-align: center;">
+			<div v-if='aboutData.length == 0' style="padding: 1em;color: #B9B9B9;text-align: center;">
 				暂无回复...
 			</div>
 			<div class="item" v-for='(item,index) in aboutData'>
 				<a href="javascript:;">
-					<img src="images/black.jpg" @click='UserInformation(item.userid)'>
+					<img :src="item.headimg" @click='UserInformation(item.userid)'>
 				</a>
 				<div class="item_xx">
 					<div>
-						<span class="item_name" @click='UserInformation(item.userid)'>{{item.username}}</span>
+						<span class="item_name" @click='UserInformation(item.userid)'>{{item.user_name}}</span>
 						<div class="fl-r">
 							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
 								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
@@ -59,10 +59,10 @@
 						</div>
 					</div>
 					<div class="item_inner">
-						{{item.comContent}}
+						{{item.comment_content}}
 					</div>
 					<div class="mt-sm">
-						<span class="item_time">{{item.retimes | DateDiff}} &nbsp; &bull; &nbsp;</span>
+						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
 						<span class="item_hf">回复</span>
 					</div>
 					<div style="display: flex;flex-direction: row;">
@@ -109,13 +109,16 @@
 	     },
 	     mounted:function () { 
 	     	window.postReplyComment = this.postReplyComment;
-	     	// window.UserCommentId = this.UserCommentId;
+	     	window.UserCommentId = this.UserCommentId;
 	     },
 	     created: function () {
+	     	// 获取参数
 	      this.getUrlParam();
+	      // 内容
 	      this.getCommentDetail();
+	     	// 回复列
 	      this.getRoute();
-	      // this.UserCommentId();
+	      this.UserCommentId();
 	     },
 	     methods: {
 	     	// 回复评论
@@ -123,7 +126,7 @@
 	     		var that = this;
 	     		that.$http({
 				    method: 'GET',
-				    url: 'http://39.106.2.216/index.php/API/get_recomment?commentid='+this.comment_id //这里填写刚刚后台设置的接口
+				    url: 'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.comment_id+'&comType=1&comment_to_type=3' //这里填写刚刚后台设置的接口
 				}).then(function(response){
 				    console.log(response.data.data[response.data.data.length-1])
 				    response.data.data[response.data.data.length-1].jubao =false;
@@ -153,9 +156,8 @@
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_recomment?commentid='+this.comment_id //这里填写刚刚后台设置的接口
+		         	url: 'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.comment_id+'&comType=1&comment_to_type=3' //这里填写刚刚后台设置的接口
 		        }).then(function(response){
-		        	console.log(this.comment_id)
 		         	 // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 		         		response.data.data[i].jubao = false;
@@ -240,7 +242,7 @@
 	      	// 举报Icon
 	      	report:function(item,index) {
 	      		var that = this;
-	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.user_id,type:1,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+	      		that.$http.post('http://39.106.2.216/index.php/API/post_report',{user_id:this.userid,to_id:item.userid,type:0,to_type:3,content:item.comContent},{emulateJSON:true}).then(function (argument) {
 	      			this.mask = true;
 	      			item.jubao = !item.jubao;
 	      			console.log(argument)
