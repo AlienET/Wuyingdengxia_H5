@@ -137,9 +137,9 @@
 	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         	console.log(response.data.data[response.data.data.length-1])
-		         		response.data.data.user_dis[response.data.data.user_dis.length-1].jubao = false;
-		         	this.DiscussListsData.unshift(response.data.data.user_dis[response.data.data.user_dis.length-1])
+		         	console.log(response.data.data[0])
+		         		response.data.data.user_dis[0].jubao = false;
+		         	this.DiscussListsData.unshift(response.data.data.user_dis[0])
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -151,11 +151,14 @@
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
 	      		}).then(function(response){
-	      			for (var i = response.data.data.user_dis.length - 1; i >= 0; i--) {
-	      				response.data.data.user_dis[i].jubao = false;
-	      				this.DiscussListsData.push(response.data.data.user_dis[i])
+	      			console.log(response.data.data.user_dis)
+	      			if (response.data.data.user_dis != null ) {
+		      			for (var i = response.data.data.user_dis.length - 1; i >= 0; i--) {
+		      				response.data.data.user_dis[i].jubao = false;
+		      				// this.DiscussListsData.push(response.data.data.user_dis[i])
+		      			}
+		      			this.DiscussListsData = response.data.data.user_dis
 	      			}
-	      			console.log(this.DiscussListsData[0].is_support)
 	      		},function(error) {
 	      			console.log(error)
 	      		})

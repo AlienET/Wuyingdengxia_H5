@@ -23,10 +23,10 @@
 				</div>
 			</div>
 			<div class="author" v-if='DetailsArticle||DetailsProblem||DetailsArticleMy'>
-				<span @click='UserInformation(aboutData.article_id)' class="author_img">
+				<span @click='UserInformation(aboutData.user_id)' class="author_img">
 					<img width="100%" height="100%" :src="aboutData.headimg" alt="">
 				</span>
-				<div class="author_xx" @click='UserInformation(aboutData.article_id)'>
+				<div class="author_xx" @click='UserInformation(aboutData.user_id)'>
 					<div>
 						<span class="author_name">{{aboutData.article_author}}</span>
 					</div>
@@ -34,7 +34,7 @@
 						<span class="author_time">{{aboutData.ctime | DateDiff}}</span>
 					</div>
 				</div>
-				<button class="author_btn" :class="aboutData.is_follow?'y-author_btn':''" v-if='DetailsArticle' @click='follow'>{{aboutData.is_follow!=null?'已关注':'关注'}}</button>
+				<button class="author_btn" :class="aboutData.is_follow > 0?'y-author_btn':''" v-if='DetailsArticle' @click='follow'>{{aboutData.is_follow > 0?'已关注':'关注'}}</button>
 				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
 			</div>
 			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
@@ -165,7 +165,7 @@
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_articleinfo_byid?articleid='+this.articleid //这里填写刚刚后台设置的接口,
+		         	url: 'http://39.106.2.216/index.php/API/get_articleinfo_byid?articleid='+this.articleid+'&userid='+this.userid //这里填写刚刚后台设置的接口,
 		        }).then(function(response){
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.article_tags;
@@ -237,20 +237,20 @@
 	      	// 关注
 	      	follow:function (argument) {
 	      		var that = this;
-	      		if (this.aboutData.is_follow == null) {
+	      		if (this.aboutData.is_follow > 0) {
+		      		that.$http.post('http://39.106.2.216/index.php/API/post_cel_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true}).then(function(response){
+		      			console.log(response)
+		      			this.aboutData.is_follow = null;
+		      		},function(error) {
+		      			// body...
+		      			console.log(error)
+		      		})
+	      		}else{
 	      			that.$http.post('http://39.106.2.216/index.php/API/post_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true})
 	      			.then(function(response){
 		      			console.log(response)
 		      			this.aboutData.is_follow = true;
 		      		},function(error) {
-		      			console.log(error)
-		      		})
-	      		}else{
-	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true}).then(function(response){
-		      			console.log(response)
-		      			this.aboutData.is_follow = null;
-		      		},function(error) {
-		      			// body...
 		      			console.log(error)
 		      		})
 	      		}
