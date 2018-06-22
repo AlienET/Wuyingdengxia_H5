@@ -27,7 +27,7 @@
 		<div style="height: 20px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 {{DiscussListsData.length}}
+				全部评论 {{DiscussListsData.length}} <!-- <button @click='refreshDiscussList("1123asdadasdasda123213")'>asdadas</button> -->
 			</div>
 			<div v-show='DiscussListsData.length == 0' style="text-align:center;padding:20px;color: #B9B9B9;">
 				暂无评论 ...
@@ -130,20 +130,32 @@
 	      	},
 
 	      	// 评论列表
-	      	refreshDiscussList:function (argument) {
+	      	refreshDiscussList:function (u) {
 	      		var that = this;
+	      		var u = u;
 	      		that.$http({
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_hot_labelList_detail?key_dis_id='+this.key_dis_id
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         	console.log(response.data.data[0])
-		         		response.data.data.user_dis[0].jubao = false;
-		         	this.DiscussListsData.unshift(response.data.data.user_dis[0])
+		         	// console.log(response.data.data[0])
+		         	// 	response.data.data.user_dis[0].jubao = false;
+		         	// this.DiscussListsData.unshift(response.data.data.user_dis[0])
+		         	for (var i = 0; i < response.data.data.user_dis.length; i++) {
+		         		if (response.data.data.user_dis[i].user_id == this.userid) {
+		         			if (response.data.data.user_dis[i].key_dis_content == u) {
+			         			response.data.data.user_dis[i].jubao = false;
+			         			var refresh = [];
+			         			refresh = response.data.data.user_dis.splice(i,1);
+			         			this.DiscussListsData.unshift(refresh[0]);
+			         			return;
+		         			}
+		         		}
+		         	}
 		        },function (error) {
 		         	console.log(error);
 		        })
-	      	},
+	      	}, 
 
 	      	getDiscussLists:function (argument) {
 	      		var that = this;
@@ -189,7 +201,7 @@
 	      	like:function (item,index) {
 	      		var that = this;
 	      		if (item.is_support>0) {
-	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.key_dis_list_id,supType:5},{emulateJSON:true}).then(function(response) {
+	      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.userid,toid:item.key_dis_list_id,supType:7},{emulateJSON:true}).then(function(response) {
 	      				item.support_num -=1;
 	      				item.is_support = 0;
 	      				console.log(response)
@@ -199,7 +211,7 @@
 	      		}else{
 	      			that.$http({
 	      				method:'GET',
-	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.key_dis_list_id+'&supType=5',
+	      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.userid+'&toid='+item.key_dis_list_id+'&supType=7',
 	      			}).then(function(response) {
 	      				item.support_num = parseInt(item.support_num);
 	      				item.support_num +=1;

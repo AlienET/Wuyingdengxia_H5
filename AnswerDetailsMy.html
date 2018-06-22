@@ -154,15 +154,26 @@
 	      	},
 
 	      	// 评论列表
-	      	refreshcomment:function (argument) {
+	      	refreshcomment:function (u) {
 	      		var that = this;
 	      		that.$http({
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_answer_list?quesid='+this.quesid+'&userid='+this.userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         		response.data.data[response.data.data.length-1].jubao = false;
-		         	this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	// 	response.data.data[response.data.data.length-1].jubao = false;
+		         	// this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	for (var i = 0; i < response.data.data.length; i++) {
+				        if (response.data.data[i].user_id == this.userid) {
+				        	if (response.data.data[i].answer_content == u) {
+					        	response.data.data[i].jubao = false;
+					        	var refresh = [];
+					        	refresh = response.data.data.splice(i,1);
+					        	this.commentData.unshift(refresh[0]);
+					        	return;
+					        }
+				        }
+				    }
 		        },function (error) {
 		         	console.log(error);
 		        })
@@ -178,8 +189,9 @@
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 		         		response.data.data[i].jubao = false;
-		         		this.commentData.push(response.data.data[i])
+		         		// this.commentData.push(response.data.data[i])
 		         	}
+		         	this.commentData = response.data.data;
 		         	console.log(this.commentData);
 		        },function (error) {
 		         	console.log(error);

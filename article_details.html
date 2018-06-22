@@ -51,7 +51,7 @@
 		<div style="height: 20px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 {{commentData.length}}
+				全部评论 {{commentData.length}} 
 			</div>
 			<div class="item" v-for='(item,index) in commentData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>
@@ -189,27 +189,42 @@
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 		         		response.data.data[i].jubao = false;
-		         		this.commentData.push(response.data.data[i])
+		         		// this.commentData.push(response.data.data[i])
 		         	}
+		         	this.commentData = response.data.data;
+		         	console.log(this.commentData)
 		        },function (error) {
 		         	console.log(error);
 		        })
 	      	},
 	      	// 评论列表
-	      	refreshcomment:function (argument) {
+	      	refreshcomment:function (u) {
 	      		var that = this;
+	      		var u = u;
 	      		that.$http({
 	      			method:'GET',
 	      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.articleid+'&comType=0&comment_to_type=0&user_id='+this.userid
 	      		}).then(function(response){
 		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-		         	console.log(response.data.data[response.data.data.length-1])
-		         		response.data.data[response.data.data.length-1].jubao = false;
-		         	this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	// console.log(response.data.data[response.data.data.length-1])
+		         	// 	response.data.data[response.data.data.length-1].jubao = false;
+		         	// this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		if (response.data.data[i].user_id == this.userid) {
+		         			if (response.data.data[i].comment_content == u) {
+			         			response.data.data[i].jubao = false;
+			         			var refresh = [];
+			         			refresh = response.data.data.splice(i,1);
+			         			this.commentData.unshift(refresh[0]);
+			         			return;
+			         		}
+		         		}
+		         	}
 		         	console.log(this.commentData)
 		        },function (error) {
 		         	console.log(error);
 		        })
+		       
 	      	},
 	      	// 获取参数
 	      	getUrlParam: function () {

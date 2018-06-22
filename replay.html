@@ -122,16 +122,27 @@
 	     },
 	     methods: {
 	     	// 回复评论
-	     	postReplyComment:function(argument) {
+	     	postReplyComment:function(u) {
 	     		var that = this;
+	     		var u = u;
 	     		that.$http({
 				    method: 'GET',
 				    url: 'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.comment_id+'&comType=1&comment_to_type=3' //这里填写刚刚后台设置的接口
 				}).then(function(response){
 				    console.log(response.data.data[response.data.data.length-1])
-				    response.data.data[response.data.data.length-1].jubao =false;
-				    this.aboutData.unshift(response.data.data[response.data.data.length-1])
-				     // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+				    // response.data.data[response.data.data.length-1].jubao =false;
+				    // this.aboutData.unshift(response.data.data[response.data.data.length-1])
+				    for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		if (response.data.data[i].user_id == this.userid) {
+		         			if (response.data.data[i].comment_content == u) {
+			         			response.data.data[i].jubao = false;
+			         			var refresh = [];
+			         			refresh = response.data.data.splice(i,1);
+			         			this.aboutData.unshift(refresh[0]);
+			         			return;
+			         		}
+		         		}
+		         	}
 				},function (error) {
 				    console.log(error);
 				})
@@ -161,8 +172,9 @@
 		         	 // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 		         		response.data.data[i].jubao = false;
-		         		this.aboutData.push(response.data.data[i])
+		         		// this.aboutData.push(response.data.data[i])
 		         	}
+		         	this.aboutData = response.data.data;
 		         	console.log(this.aboutData)
 		        },function (error) {
 		         	console.log(error);
