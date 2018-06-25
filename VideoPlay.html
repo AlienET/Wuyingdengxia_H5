@@ -63,7 +63,7 @@
 							</span>
 							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
 							<span class="likes_num">
-								{{item.support_num}}
+								{{item.comment_support_num}}
 							</span>
 						</div>
 					</div>
@@ -224,7 +224,7 @@
 		      		var that = this;
 		      		if (item.is_support>0) {
 		      			that.$http.post('http://39.106.2.216/index.php/API/post_cel_support',{userid:this.user_id,toid:item.comment_id,supType:5},{emulateJSON:true}).then(function(response) {
-		      				item.support_num -=1;
+		      				item.comment_support_num -=1;
 		      				item.is_support = 0;
 		      				console.log(response)
 		      			},function(error) {
@@ -235,8 +235,8 @@
 		      				method:'GET',
 		      				url:'http://39.106.2.216/index.php/API/get_support?userid='+this.user_id+'&toid='+item.comment_id+'&supType=5',
 		      			}).then(function(response) {
-		      				item.support_num = parseInt(item.support_num);
-		      				item.support_num +=1;
+		      				item.comment_support_num = parseInt(item.comment_support_num);
+		      				item.comment_support_num +=1;
 			      			item.is_support = 1;
 			      			console.log(response)
 		      			},function(error) {
