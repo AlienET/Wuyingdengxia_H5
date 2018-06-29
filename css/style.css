@@ -103,6 +103,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       margin-bottom: 2.5%;
   	}
     /*评论*/
+    .comment_list{
+    	overflow-x: hidden
+    }
     .comment_list .comment_num{
       font-size: 1rem;
       font-weight: bold;
