@@ -74,7 +74,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   		outline:none;
   	}
   	.article_content{
-      font-size: .95rem;
+      /*font-size: .95rem;*/
       color: #333;
   		position: relative;
 	    overflow: hidden;
@@ -82,6 +82,9 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	    padding-bottom: 24px;
 	    line-height: 1.4em;
   	}
+    .article_content p span{
+      font-size: 1em !important;
+    }
     .article_content img{
       width: 100%
     }
@@ -101,9 +104,10 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   	}
     /*评论*/
     .comment_list .comment_num{
-      font-size: .95rem;
+      font-size: 1rem;
+      font-weight: bold;
       border-bottom: 0.5px solid #E7E7E7;
-      padding: .7em 1em;
+      padding: .7em 10px;
     }
     .comment_list .item{
       position: relative;
@@ -255,7 +259,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
       padding: 10px;
     }
     .v_tit{
-      font-size: 1em;
+      font-size: 1.1em;
       font-weight: bold;
     }
     .mt-xs{
@@ -263,14 +267,14 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     }
     .v_speaker{
       color: #666;
-      font-size: 13px;
+      font-size: .93em;
     }
     .v_speaker + div{
       margin-top: 1%
     }
     .v_num{
       color: #BDBDBD;
-      font-size: .65em;
+      font-size: .8em;
     }
     .v_row{
       margin-top: 20px;

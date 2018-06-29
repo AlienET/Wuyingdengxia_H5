@@ -35,7 +35,7 @@
 				<h4>精彩片段</h4>
 				<div class="v_list"><!-- ::-webkit-scrollbar {display: none;} -->
 					<div class="box-sizing v_item" :class="item.Vactive?'active':''" @click='VideoItem(item,index)'  v-for="(item,index) in VideoList">
-						{{item.meeting_title}}
+						{{item.tit}}
 					</div>
 				</div>
 			</div>
@@ -267,30 +267,49 @@
 			        	method: 'GET',
 			         	url: 'http://39.106.2.216/index.php/API/get_replay_detail?replay_sub_id='+this.replay_sub_id+'&user_id='+this.user_id //这里填写刚刚后台设置的接口
 			        }).then(function(response){
+			        	console.log(response.data.data.active)
 			         	this.aboutData = response.data.data.active; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
-			         	// var articleTags = this.aboutData.article_tags;
-			         	// this.aboutData.article_tags = articleTags.split(',');
-			         	for (var i = response.data.data.relative.length - 1; i >= 0; i--) {
-			         		response.data.data.relative[i].Vactive = false;
-			         		response.data.data.relative[0].Vactive = true;
-			         		this.VideoAddress.push(response.data.data.relative[i].video_url);
+			         	var Videol= response.data.data.active.cutting_title.split(',');
+			         	Videol[0] == ''?Videol=[]:Videol;
+			         	Videol.unshift(this.aboutData.meeting_title);
+			         	for (var i = Videol.length - 1; i >= 0; i--) {
+			         		this.VideoList[i]={tit:Videol[i]}
 			         	}
-			         	this.VideoList=response.data.data.relative;
-			         	console.log(this.aboutData)
+			         	// var articleTags = this.aboutData.article_tags;
+			         	var Vurl = response.data.data.active.cutting_url.split(',');
+			         	Vurl[0] == ''?Vurl=[]:Vurl;
+			         	Vurl.unshift(this.aboutData.video_url);
+			         	for (var i = Vurl.length - 1; i >= 0; i--) {
+			         		this.VideoList[i].Vactive = false;
+			         		this.VideoList[0].Vactive = true;
+			         		this.VideoAddress = Vurl;
+			         	}
 			        },function (error) {
 			         	console.log(error);
 			        })
 		      	},
 		      	// 刷新评论列
-		      	refreshcomment:function (argument) {
+		      	refreshcomment:function (u) {
 		      		var that = this;
+		      		var u = u;
 		      		that.$http({
 		      			method:'GET',
 		      			url:'http://39.106.2.216/index.php/API/get_allcomment_byid?toid='+this.replay_sub_id+'&comType=0&comment_to_type=4&user_id='+this.user_id
 		      		}).then(function(response){
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
-			         		response.data.data[response.data.data.length-1].jubao = false;
-			         	this.commentData.unshift(response.data.data[response.data.data.length-1])
+			         	// 	response.data.data[response.data.data.length-1].jubao = false;
+			         	// this.commentData.unshift(response.data.data[response.data.data.length-1])
+			         	for (var i = 0; i < response.data.data.length; i++) {
+			         		if (response.data.data[i].user_id == this.user_id) {
+			         			if (response.data.data[i].comment_content == u) {
+				         			response.data.data[i].jubao = false;
+				         			var refresh = [];
+				         			refresh = response.data.data.splice(i,1);
+				         			this.commentData.unshift(refresh[0]);
+				         			return;
+				         		}
+			         		}
+			         	}
 			        },function (error) {
 			         	console.log(error);
 			        })
@@ -305,9 +324,10 @@
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 			         	for (var i = response.data.data.length - 1; i >= 0; i--) {
 			         		response.data.data[i].jubao = false;
-			         		this.commentData.push(response.data.data[i])
 			         		console.log(this.commentData)
 			         	}
+			         	this.commentData = response.data.data;
+			         	console.log(this.commentData)
 			        },function (error) {
 			         	console.log(error);
 			        })
