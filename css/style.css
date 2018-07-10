@@ -82,7 +82,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	    padding-bottom: 24px;
 	    line-height: 1.6em;
   	}
-    .article_content p span,.article_content p{
+    .article_content *{
       font-size: 16px !important;
       color: #333 !important;
     }
@@ -295,6 +295,8 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     }
     .v_list::-webkit-scrollbar {display: none;}
     .v_item{
+      overflow: hidden;
+      text-overflow: ellipsis;
       font-size: .75em;
       flex-wrap:wrap;
       white-space:normal;
