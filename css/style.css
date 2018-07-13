@@ -296,6 +296,7 @@ html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     .v_list::-webkit-scrollbar {display: none;}
     .v_item{
       overflow: hidden;
+      vertical-align: middle;
       text-overflow: ellipsis;
       font-size: .75em;
       flex-wrap:wrap;
