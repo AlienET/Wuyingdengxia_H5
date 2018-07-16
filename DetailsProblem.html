@@ -46,10 +46,10 @@
 		<div style="height: 20px;background: #F3F4F8;"></div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 {{quesData.length}} 
+				全部回答 {{quesData.length}} 
 			</div>
 			<div v-if='quesData.length ==0' style="color: #999;text-align: center;padding: 20px;">
-				暂无评论...
+				暂无回答...
 			</div>
 			<div class="item" v-for='(item,index) in quesData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>

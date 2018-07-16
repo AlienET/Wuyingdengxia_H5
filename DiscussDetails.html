@@ -15,7 +15,7 @@
 	<div id="app" v-cloak>
 		<div class="article">
 			<!-- 讨论详情 DiscussDetails -->
-			<span class="zztl">正在讨论</span>
+			<span class="zztl" :style="type >0?'border: 0.5px solid #FEAE1C;color:#FEAE1C;':''">{{type>0?"问题征集":"正在讨论"}}</span>
 			<div> 
 				<h1 class="title">{{aboutData.key_dis_title}}</h1>
 			</div>
