@@ -132,16 +132,21 @@
 				    console.log(response.data.data[response.data.data.length-1])
 				    // response.data.data[response.data.data.length-1].jubao =false;
 				    // this.aboutData.unshift(response.data.data[response.data.data.length-1])
-				    for (var i = response.data.data.length - 1; i >= 0; i--) {
-		         		if (response.data.data[i].user_id == this.userid) {
-		         			if (response.data.data[i].comment_content == u) {
-			         			response.data.data[i].jubao = false;
-			         			var refresh = [];
-			         			refresh = response.data.data.splice(i,1);
-			         			this.aboutData.unshift(refresh[0]);
-			         			return;
+				    if (response.data.data.length ==1) {
+				    	response.data.data[0].jubao = false;
+				    	this.aboutData = response.data.data
+				    }else{
+					    for (var i = response.data.data.length - 1; i >= 0; i--) {
+			         		if (response.data.data[i].user_id == this.userid) {
+			         			if (response.data.data[i].comment_content == u) {
+				         			response.data.data[i].jubao = false;
+				         			var refresh = [];
+				         			refresh = response.data.data.splice(i,1);
+				         			this.aboutData.unshift(refresh[0]);
+				         			return;
+				         		}
 			         		}
-		         		}
+			         	}
 		         	}
 				},function (error) {
 				    console.log(error);

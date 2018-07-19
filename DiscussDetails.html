@@ -24,15 +24,19 @@
 				<!-- 讨论内容 -->
 			</div>
 		</div>
-		<div style="height: 20px;background: #F3F4F8;"></div>
+		<div style="height: 20px;background: #F3F4F8;">
+			<!-- <input v-model="message" placeholder="edit me">
+			{{message}}
+			<button @click='chuan'>asdadas</button> -->
+		</div>
 		<div class="comment_list">
 			<div class="comment_num">
-				全部评论 {{DiscussListsData.length}} <!-- <button @click='refreshDiscussList("1123asdadasdasda123213")'>asdadas</button> -->
+				全部评论 {{DiscussListsData.length}} 
 			</div>
-			<div v-show='DiscussListsData.length == 0' style="text-align:center;padding:20px;color: #B9B9B9;">
+			<div v-if='DiscussListsData.length == 0' style="text-align:center;padding:20px;color: #B9B9B9;">
 				暂无评论 ...
 			</div>
-			<div class="item" v-for='(item,index) in DiscussListsData'>
+			<div v-else class="item" v-for='(item,index) in DiscussListsData'>
 				<a href="javascript:;" @click='UserInformation(item.user_id)'>
 					<img :src="item.headimg">
 				</a>
@@ -85,6 +89,7 @@
 		new Vue({
 	     el: '#app',
 	     data:{
+	     	message:'',
 	     	//讨论详情 接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
 	      	// 讨论列 接口数据
@@ -110,6 +115,17 @@
 	      	this.getDiscussLists();
 	     },
 	     methods: {
+	     	// chuan:function() {
+	     	// 	console.log(this.message)
+	     	// 	var that = this;
+	     	// 	that.$http.post('http://39.106.2.216/index.php/API/post_key_dis',{key_dis_id:this.key_dis_id,user_id:this.userid,key_dis_content:that.message},{emulateJSON:true}).then(function(response) {
+	      // 				console.log(response)
+	      // 				that.refreshDiscussList(this.message)
+	      // 			},function(error) {
+	      // 				console.log(error)
+	      // 			})
+
+	     	// },
 	     	// 举报切换
 	     	luelue:function (item,index) {
 	     		item.jubao = !item.jubao
@@ -131,6 +147,7 @@
 
 	      	// 评论列表
 	      	refreshDiscussList:function (u) {
+	      		console.log(u)
 	      		var that = this;
 	      		var u = u;
 	      		that.$http({
@@ -141,6 +158,11 @@
 		         	// console.log(response.data.data[0])
 		         	// 	response.data.data.user_dis[0].jubao = false;
 		         	// this.DiscussListsData.unshift(response.data.data.user_dis[0])
+		         	console.log(response)
+		         	if (response.data.data.user_dis.length==1) {
+		         		response.data.data.user_dis[0].jubao = false;
+		         		this.DiscussListsData = response.data.data.user_dis;
+		         	}
 		         	for (var i = 0; i < response.data.data.user_dis.length; i++) {
 		         		if (response.data.data.user_dis[i].user_id == this.userid) {
 		         			if (response.data.data.user_dis[i].key_dis_content == u) {
