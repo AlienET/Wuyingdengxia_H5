@@ -11,15 +11,14 @@
   	[v-cloak]{
   		display: none;
   	}
-
   	*{box-sizing: border-box;margin: 0;padding: 0;}
-    .case-title{background-color: #fff;padding-top: 10px;}
-    .swiper-slide.case-tab{width: 33%;text-align: center;font-size: 15px;color:  #343434;font-weight: bold;}
+    .case-title{background-color: #fff;padding-top: 15px;}
+    .swiper-slide.case-tab{width: 33%;text-align: center;font-size: 15px;color:  #343434;font-weight: bold;line-height: .7em;}
     .swiper-slide.case-tab>div{font-size: 15px;color:  #343434;font-weight: bold;}
     .swiper-slide.case-tab>span{border-bottom: 2px solid #fff;width: 22%;display: inline-block;border-radius: 100px;}
     .swiper-slide.case-tab.active-nav>div{color: #0A93FF}
     .swiper-slide.case-tab.active-nav>span{border-color: #0A93FF}
-    .swiper-slide.container{padding: 0px;}
+    .swiper-slide.container{padding: 0px;margin-top: 5px;}
     .case-name{font-size: 16px;color: 333;padding: 10px 15px}
     .case-des{color: #999;padding: 0 30px;}
     .swiper-slide.show-more{height:260px;display: flex;justify-content: center;align-items: center;color: #999}
@@ -47,26 +46,45 @@
     table tbody tr:last-child td{
     	border-bottom: 1px solid #F2F2F2;
     }
+    /*.....*/
+    .Cinner{padding:10px;padding-bottom: 20px;}
+    .meet_banner_img{width: 100%;border-radius: 5px;}
+    .meet_tit{font-size: 17px;color: #333333;margin-top: 10px;font-weight: bold;}
+    .isFixed{
+	    position:fixed;
+	    background-color:#Fff;
+	    top:0;
+	    z-index:999;
+  	}
+  	.signUp{
+  		background:#2da3ff;color:#fff;font-size:16px;line-height:22.5px;width:50%;text-align:center;padding: 15px 0;
+  	}
+  	.swiper-wrapper{
+  		height: auto;
+  	}
+  	/*#caseContainer>.swiper-wrapper>div:not(.swiper-slide-active){
+  		display: none;
+  	}*/
   </style>
 </head>
 <body>
-	<div id="app" v-cloak>
-		<div style="padding: 0 10px;padding-bottom: 20px;">
-			<img src="images/black.jpg" style="width: 100%;border-radius: 5px;">
-			<div style="font-size: 16px;color: #333333;margin-top: 10px;">2018中国医学装备创新医疗学术交流大会</div>
+	<div id="app" v-cloak style="overflow-x: hidden;">
+		<div class="Cinner">
+			<img :src="aboutData.meeting_image" class="meet_banner_img">
+			<div class="meet_tit">{{aboutData.meet_title}}</div>
 			<div style="margin-top: 10px;">
-				<img src="images/icon/time.png" style="width: 16px;vertical-align: text-top;margin-right: 8px;margin-top: 1px;">
-				<span style="font-size: 14px;color: #666666;">2018年10月21日 至 2018年10月22日</span>
+				<img src="images/icon/time.png" style="width: 16px;vertical-align: middle;margin-right: 5px;vertical-align: top;margin-top: 3px;">
+				<span style="font-size: 14px;color: #666666;"><!-- 2018年10月21日 至 2018年10月22日 -->{{aboutData.begin_time}}</span>
 			</div>
 			<div style="margin-top: 10px;">
-				<img src="images/icon/didian.png" style="width: 15px;vertical-align: text-top;margin-right: 8px;margin-top: 1px;">
-				<div style="font-size: 14px;color: #666666;display: inline-block;width: 90%;vertical-align: top;">苏州  苏州和达希尔顿逸林酒店  经济技术开发区金沙大道600号(金沙湖地铁Ｂ出口)</div>
+				<img src="images/icon/didian.png" style="width: 15px;vertical-align: middle;margin-right: 4.5px;vertical-align: top;margin-top: 1px;margin-left: .5px;">
+				<div style="font-size: 14px;color: #666666;display: inline-block;width: 90%;vertical-align: top;">{{aboutData.meet_address}}</div>
 			</div>
 		</div>
-		<div style="background: #F3F4F8;height: 20px;"></div>
+		<div style="background: #F3F4F8;height: 10px;"></div>
 		<!-- ****************************************************************************************** -->
-		<div>
-		    <div class="swiper-container case-title" id="caseTitle" >
+		<div style="margin-bottom: 60px;">
+		    <div class="swiper-container case-title" id="caseTitle" :style="searchBarFixed?'position:fixed;background-color:#Fff;top:0;z-index:999;width:100%':''" >
 		      <div class="swiper-wrapper">
 		        <div class="case-tab swiper-slide active-nav">
 		        	<div>会议介绍</div>
@@ -85,23 +103,22 @@
 		    <div id="caseContainer" style="width:100%">
 		      <div class="swiper-wrapper">
 		        <div class="swiper-slide container">
-		          <div class="case-detail" style="font-size: 15px;color: #666666;text-align: justify;text-indent: 2em;padding: 10px;line-height: 1.2em">        
-		            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		          <div v-if='aboutData.meet_content == ""'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无会议介绍....
+		          	</div>
+		          </div>
+		          <div class="case-detail" style="font-size: 15px;color: #666666;text-align: justify;text-indent: 2em;padding: 10px;line-height: 1.6em" v-else>        
+		            {{aboutData.meet_content}}
 		          </div>
 		        </div>
 		        <div class="swiper-slide container">
-		          <div class="case-detail">
+		          <div class="case-detail" v-if='meet_class.length == 0'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无日程安排....
+		          	</div>
+		          </div>
+		          <div class="case-detail" v-else>
 		           	<table border="0" cellspacing='0'>
 		           		<thead>
 		           			<tr>
@@ -110,61 +127,35 @@
 			           		</tr>
 		           		</thead>
 		           		<tbody>
-			           		<tr>
-			           			<td>09:00 - 09:12</td>
-			           			<td>开幕致辞</td>
-			           		</tr>
-			           		<tr>
-			           			<td>09:00 - 09:12</td>
-			           			<td>医用人工智能实践——语音识别技术推动医疗器械全生命周期管理制造业工匠精神对医学装备管理的启示医护协同推动外科学科发展
-								</td>
-			           		</tr>
-			           		<tr>
-			           			<td>09:00 - 09:12</td>
-			           			<td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			           			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-			           			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-			           			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			           			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-			           			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-								</td>
+			           		<tr v-for='(item,index) in meet_class'>
+			           			<td>{{item.meet_class_begin}}—{{item.meet_class_end}}</td>
+			           			<td>{{item.main_content}}</td>
 			           		</tr>
 			           	</tbody>
 		           	</table>
 		          </div>
 		        </div>
 		        <div class="swiper-slide container">
-		          <div class="case-detail" style="padding: 10px;">
+		          <div v-if='aboutData.meet_talk == null'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无嘉宾安排....
+		          	</div>
+		          </div>
+		          <div class="case-detail" style="padding: 10px;" v-else>
 		          	<div>
-		          		<div style="display: flex;flex-direction:row;margin-bottom: 20px;">
+		          		<div style="display: flex;flex-direction:row;margin-bottom: 20px;" v-for='item in aboutData.meet_talk'>
 		          			<div>
 		          				<div style="display: inline-block;overflow: hidden;width: 84px;height: 90px;line-height: 90px;">
-		          					<img src="images/dog.jpg" width="84px;">
+		          					<img :src="item.specialist_image" width="84px;">
 		          				</div>
 		          			</div>
 		          			<div style="margin-left: 10px;">
 		          				<div style="font-size: 15px;color: #343434;position: relative;display: inline-block;">
-		          					钱倩健
+		          					{{item.meet_talk_name}}
 		          					<img style="position: absolute;right: -15px;bottom: -5px;width: 50px;z-index: -1" src="images/icon/name.png">
 		          				</div>
 		          				<div style="font-size: 13px;color: #646464;margin-top: 12px;line-height: 1.5em">
-		          					中国医学装备协会护理装备与材料分会副会长、手术装备与材料专委会主席、区域器材灭菌管理专委会主委、上海交通大学医学院附属瑞金医院
-		          				</div>
-		          			</div>
-		          		</div>
-		          		<div style="display: flex;flex-direction:row;margin-bottom: 20px;">
-		          			<div>
-		          				<div style="display: inline-block;overflow: hidden;width: 84px;height: 90px;line-height: 90px;">
-		          					<img src="images/dog.jpg" width="84px;">
-		          				</div>
-		          			</div>
-		          			<div style="margin-left: 10px;">
-		          				<div style="font-size: 15px;color: #343434;position: relative;display: inline-block;">
-		          					钱倩健
-		          					<img style="position: absolute;right: -15px;bottom: -5px;width: 50px;z-index: -1" src="images/icon/name.png">
-		          				</div>
-		          				<div style="font-size: 13px;color: #646464;margin-top: 12px;line-height: 1.5em">
-		          					中国医学装备协会护理装备与材料分会副会长、手术装备与材料专委会主席、区域器材灭菌管理专委会主委、上海交通大学医学院附属瑞金医院
+		          					{{item.meet_talk_content}}
 		          				</div>
 		          			</div>
 		          		</div>
@@ -172,99 +163,99 @@
 		            
 		          </div>
 		        </div>
-		        <div class="swiper-slide container show-more" style="width: 100px">
+		        <!-- <div class="swiper-slide container show-more" style="width: 100px">
 		          <div class="slide-more">
 		            <p class="vertical-text">左滑查看更多</p>
 		                        <i class="icon-slide-more">>></i>
 		          </div>
-		        </div>
+		        </div> -->
 		      </div>
 		    </div>
 		</div>
 		<!-- ****************************************************************************************** -->
+		<div style="position: fixed;width: 100%;bottom: 0px;display:flex;flex-direction:row;background-color: #fff;z-index: 1;">
+			<div @click='callHW' style="display: block;width: 50%;text-align: center;padding: 15px 0;border-top: 1px solid rgb(240,240,240,1)">
+				<img src="images/icon/huiwu.png" style="width:20px; vertical-align:middle;margin-right:5px;">
+				<span style="vertical-align:middle;font-size:16px;">联系会务</span>
+			</div>
+			<div @click='signUp' class="signUp" :style="SFbao?'background-color:rgb(233,233,233);':''">
+				报名
+			</div>
+		</div>
 	</div>
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vue.min.js"></script>
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
 	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
 	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
-	<script>
-		$(function(){
-		  let swiper1 = new Swiper('#caseTitle',{
-		      watchSlidesProgress : true,         //开启这个参数来计算每个slide的progress(进度),以便判断是否最后一帧
-		      watchSlidesVisibility : true,       //为每个可见的slide增加一个classname：‘ swiper-slide-visible ’
-		      slidesPerView: 'auto',              //设置slider容器能够同时显示的slides数量，'auto'则自动根据slides的宽度来设定数量
-		      freeMode: true,                     //为true则变为free模式，slide会根据惯性滑动可能不止一格且不会贴合
-		      on:{
-		          tap: function(){                //点击 tab 时，跳转相应的内容页
-		              swiper2.slideTo( swiper1.clickedIndex)
-		          }
-		      }
-		  })
-		  let swiper2 = new Swiper('#caseContainer',{
-		      slidesPerView: 'auto',              // 最后一帧宽度小，故设为自动识别
-		      on:{
-		          slideChangeTransitionStart: function(){       //内容页开始滑动时 响应导航栏
-		              updateNavPosition()
-		          },
-		          touchEnd: function(){
-		              //左滑查看更多
-		              let prg = this.progress                   //进度
-		              let index = this.snapIndex,               //当前序号
-		                  length = this.slides.length-1         //内容页 页数-1
-		              if(prg>1 && index===length){              //判断处于最后一帧，且进度超过 1 (倒数第二帧滑动时也可能使进度超过1)
-		                  // do something
-		                  slideMore()
-		              }
-		          },
-		      }
-		  })
-
-		  function updateNavPosition(){
-		      let pages = parseInt($('#caseTitle .swiper-slide').length)          //导航栏数量
-		      let currentContextIndex = swiper2.activeIndex                       //内容页活动页
-		      let to = currentContextIndex>=pages?pages-1:currentContextIndex     //内容页3,4页活动时都跳转至 导航栏的3页
-		      $('#caseTitle .active-nav').removeClass('active-nav')
-		      $('#caseTitle .swiper-slide').eq(to).addClass('active-nav');
-		      swiper1.slideTo(to)
-		  }
-
-		  function slideMore(){
-		      console.log('到底了！')
-		  }
-		})
-
-	</script>
+	
 	<script type="text/javascript">
 		new Vue({
 	     el: '#app',
 	     data:{
 	     	//接口数据
 	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
-	      	// 问题id
-	      	quesid:'',
-	      	// 评论列表
-	      	quesData:[],
+	      	// 会议id
+	      	meet_id:'',
 	      	//用户id
-	      	userid:'',
+	      	user_id:'',
 	      	//遮罩层
-	      	mask:''
+	      	mask:'',
+	      	// 会议日程
+	      	meet_class:[],
+	      	// 滚动固定
+	      	searchBarFixed:false,
+	      	// 是否能包
+	      	SFbao:false
 	     },
-	     mounted:function () { window.refreshcomment = this.refreshcomment; },
 	     created: function () {
 	      this.getUrlParam();
 	      this.getRoute();
 	     },
+	     mounted () {
+		  	window.addEventListener('scroll', this.handleScroll)
+		 },
+		 destroyed () {
+		  window.removeEventListener('scroll', this.handleScroll)
+		},
 	     methods: {
+	     	handleScroll () {
+			  var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+			  // console.log(scrollTop)
+			  var offsetTop = document.querySelector('#caseTitle').offsetTop
+			  // console.log(offsetTop)
+			  if (scrollTop > offsetTop) {
+			    this.searchBarFixed = true
+			  } else{
+			    this.searchBarFixed = false
+			  }
+			},
+	     	// 与iOS交互
+	     	callHW:function() {
+	     		window.webkit.messageHandlers.callHW.postMessage(null);
+	     	},
+		    signUp:function () {
+		    	if (!this.SFbao) {
+			    	window.webkit.messageHandlers.signUp.postMessage(null);
+		   		}
+		    },
 	     	// 问题内容
 	     	getRoute: function () {
 		        var that = this; 
 		        that.$http({
 		        	method: 'GET',
-		         	url: 'http://39.106.2.216/index.php/API/get_meeting_byid?meet_id=131&user_id=10118' //这里填写刚刚后台设置的接口
+		         	url: 'http://39.106.2.216/index.php/API/get_meeting_byid?meet_id='+that.meet_id+'&user_id='+that.user_id //这里填写刚刚后台设置的接口
 		        }).then(function(response){
+		        	
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	console.log(this.aboutData)
+		         	var meet_class = response.data.data.meet_date.length == 0 ? '' : response.data.data.meet_date[0].meet_class;
+		        	console.log(meet_class)
+		         	this.meet_class = meet_class
+		         	if (this.isBao != 1 || this.aboutData.is_attend != 0) {
+				    	this.SFbao = true
+			   		}
+		         	
 		        },function (error) {
 		         	alert(error);
 		        })
@@ -328,6 +319,52 @@
 			}else
 			result="刚刚";
 			return result;
+		})
+	</script>
+	<script>
+		$(function(){
+		  let swiper1 = new Swiper('#caseTitle',{
+		      watchSlidesProgress : true,         //开启这个参数来计算每个slide的progress(进度),以便判断是否最后一帧
+		      watchSlidesVisibility : true,       //为每个可见的slide增加一个classname：‘ swiper-slide-visible ’
+		      slidesPerView: 'auto',              //设置slider容器能够同时显示的slides数量，'auto'则自动根据slides的宽度来设定数量
+		      freeMode: true,                     //为true则变为free模式，slide会根据惯性滑动可能不止一格且不会贴合
+		      on:{
+		          tap: function(){                //点击 tab 时，跳转相应的内容页
+		              swiper2.slideTo( swiper1.clickedIndex)
+		          }
+		      }
+		  })
+		  let swiper2 = new Swiper('#caseContainer',{
+		      slidesPerView: 'auto',              // 最后一帧宽度小，故设为自动识别
+		      on:{
+		          slideChangeTransitionStart: function(){       //内容页开始滑动时 响应导航栏
+		              updateNavPosition()
+		          },
+		          touchEnd: function(){
+		              //左滑查看更多
+		              let prg = this.progress                   //进度
+		              let index = this.snapIndex,               //当前序号
+		                  length = this.slides.length-1         //内容页 页数-1
+		              if(prg>1 && index===length){              //判断处于最后一帧，且进度超过 1 (倒数第二帧滑动时也可能使进度超过1)
+		                  // do something
+		                  slideMore()
+		              }
+		          },
+		      }
+		  })
+
+		  function updateNavPosition(){
+		      let pages = parseInt($('#caseTitle .swiper-slide').length)          //导航栏数量
+		      let currentContextIndex = swiper2.activeIndex                       //内容页活动页
+		      let to = currentContextIndex>=pages?pages-1:currentContextIndex     //内容页3,4页活动时都跳转至 导航栏的3页
+		      $('#caseTitle .active-nav').removeClass('active-nav')
+		      $('#caseTitle .swiper-slide').eq(to).addClass('active-nav');
+		      swiper1.slideTo(to)
+		  }
+
+		  function slideMore(){
+		      console.log('到底了！')
+		  }
 		})
 	</script>
 </body>
