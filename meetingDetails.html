@@ -59,9 +59,9 @@
   	.signUp{
   		background:#2da3ff;color:#fff;font-size:16px;line-height:22.5px;width:50%;text-align:center;padding: 15px 0;
   	}
-  	.swiper-wrapper{
+  	/*.swiper-wrapper{
   		height: auto;
-  	}
+  	}*/
   	/*#caseContainer>.swiper-wrapper>div:not(.swiper-slide-active){
   		display: none;
   	}*/
@@ -100,7 +100,7 @@
 		        </div>
 		      </div>
 		    </div>
-		    <div id="caseContainer" style="width:100%">
+		    <div id="caseContainer">
 		      <div class="swiper-wrapper">
 		        <div class="swiper-slide container">
 		          <div v-if='aboutData.meet_content == ""'>
@@ -220,7 +220,7 @@
 		},
 	     methods: {
 	     	handleScroll () {
-			  var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+			  var scrollTop = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop)
 			  // console.log(scrollTop)
 			  var offsetTop = document.querySelector('#caseTitle').offsetTop
 			  // console.log(offsetTop)
@@ -287,46 +287,45 @@
 
 	   });
 		// 自定义过滤器
-		Vue.filter('DateDiff',function(input) {
-			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
-			var minute = 1000 * 60;
-			var hour = minute * 60;
-			var day = hour * 24;
-			var halfamonth = day * 15;
-			var month = day * 30;
-			var now = new Date().getTime();
-			var diffValue = now - dateTimeStamp;
-			if(diffValue < 0){return;}
-			var monthC =diffValue/month;
-			var weekC =diffValue/(7*day);
-			var dayC =diffValue/day;
-			var hourC =diffValue/hour;
-			var minC =diffValue/minute;
-			if(monthC>=1){
-				result="" + parseInt(monthC) + " 月前";
-			}
-			else if(weekC>=1){
-				result="" + parseInt(weekC) + " 周前";
-			}
-			else if(dayC>=1){
-				result=""+ parseInt(dayC) +" 天前";
-			}
-			else if(hourC>=1){
-				result=""+ parseInt(hourC) +" 小时前";
-			}
-			else if(minC>=1){
-				result=""+ parseInt(minC) +" 分钟前";
-			}else
-			result="刚刚";
-			return result;
-		})
+		// Vue.filter('DateDiff',function(input) {
+		// 	var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+		// 	var minute = 1000 * 60;
+		// 	var hour = minute * 60;
+		// 	var day = hour * 24;
+		// 	var halfamonth = day * 15;
+		// 	var month = day * 30;
+		// 	var now = new Date().getTime();
+		// 	var diffValue = now - dateTimeStamp;
+		// 	if(diffValue < 0){return;}
+		// 	var monthC =diffValue/month;
+		// 	var weekC =diffValue/(7*day);
+		// 	var dayC =diffValue/day;
+		// 	var hourC =diffValue/hour;
+		// 	var minC =diffValue/minute;
+		// 	if(monthC>=1){
+		// 		result="" + parseInt(monthC) + " 月前";
+		// 	}
+		// 	else if(weekC>=1){
+		// 		result="" + parseInt(weekC) + " 周前";
+		// 	}
+		// 	else if(dayC>=1){
+		// 		result=""+ parseInt(dayC) +" 天前";
+		// 	}
+		// 	else if(hourC>=1){
+		// 		result=""+ parseInt(hourC) +" 小时前";
+		// 	}
+		// 	else if(minC>=1){
+		// 		result=""+ parseInt(minC) +" 分钟前";
+		// 	}else
+		// 	result="刚刚";
+		// 	return result;
+		// })
 	</script>
 	<script>
 		$(function(){
 		  let swiper1 = new Swiper('#caseTitle',{
 		      watchSlidesProgress : true,         //开启这个参数来计算每个slide的progress(进度),以便判断是否最后一帧
 		      watchSlidesVisibility : true,       //为每个可见的slide增加一个classname：‘ swiper-slide-visible ’
-		      autoHeight:true,
 		      slidesPerView: 'auto',              //设置slider容器能够同时显示的slides数量，'auto'则自动根据slides的宽度来设定数量
 		      freeMode: true,                     //为true则变为free模式，slide会根据惯性滑动可能不止一格且不会贴合
 		      on:{
@@ -337,6 +336,7 @@
 		  })
 		  let swiper2 = new Swiper('#caseContainer',{
 		      slidesPerView: 'auto',              // 最后一帧宽度小，故设为自动识别
+		      autoHeight:true,
 		      on:{
 		          slideChangeTransitionStart: function(){       //内容页开始滑动时 响应导航栏
 		              updateNavPosition()
@@ -353,7 +353,6 @@
 		          },
 		      }
 		  })
-
 		  function updateNavPosition(){
 		      let pages = parseInt($('#caseTitle .swiper-slide').length)          //导航栏数量
 		      let currentContextIndex = swiper2.activeIndex                       //内容页活动页
@@ -361,6 +360,7 @@
 		      $('#caseTitle .active-nav').removeClass('active-nav')
 		      $('#caseTitle .swiper-slide').eq(to).addClass('active-nav');
 		      swiper1.slideTo(to)
+
 		  }
 
 		  function slideMore(){
