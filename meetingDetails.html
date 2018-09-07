@@ -59,12 +59,7 @@
   	.signUp{
   		background:#2da3ff;color:#fff;font-size:16px;line-height:22.5px;width:50%;text-align:center;padding: 15px 0;
   	}
-  	/*.swiper-wrapper{
-  		height: auto;
-  	}*/
-  	/*#caseContainer>.swiper-wrapper>div:not(.swiper-slide-active){
-  		display: none;
-  	}*/
+  	#caseContainer .swiper-slide{height:16px;overflow: hidden;} #caseContainer .swiper-slide-active{ height:auto;} 
   </style>
 </head>
 <body>
@@ -150,9 +145,9 @@
 		          				</div>
 		          			</div>
 		          			<div style="margin-left: 10px;">
-		          				<div style="font-size: 15px;color: #343434;position: relative;display: inline-block;">
+		          				<div style="font-size: 15px;color: #343434;position: relative;width: 100px;">
 		          					{{item.meet_talk_name}}
-		          					<img style="position: absolute;right: -15px;bottom: -5px;width: 50px;z-index: -1" src="images/icon/name.png">
+		          					<img style="position: absolute;right: 46%;bottom: -5px;width: 50px;z-index: -1" src="images/icon/name.png">
 		          				</div>
 		          				<div style="font-size: 13px;color: #646464;margin-top: 12px;line-height: 1.5em">
 		          					{{item.meet_talk_content}}
@@ -174,7 +169,7 @@
 		</div>
 		<!-- ****************************************************************************************** -->
 		<div style="position: fixed;width: 100%;bottom: 0px;display:flex;flex-direction:row;background-color: #fff;z-index: 1;">
-			<div @click='callHW' style="display: block;width: 50%;text-align: center;padding: 15px 0;border-top: 1px solid rgb(240,240,240,1)">
+			<div @click='callHW' style="display: block;width: 50%;text-align: center;padding: 15px 0;border-top: .5px solid rgb(235,235,235)">
 				<img src="images/icon/huiwu.png" style="width:20px; vertical-align:middle;margin-right:5px;">
 				<span style="vertical-align:middle;font-size:16px;">联系会务</span>
 			</div>
@@ -336,7 +331,6 @@
 		  })
 		  let swiper2 = new Swiper('#caseContainer',{
 		      slidesPerView: 'auto',              // 最后一帧宽度小，故设为自动识别
-		      autoHeight:true,
 		      on:{
 		          slideChangeTransitionStart: function(){       //内容页开始滑动时 响应导航栏
 		              updateNavPosition()
@@ -360,7 +354,6 @@
 		      $('#caseTitle .active-nav').removeClass('active-nav')
 		      $('#caseTitle .swiper-slide').eq(to).addClass('active-nav');
 		      swiper1.slideTo(to)
-
 		  }
 
 		  function slideMore(){
