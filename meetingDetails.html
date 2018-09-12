@@ -60,6 +60,16 @@
   		background:#2da3ff;color:#fff;font-size:16px;line-height:22.5px;width:50%;text-align:center;padding: 15px 0;
   	}
   	#caseContainer .swiper-slide{height:16px;overflow: hidden;} #caseContainer .swiper-slide-active{ height:auto;} 
+  	.fixed-b{
+  		position: fixed;width: 100%;bottom: 0;display:flex;flex-direction:row;background-color: #fff;z-index: 1;
+  	}
+  	.x-bai{
+  		position: fixed;width: 100%;height: 20px;bottom:0;background-color: #fff;z-index: 1;display: none;
+  	}
+  	@media screen and (height: 812px){
+  		.fixed-b{bottom:20px;}
+  		.x-bai{display: block;}
+  	}
   </style>
 </head>
 <body>
@@ -168,7 +178,7 @@
 		    </div>
 		</div>
 		<!-- ****************************************************************************************** -->
-		<div style="position: fixed;width: 100%;bottom: 0px;display:flex;flex-direction:row;background-color: #fff;z-index: 1;">
+		<div class="fixed-b">
 			<div @click='callHW' style="display: block;width: 50%;text-align: center;padding: 15px 0;border-top: .5px solid rgb(235,235,235)">
 				<img src="images/icon/huiwu.png" style="width:20px; vertical-align:middle;margin-right:5px;">
 				<span style="vertical-align:middle;font-size:16px;">联系会务</span>
@@ -177,6 +187,7 @@
 				报名
 			</div>
 		</div>
+		<div class="x-bai"></div>
 	</div>
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vue.min.js"></script>
@@ -247,7 +258,7 @@
 		         	var meet_class = response.data.data.meet_date.length == 0 ? '' : response.data.data.meet_date[0].meet_class;
 		        	console.log(meet_class)
 		         	this.meet_class = meet_class
-		         	if (this.isBao != 1 || this.aboutData.is_attend != 0) {
+		         	if (this.aboutData.isfinish != 1 || this.aboutData.is_attend != 0) {
 				    	this.SFbao = true
 			   		}
 		         	
