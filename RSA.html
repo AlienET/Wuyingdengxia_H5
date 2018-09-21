@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <title>文章详情</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  </style>
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="article">
+			<div class="author">
+				<button class="author_btn" @click='follow'>关注</button>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
+	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<!-- <script type="text/javascript" src="js/vue-router.min.js"></script> -->
+	<script type="text/javascript" src="js/vue-router.js"></script>
+	<!-- <script type="text/javascript" src="js/rsa/jsrsasign-latest-all-min.js"></script> -->
+	 <script src="http://passport.cnblogs.com/scripts/jsencrypt.min.js"></script>
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+
+	     },
+	     created: function () {
+	     },
+	     methods: {
+	      	// 关注
+	      	follow:function (argument) {
+	      		var that = this;
+	      		var userphone = new Object();
+	      		userphone.userphone = '13552110050';
+	      		var modulus = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'; //密钥
+	      		var encrypt = new JSEncrypt(); //新建RSA对象
+	      		encrypt.setPublicKey(modulus); // 设置私钥
+	      		userphone = JSON.stringify(userphone);// 转JSON字符串
+	      		var encrypted = encrypt.encrypt(userphone)// 加密对象
+	      		console.log(userphone)
+	      		console.log(encrypted)
+	      		// data = encodeURI(data).replace(/\+/g, '%2B');
+	      		that.$http.post('http://39.106.49.2:8081/userManage/getVerifyNum',{data:encrypted},{emulateJSON:true}).then(function (response) {
+	      			console.log(response)
+	      		},function(error){
+	      			console.log(error)
+	      		})
+	      	},
+	     }
+
+	   });
+	</script>
+</body>
+</html>

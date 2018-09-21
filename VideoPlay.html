@@ -267,7 +267,7 @@
 			        	method: 'GET',
 			         	url: 'http://39.106.2.216/index.php/API/get_replay_detail?replay_sub_id='+this.replay_sub_id+'&user_id='+this.user_id //这里填写刚刚后台设置的接口
 			        }).then(function(response){
-			        	console.log(response.data.data.active)
+			        	console.log(response.data.data)
 			         	this.aboutData = response.data.data.active; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 			         	var Videol= response.data.data.active.cutting_title.split(',');
 			         	Videol[0] == ''?Videol=[]:Videol;
