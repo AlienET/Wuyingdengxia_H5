@@ -42,6 +42,7 @@
 	      		var that = this;
 	      		var userphone = new Object();
 	      		userphone.userphone = '13552110050';
+	      		console.log(userphone)
 	      		var modulus = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'; //密钥
 	      		var encrypt = new JSEncrypt(); //新建RSA对象
 	      		encrypt.setPublicKey(modulus); // 设置私钥

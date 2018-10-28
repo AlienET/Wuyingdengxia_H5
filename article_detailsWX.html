@@ -22,7 +22,7 @@
 						<span style="font-size: 16px;margin-left: 10px;">无影灯下</span>
 					</div>					
 					<div>
-						<a href="WYDXApp://" @click='wxShare'  style="color: #fff;background: linear-gradient(#0D8BFF, #3EAAFE);padding: 6px 20px;border-radius: 100px;font-size: 14px;line-height: 50px;">打 开</a>
+						<a class="ios" href="WYDXApp://" @click='wxShare'  style="color: #fff;background: linear-gradient(#0D8BFF, #3EAAFE);padding: 6px 20px;border-radius: 100px;font-size: 14px;line-height: 50px;">打 开</a>
 					</div>
 				</div>
 			</div>
@@ -120,31 +120,38 @@
 	     methods: {
 	     	//分享
 	     	wxShare:function (argument) {
-	     	// 	var ua = navigator.userAgent.toLowerCase();
-			    // var isWeixin = ua.indexOf('micromessenger') != -1;
-			    // var isAndroid = ua.indexOf('android') != -1;
-			    // var isIos = (ua.indexOf('iphone') != -1) || (ua.indexOf('ipad') != -1);
-			    // var d = new Date();
-			    // var t0 = d.getTime();
-
-	     	// 	var delay = setInterval(function(){
-		     //         var d = new Date();
-		     //         var t1 = d.getTime();
-		     //         if( t1-t0<3000 && t1-t0>2000){
-		     //            alert('请下载APP');
-		     //             window.location.href ='itms-apps://://itunes.apple.com/app/id1406220749?action=write-review';
-		     //         }
-		     //         if(t1-t0>=3000){
-		     //              clearInterval(delay);
-		     //         }
-		     //    },2000);
-		     location.href = 'WYDXApp://';
-			    setTimeout(function() {
-			        location.href = 'itms-apps://itunes.apple.com/cn/app/id1406220749?mt=8';
-			    }, 250);
-			    setTimeout(function() {
-			        location.reload();
-			    }, 1000);
+	     	var ua = navigator.userAgent.toLowerCase();
+		     var isWeixin = ua.indexOf('micromessenger') != -1;
+		     var isIos = (ua.indexOf('iphone') != -1) || (ua.indexOf('ipad') != -1);
+		     var d = new Date();
+		     var t0 = d.getTime();
+		    //跳转下载
+		    $(".ios").click(function(){
+		//苹果
+		         openApp("itms-apps://itunes.apple.com/cn/app/id1406220749?mt=8");
+		    });
+		    function openApp(src) {
+		    // 通过iframe的方式试图打开APP，如果能正常打开，会直接切换到APP，并自动阻止a标签的默认行为
+		    // 否则打开a标签的href链接
+		         var delay = setInterval(function(){
+		             var d = new Date();
+		             var t1 = d.getTime();
+		             if( t1-t0<3000 && t1-t0>2000){
+		                alert('请下载APP');
+		                 window.location.href =src;
+		             }
+		             if(t1-t0>=3000){
+		                  clearInterval(delay);
+		             }
+		        },2000);
+		    }
+		     // location.href = 'WYDXApp://';
+			    // setTimeout(function() {
+			    //     location.href = 'itms-apps://itunes.apple.com/cn/app/id1406220749?mt=8';
+			    // }, 250);
+			    // setTimeout(function() {
+			    //     location.reload();
+			    // }, 1000);
 	     	},
 	     	// 举报切换
 	     	luelue:function (item,index) {

@@ -9,6 +9,10 @@
   	[v-cloak]{
   		display: none;
   	}
+  	.article_content a{
+  		    color: #398bfb !important;
+  		    text-decoration:underline !important;
+  	}
   </style>
 </head>
 <body>
@@ -111,6 +115,7 @@
 	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
 	<!-- <script type="text/javascript" src="js/vue-router.min.js"></script> -->
 	<script type="text/javascript" src="js/vue-router.js"></script>
+	<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
 	<script type="text/javascript">
 		new Vue({
 	     el: '#app',
@@ -155,6 +160,16 @@
 	      console.log('articleid='+this.articleid);
 	      console.log('userid='+this.userid);
 	     },
+	     updated: function () {
+	     	var that = this;
+			$(".article_content	a").click(function(){
+				console.log($(this).attr('href'))
+				var parameter = $(this).attr('href').split('?')[1]
+				console.log(parameter)
+				wx.miniProgram.navigateTo({url: '/pages/article_detail/article_detail?'+parameter+'&userid='+that.userId})
+				// return false;
+			});
+	     },
 	     methods: {
 	     	// 举报切换
 	     	luelue:function (item,index) {
@@ -167,10 +182,10 @@
 		        	method: 'GET',
 		         	url: 'https://yszg.org/index.php/API/get_articleinfo_byid?articleid='+this.articleid+'&userid='+this.userid //这里填写刚刚后台设置的接口,
 		        }).then(function(response){
+		        	console.log(response)
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	var articleTags = this.aboutData.article_tags;
 		         	this.aboutData.article_tags = articleTags.split(',');
-		         	console.log(this.aboutData);
 		         	if (this.aboutData.article_img != '') {
 		         		var article_img = this.aboutData.article_img;
 		         		this.aboutData.article_img = article_img.split(',')
