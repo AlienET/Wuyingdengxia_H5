@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <title>投票</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  	#app{
+  		padding: 0;
+  		/*background-image: url(images/hsBG.jpg);*/
+  		background-color: #4F83E4;
+  		background-repeat:  repeat-y;
+  		background-size:100% auto;
+  		min-height: 100%;
+  		height: initial;
+  	}
+  	/*input:checked+label>div{
+  		background-color: #fff;
+  		color: #111;
+  	}*/
+  	.confirm{
+  		position: fixed;
+  		top: 0;
+  		bottom: 0;
+  		left: 0;
+  		right: 0;
+  		background: rgba(0,0,0,0);
+  		z-index: 99;
+  	}
+  	.confirm>div{
+  		background-color: rgba(255,255,255,0.98);
+  		width: 60%;
+  		margin: 50% auto;
+  		border-radius: 10px;
+  	}
+  	.confirm>div span{
+  		font-size:16px;
+  		display: block;
+  		padding: 15px 0px;
+  		text-align: center;
+  		width: 50%;
+  	}
+  	.text_option>div{
+  		/*display: inline-block;*/
+  		color: #fff;
+  		/*font-size: 17px;
+  		min-width: 100px;
+  		text-align: center;
+  		padding: 5px 10px;
+  		border-radius: 50px;
+  		border: 1px solid #eee;
+  		margin:10px;*/
+  	}
+  	.questionData{
+  		border: 1px solid #000;
+	    background: #fff;
+	    display: inline-block;
+	    margin-left: .55em;
+	    margin-bottom: .8em;
+	    width: 45%;
+  	}
+  	.questionData ._btn{
+  		float: right;
+  		border: .5px solid #ddd;
+  		padding: 2px 8px;
+  		font-size: 12px;
+  		background-color: #4F83E4;
+  		border-radius: 50px;
+  		margin-top: -30px;
+  		margin-right: 5px;
+  		color: #fff;
+  	}
+  	.questionData ._btn._btn_{
+  		color: #999;
+  		background-color: #eee;
+  	}
+  </style>
+ </head>
+<body>
+	<div id="app" v-cloak>
+		<!-- <div class="img_tit" >
+			<img class="lian" src="images/lian.png" width="100%">
+			<img class="img_bt" src="images/biaoti.png" width="80%">
+		</div> -->
+		<div style="color: #fff;padding-top: 30px;text-align: center;">
+			{{aboutData.ballot_title}}
+			<span v-show='questionData.question_type==1' style="font-size: 12px;color: #47F0B3;text-align: right;padding-right: 20px;">最多可投{{questionData.question_num}}项</span>
+		</div>
+		<div class="list" style="padding: 20px;">
+			<!-- <div style="text-align: left;font-size: 20px;">
+				<span style="color: #000;">{{questionData.question_title}}</span>
+				<img v-show='questionData.question_image' :src="questionData.question_image" width="100%">
+			</div> -->
+			<div class="options">
+				<div class="check_item" v-if='item.option_title!=""&&item.option_image==""' v-for='(item,index) in questionData.optiondata'>
+					<input v-if='questionData.question_type == 0' :id="item.ballot_option_id" type="radio" :name="item.ballot_ques_id" :value='item' v-model='radioNames'>
+					<input v-else :id="item.ballot_option_id" type="checkbox" :name="item.option_title" :value='item' v-model='checkedNames'>
+					<label class="text_option" :for='item.ballot_option_id' @click='onBallot(item,index)'>
+						<div>
+							{{item.option_title}}
+						<div style="text-align: left;font-size: 10px;color: #eee;margin: 3px;">总票数  :   {{item.num+item.option_count}}</div>
+						</div>
+					</label>
+				</div>
+				<div class="questionData" v-if='item.option_title!=""&&item.option_image!=""' v-for='(item,index) in questionData.optiondata'>
+					<input v-if='questionData.question_type == 0' :id="item.ballot_option_id" type="radio" :name="item.ballot_ques_id" :value='item' v-model='radioNames'>
+					<input v-else :id="item.ballot_option_id" type="checkbox" :name="item.option_title" :value='item' v-model='checkedNames'>
+					<label :for='item.ballot_option_id' style="display: block;"  @click='onBallot(item,index)'>
+						<div style="width:100%;height: 115px;overflow: hidden;text-align: center;background: #eee;">
+							<img :src="item.option_image" width="100%">
+						</div>
+						<div v-if='item.strs' style="font-size: 13px;padding: 5px 10px;">
+							<span style="font-weight: bold;">{{item.strs[0]}}</span>
+							<div style="margin:3px 0;">{{item.strs[1]}}</div>
+							<div style="text-align: left;font-size: 10px;color: #999;">总票数  :   {{item.num+item.option_count}}</div>
+						</div>
+						<div v-else='!item.strs' style="font-size: 13px;padding: 5px 10px;display: inline-block;">
+							{{item.option_title}}
+							<div style="text-align: left;font-size: 10px;color: #999;">总票数  :   {{item.num+item.option_count}}</div>
+						</div>
+						<div class="_btn">投 票</div>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div v-if='confirm' class="confirm">
+			<div style="display: flex;flex-direction:column;">
+				<div style="font-size: 18px;margin-bottom: 15px;color: #333;padding: 10px;padding-top: 20px;">请确定是否投票</div>
+				<div style="border-top: .5px solid rgba(233,233,233,1);display:flex;flex-direction: row;justify-content:space-around;">
+					<span @click='success' style="color: #1397ff;">投票</span>
+					<span @click='defaults' style="color: #333;border-left: .5px solid rgba(233,233,233,1);">取消</span>
+				</div>
+			</div>
+		</div>
+		<div v-show='mask' @click='mask = false' style="position: fixed;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,0.4);z-index: 99;">
+			<div style="margin:0 auto;margin-top: 90%;display: inline-block;text-align: center;color: #fff;">您 已 参 与 投 票</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/vue-resource.min.js"></script>
+	<script type="text/javascript" src="js/vue-router.min.js"></script>
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	aboutData:[],
+	     	mask:false,
+	     	//确认框
+	     	// confirm:false,
+	     	//复选框内容
+	     	checkedNames:[],
+	     	//单选框数据
+	     	radioNames:'',
+	     	//确认弹框
+	     	confirm:false,
+	     	//问题
+	     	questionData:'',
+	     	//选项id
+	     	index:null,
+	     	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     mounted:function () { 
+	     	this.getUrlParam();
+	      	this.getRoute();
+	     },
+	     created: function () {
+	     	console.log('created')
+	     },
+	     methods: {
+	     	getRoute: function () {
+	     		var that = this; 
+	     		var from_id = that.bannerId?that.bannerId:that.meetId;
+	     		console.log(from_id)
+		        var obj = new Object();
+		        obj.ballot_id = that.ballot_id;
+		        obj.userid = that.userid;
+		        obj.from_id = from_id;
+		        obj.from_type = that.bannerId?'2':'1';
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/userManage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	console.log(response.data.data);
+		         	for (var i = response.data.data.questiondata.length - 1; i >= 0; i--) {
+		         		// console.log(response.data.data.questiondata[i].optiondata.length)
+		         		for (var z = response.data.data.questiondata[i].optiondata.length - 1; z >= 0; z--) {
+		         			response.data.data.questiondata[i].optiondata[z].num = Number(response.data.data.questiondata[i].optiondata[z].num);
+		         			response.data.data.questiondata[i].optiondata[z].option_count = Number(response.data.data.questiondata[i].optiondata[z].option_count);
+		         			for (var s = response.data.data.questiondata[i].optiondata[z].option_title.length - 1; s >= 0; s--) {
+		         				// console.log(response.data.data.questiondata[i].optiondata[z].option_title[s])
+		         				if (response.data.data.questiondata[i].optiondata[z].option_title[s] == ';') {
+		         					var strs = response.data.data.questiondata[i].optiondata[z].option_title.split(';')
+		         					console.log(strs)
+		         					response.data.data.questiondata[i].optiondata[z].strs = strs;
+		         				}
+		         			}
+		         		}
+		         	}
+		         	that.questionData = response.data.data.questiondata[0];
+		         	that.aboutData = response.data.data;
+		         	console.log(that.aboutData)
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+
+	     	// 投票
+	     	onBallot:function(e,i) {
+	     		var that = this;
+	     		if (that.aboutData.gb_is_vote==0) {
+	     			if($("input:eq("+i+")").attr('disabled')!='disabled'){
+	     				console.log(that.checkedNames);
+		     			that.index = i;
+		     			that.confirm = true;
+		     		}
+	     		}else{
+	     			that.mask = true;
+	     		}
+	     	},
+	     	//确认投票
+	     	success:function() {
+	     		var that = this;
+	     		var from_id = that.bannerId?that.bannerId:that.meetId;
+	     		var jsonArray = new Object();
+	     		console.log(that.radioNames)
+	     		jsonArray.questionid = that.radioNames!=''?that.radioNames.ballot_ques_id:that.checkedNames[that.checkedNames.length-1].ballot_ques_id;        //checkedNames
+	     		jsonArray.question_type = that.questionData.question_type;
+	     		jsonArray.optionid = [that.radioNames!=''?that.radioNames.ballot_option_id:that.checkedNames[that.checkedNames.length-1].ballot_option_id];
+	     		var obj = new Object();
+		        obj.userid = that.userid;
+		        obj.ballotid = that.ballot_id;
+		        obj.totalscore = '0';
+		        obj.from_id = from_id;
+		        obj.from_type = that.bannerId?'2':'1';
+		        obj.ballot_type = that.aboutData.ballot_type;
+		        obj.moon_cash = that.aboutData.moon_cash==''?'0':that.aboutData.moon_cash.toString();
+		        obj.questArray = [];
+		        obj.questArray.unshift(jsonArray);
+
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encryptLong(obj)// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/userManage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        	console.log(response)
+		        },function (error) {
+		         	alert(error);
+		        })
+
+	     		if (that.questionData.question_type<1) {
+	     			that.aboutData.gb_is_vote = 1;
+	     			console.log(that.radioNames)
+	     			that.questionData.optiondata[that.index].num+=1;
+	     			$("input").attr("disabled","disabled");
+	     			$("input:eq("+that.index+")+label ._btn").addClass('_btn_');
+	     			this.confirm = false;
+	     		}else{
+	     			that.questionData.optiondata[that.index].num+=1;
+	     			console.log($("input:eq("+that.index+")"))
+	     			$("input:eq("+that.index+")").attr("disabled","disabled");
+	     			$("input:eq("+that.index+")+label ._btn").addClass('_btn_');
+	     			this.confirm = false;
+	     			if (that.checkedNames.length == that.questionData.question_num) {
+	     				$("input").attr("disabled","disabled");
+	     			}
+	     		}
+	     	},
+	     	defaults:function() {
+	     		var that = this;
+	     		if (that.questionData.question_type<1) {
+	     			this.radioNames = '';
+	     			this.confirm = false;
+	     		}else{
+	     			that.checkedNames.pop();
+	     			this.confirm = false;
+	     		}
+	     		
+	     		// console.log(this.checkedNames)
+	     		// console.log(this.radioNames)
+	     		
+	     	}
+	     	// 加载更多
+	     	// more:function() {
+	     	// 	var arr = [
+	     	// 		{
+		     // 			img:'images/xxx.jpg',
+		     // 			name:'留言',
+		     // 			unit:'北京市协和医院 麻醉护理部',
+		     // 			num:'1349',
+		     // 			is_vote:false
+		     // 		},
+		     // 		{
+		     // 			img:'images/xxx.jpg',
+		     // 			name:'留言',
+		     // 			unit:'北京市协和医院 麻醉护理部',
+		     // 			num:'1349',
+		     // 			is_vote:false
+		     // 		}
+	     	// 	]
+	     	// 	for (var i = arr.length - 1; i >= 0; i--) {
+	     	// 		this.aboutData.push(arr[i])
+	     	// 	}
+	     	// }
+	     },
+		})
+	</script>
+	<!-- <script type="text/javascript">
+		
+	//绑定beforeunload事件 
+	$(window).bind('beforeunload',function(){ 
+	   return '您输入的内容尚未保存，确定离开此页面吗？'; 
+	}); 
+	</script> -->
+</body>
+</html>

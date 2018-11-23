@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <title>问卷调查</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  	.btn{
+  		background: #5BB7FF;
+  		padding: .45em 3em;
+  		margin: 1.5em 0em;
+  	}
+  	html{
+  		background: #4F83E4;
+  	}
+  	#app{
+  		background: #4F83E4;
+  		padding-top: .5em;
+  	}
+  	textarea{
+  		outline:none;
+  		resize:none;
+  		color: #fff;
+  		padding: 10px;
+  		text-align: left;
+  		font-size: 16px;
+  		background-color: #4F83E4;
+  		border-color: #fff;
+  	}
+  	textarea::-webkit-input-placeholder{
+	    color:rgb(202,229,250);
+	    font-size: 12px;
+	}
+	textarea:-moz-placeholder{
+	    color:rgb(202,229,250);
+	    font-size: 12px;
+	}
+	textarea::-moz-placeholder{
+	    color:rgb(202,229,250);
+	    font-size: 12px;
+	}
+	textarea:-ms-input-placeholder{
+	    color:rgb(202,229,250);
+	    font-size: 12px;
+	}
+  </style>
+ </head>
+<body>
+	<div id="app" v-cloak style="padding-top: 2em">
+		<div style="font-size: 18px;color: #FFFFFF;">第 {{cnum[few-1]}} 题</div>
+		<section class="exa_form" style="min-height: 480px;">
+			<div class="exa_form_tit">
+				<div v-if='aboutData.question_title!=""' style="display: inline-block;">
+					<div style="color: #fff;">
+						{{aboutData.question_title}}
+						<span v-if='aboutData.question_type == 0' class="radio">（单选）</span>
+						<span v-else-if='aboutData.question_type == 1' class="checkbox">（多选）</span>
+						<span v-else style="font-size: 12px;color: #fd6639;">（问答）</span>
+					</div>
+				</div>
+				<img v-show='aboutData.question_image' width="100%" style='margin-top: 10px;' :src="aboutData.question_image">
+				<div v-show='aboutData.question_title == ""' style="text-align: right;">
+					<span v-if='aboutData.question_type == 0' class="radio">（单选）</span>
+					<span v-else-if='aboutData.question_type == 1' class="checkbox">（多选）</span>
+					<span v-else style="font-size: 12px;color: #fd6639;">（问答）</span>
+				</div>
+			</div>
+			<div v-if='aboutData.question_type<2' class="check_item" v-for='(item,index) in aboutData.optiondata'>
+				<input v-if='aboutData.question_type > 0' :id="index" type="checkbox" :name="item.option_title" :value="item" v-model="checkedNames">
+				<input v-else :id="index" type="radio" name="radio" :value="item.ballot_option_id" v-model="checkedNames">
+				<label :for="index" @click='radioActive(item)'>
+					<div>
+						<span>{{item.option_title}}</span>
+						<img width="40%" style="display: block;margin-top: 5px;" :src="item.option_image">
+					</div>
+				</label>
+			</div>
+			<div v-else>
+				<textarea rows="16" cols="40" v-model='checkedNames' placeholder="请输入要回答的内容"></textarea>
+			</div>
+		</section>
+		<div >
+			<button v-show='aboutData.question_type>0' :class="checkedNames.length == 0?'default btn':'btn'" @click='next'>下一题</button>
+			<div style="font-size: 15px;color:rgb(208, 208, 208);text-align: center;">{{few}} / {{lengths}}</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/vue-resource.min.js"></script>
+	<script type="text/javascript" src="js/vue-router.min.js"></script>
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	// 问题标题
+	     	tit:'以下哪个几个手术是污染手术',
+	     	// 单选框/复选框
+	     	is_checkbox:false,
+	     	// 复选 val组
+	     	checkedNames: [],
+	     	// 数据
+	     	aboutData:[],
+	     	// 提供中文数字
+ 			cnum : ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','二十一','二十二','二十三','二十四','二十五','二十六','二十七','二十八','二十九','三十','三十一','三十二','三十三','三十四','三十五','三十六','三十七','三十八','三十九','四十','四十一','四十二','四十三','四十四','四十五','四十六','四十七','四十八','四十九','五十'],
+ 			lengths:'',
+	     	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     mounted:function () { 
+	     	
+	     },
+	     created: function () {
+	     	this.getUrlParam();
+	     	this.getRoute();
+	     },
+	     methods: {
+	     	getRoute: function () {
+	     		var that = this;
+	     		// console.log(localStorage.getItem('StorageGetData')); // 读取 localStorage
+	     		var jsonStr = localStorage.getItem('StorageGetData');
+	     		json = JSON.parse(jsonStr);
+	     		that.lengths = json.questiondata.length;
+	     		options = json.questiondata[that.few]
+	     		console.log(json)
+	     		console.log(options)
+	     		that.aboutData = options;
+	     		that.few = parseInt(that.few)+1;
+	      	},
+	     //  	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+	     	next:function() {
+
+	     		if (this.checkedNames.length != 0) {
+	     			var that =this
+	     			var datas = new Object();
+		     		var StoragePostData = localStorage.getItem('StoragePostData');
+		     		StoragePostData = JSON.parse(StoragePostData);
+		     		datas.questionid = that.aboutData.ballot_ques_id;
+		     		datas.question_type = that.aboutData.question_type;
+		     		if (that.aboutData.question_type<2) {
+			     		datas.optionid = [];
+		     			console.log(this.checkedNames);
+		     			for (var i = that.checkedNames.length - 1; i >= 0; i--) {
+		     				datas.optionid.push(that.checkedNames[i].ballot_option_id)
+		     				var scores = parseInt(that.checkedNames[i].option_count);
+		     				StoragePostData.totalscore = StoragePostData.totalscore+=scores;
+		     			}
+		     			
+	     			}else{
+	     				datas.answer = that.checkedNames;
+	     			}
+	     			StoragePostData.questArray.push(datas);
+	     			console.log(StoragePostData)
+	     			StoragePostData = JSON.stringify(StoragePostData);// 转JSON字符串
+	     			localStorage.setItem('StoragePostData',StoragePostData); // 存储 localStorage
+	     			if (that.few == that.lengths) {
+			      		window.location.href='Examination_end.html';
+			      	}else{
+			      		window.location.href='Examination_checkbox.html?few='+that.few;
+			      	}
+	     		}
+	     	},
+	     	radioActive:function(item) {
+	     		var that = this;
+	     		if (this.aboutData.question_type<1) {
+	     			var datas = new Object();
+	     			var score = parseInt(item.option_count);
+	     			var StoragePostData = localStorage.getItem('StoragePostData');
+	     			datas.questionid = item.ballot_ques_id;
+	     			datas.question_type = that.aboutData.question_type;
+	     			datas.optionid = [item.ballot_option_id];
+	     			console.log(datas)
+	     			StoragePostData = JSON.parse(StoragePostData);
+	     			StoragePostData.questArray.push(datas);
+	     			StoragePostData.totalscore = StoragePostData.totalscore+=score;
+	     			console.log(StoragePostData.totalscore)
+	     			StoragePostData = JSON.stringify(StoragePostData);// 转JSON字符串
+	     			localStorage.setItem('StoragePostData',StoragePostData); // 存储 localStorage
+	     			console.log(localStorage.getItem('StoragePostData'))
+	     			if (that.few == that.lengths) {
+			      		window.location.href='Examination_end.html';
+			      	}else{
+			      		window.location.href='Examination_checkbox.html?few='+that.few;
+			      	}	
+	     		}
+	     	}
+	     }
+		})
+	</script>
+</body>  <!-- {questionid:123456,question_type:"0",optionid:[1]}, -->
+</html><!-- 
+ballot_option_id: "424"
+ballot_ques_id: "181"
+option_count: "10"
+option_image: ""
+option_right: "1"
+option_title: "单选10分" -->

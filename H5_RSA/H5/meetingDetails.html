@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+  <title>会议详情</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  	*{box-sizing: border-box;margin: 0;padding: 0;}
+    .case-title{background-color: #fff;padding-top: 15px;}
+    .swiper-slide.case-tab{width: 33%;text-align: center;font-size: 15px;color:  #343434;font-weight: bold;line-height: .7em;}
+    .swiper-slide.case-tab>div{font-size: 15px;color:  #343434;font-weight: bold;}
+    .swiper-slide.case-tab>span{border-bottom: 2px solid #fff;width: 22%;display: inline-block;border-radius: 100px;}
+    .swiper-slide.case-tab.active-nav>div{color: #0A93FF}
+    .swiper-slide.case-tab.active-nav>span{border-color: #0A93FF}
+    .swiper-slide.container{padding: 0px;margin-top: 5px;}
+    .case-name{font-size: 16px;color: 333;padding: 10px 15px}
+    .case-des{color: #999;padding: 0 30px;}
+    .swiper-slide.show-more{height:260px;display: flex;justify-content: center;align-items: center;color: #999}
+    .vertical-text{width: 20px;display: inline-block;vertical-align: middle;}
+    .icon-slide-more{display: inline-block;vertical-align: middle;font-style: normal;}
+    table td{
+    	text-align: center;
+    	font-size: 14px;
+    	color: #343434;
+    	border-top: 1px solid #F2F2F2;
+    	border-right: 1px solid #F2F2F2;
+    	padding: 10px;
+    }
+    table thead td{
+    	font-size: 15px;
+    }
+    table tbody tr td:last-child{
+    	text-align: left;
+    	line-height: 1.5em
+    }
+    table tr td:last-child{
+    	width: 71%;
+    	border-right: none;
+    }
+    table tbody tr:last-child td{
+    	border-bottom: 1px solid #F2F2F2;
+    }
+    /*.....*/
+    .Cinner{padding:10px;padding-bottom: 20px;}
+    .meet_banner_img{width: 100%;border-radius: 5px;}
+    .meet_tit{font-size: 17px;color: #333333;margin-top: 10px;font-weight: bold;}
+    .isFixed{
+	    position:fixed;
+	    background-color:#Fff;
+	    top:0;
+	    z-index:999;
+  	}
+  	.signUp{
+  		background:#2da3ff;color:#fff;font-size:16px;line-height:22.5px;width:50%;text-align:center;padding: 15px 0;
+  	}
+  	#caseContainer .swiper-slide{height:16px;overflow: hidden;} #caseContainer .swiper-slide-active{ height:auto;} 
+  	.fixed-b{
+  		position: fixed;width: 100%;bottom: 0;display:flex;flex-direction:row;background-color: #fff;z-index: 1;
+  	}
+  	.x-bai{
+  		position: fixed;width: 100%;height: 20px;bottom:0;background-color: #fff;z-index: 1;display: none;
+  	}
+  	@media screen and (height: 812px){
+  		.fixed-b{bottom:20px;}
+  		.x-bai{display: block;}
+  	}
+  </style>
+</head>
+<body>
+	<div id="app" v-cloak style="overflow-x: hidden;">
+		<div class="Cinner">
+			<img :src="aboutData.meeting_image" class="meet_banner_img">
+			<div class="meet_tit">{{aboutData.meet_title}}</div>
+			<div style="margin-top: 10px;">
+				<img src="images/icon/time.png" style="width:16px;vertical-align: middle;margin-right: 5px;vertical-align: top;margin-top: 3px;">
+				<span style="font-size: 14px;color: #666666;"><!-- 2018年10月21日 至 2018年10月22日 -->{{aboutData.begin_time}}</span>
+			</div>
+			<div style="margin-top: 10px;">
+				<img src="images/icon/didian.png" style="width: 16px;vertical-align: middle;margin-right: 5px;vertical-align: top;margin-top: 1px;">
+				<div style="font-size: 14px;color: #666666;display: inline-block;width: 90%;vertical-align: top;">{{aboutData.place}}</div>
+			</div>
+		</div>
+		<div style="background: #F3F4F8;height: 10px;"></div>
+		<!-- ****************************************************************************************** -->
+		<div style="margin-bottom: 60px;">
+		    <div class="swiper-container case-title" id="caseTitle" :style="searchBarFixed?'position:fixed;background-color:#Fff;top:0;z-index:999;width:100%':''" >
+		      <div class="swiper-wrapper">
+		        <div class="case-tab swiper-slide active-nav">
+		        	<div>会议介绍</div>
+		        	<span></span>
+		        </div>
+		        <div class="case-tab swiper-slide">
+		        	<div>会议日程</div>
+		        	<span></span>
+		        </div>
+		        <div class="case-tab swiper-slide">
+		        	<div>演讲嘉宾</div>
+		        	<span></span>
+		        </div>
+		      </div>
+		    </div>
+		    <div id="caseContainer">
+		      <div class="swiper-wrapper">
+		        <div class="swiper-slide container">
+		          <div v-if='aboutData.meet_content == ""'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无会议介绍....
+		          	</div>
+		          </div>
+		          <div class="case-detail" style="font-size: 15px;color: #666666;text-align: justify;text-indent: 2em;padding: 10px;line-height: 1.6em" v-else>        
+		            {{aboutData.meet_content}}
+		          </div>
+		        </div>
+		        <div class="swiper-slide container">
+		          <div class="case-detail" v-if='meet_date.length == 0'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无日程安排....
+		          	</div>
+		          </div>
+		          <div class="case-detail" v-else>
+		           	<table border="0" cellspacing='0' style="width: 100%;">
+		           		<thead>
+		           			<tr>
+			           			<td>时间</td>
+			           			<td>专家及内容</td>
+			           		</tr>
+		           		</thead>
+		           		<tbody v-for='itm in meet_date'>
+		           			<tr>
+		           				<td colspan='2' style="padding-left: 17px;">{{itm.date}}</td>
+		           			</tr>
+			           		<tr v-for='(item,index) in itm.meet_class'>
+			           			<td>{{item.meet_class_begin}}—{{item.meet_class_end}}</td>
+			           			<td>{{item.main_content}}<br>{{item.main_talk}}</td>
+			           		</tr>
+			           	</tbody>
+		           	</table>
+		          </div>
+		        </div>
+		        <div class="swiper-slide container">
+		          <div v-if='!aboutData.meet_talk'>
+		          	<div style="text-align: center;color: #999;margin-top: 15px;font-size: 16px;">
+		          		暂无嘉宾安排....
+		          	</div>
+		          </div>
+		          <div wx:else class="case-detail" style="padding: 10px;" v-else>
+		          	<div>
+		          		<div style="display: flex;flex-direction:row;margin-bottom: 20px;" v-for='item in aboutData.meet_talk'>
+		          			<div>
+		          				<div style="display: inline-block;overflow: hidden;width: 84px;height: 90px;line-height: 90px;">
+		          					<img :src="item.specialist_image" width="84px;">
+		          				</div>
+		          			</div>
+		          			<div style="margin-left: 10px;">
+		          				<div style="font-size: 15px;color: #343434;position: relative;width: 100px;">
+		          					{{item.meet_talk_name}}
+		          					<img style="position: absolute;right: 46%;bottom: -5px;width: 50px;z-index: -1" src="images/icon/name.png">
+		          				</div>
+		          				<div style="font-size: 13px;color: #646464;margin-top: 12px;line-height: 1.5em">
+		          					{{item.meet_talk_content}}
+		          				</div>
+		          			</div>
+		          		</div>
+		          	</div>
+		            
+		          </div>
+		        </div>
+		        <!-- <div class="swiper-slide container show-more" style="width: 100px">
+		          <div class="slide-more">
+		            <p class="vertical-text">左滑查看更多</p>
+		                        <i class="icon-slide-more">>></i>
+		          </div>
+		        </div> -->
+		      </div>
+		    </div>
+		</div>
+		<!-- ****************************************************************************************** -->
+		<div class="fixed-b">
+			<a href="tel:18611969985" @click='callHW' style="display: block;width: 50%;text-align: center;padding: 15px 0;border-top: .5px solid rgb(235,235,235)">
+				<img src="images/icon/huiwu.png" style="width:20px; vertical-align:middle;margin-right:5px;">
+				<span style="vertical-align:middle;font-size:16px;">联系会务</span>
+			</a>
+			<div @click='signUp' class="signUp" :style="SFbao?'background-color:rgb(233,233,233);':''">
+				报名
+			</div>
+		</div>
+		<div class="x-bai"></div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
+	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	//接口数据
+	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	// 会议id
+	      	meet_id:'',
+	      	//用户id
+	      	userid:'',
+	      	//遮罩层
+	      	mask:'',
+	      	// 会议日程
+	      	meet_date:[],
+	      	// 滚动固定
+	      	searchBarFixed:false,
+	      	// 是否能包
+	      	SFbao:false,
+	      	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     created: function () {
+	      this.getUrlParam();
+	      this.getRoute();
+	     },
+	     mounted () {
+		  	window.addEventListener('scroll', this.handleScroll)
+		 },
+		 destroyed () {
+		  window.removeEventListener('scroll', this.handleScroll)
+		},
+	     methods: {
+	     	handleScroll () {
+			  var scrollTop = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop)
+			  // console.log(scrollTop)
+			  var offsetTop = document.querySelector('#caseTitle').offsetTop
+			  // console.log(offsetTop)
+			  if (scrollTop > offsetTop) {
+			    this.searchBarFixed = true
+			  } else{
+			    this.searchBarFixed = false
+			  }
+			},
+	     	// 与iOS交互
+	     	callHW:function() {
+	     		window.webkit.messageHandlers.callHW.postMessage(null);
+	     	},
+		    signUp:function () {
+		    	if (!this.SFbao) {
+			    	window.webkit.messageHandlers.signUp.postMessage(null);
+		   		}
+		    },
+	     	// 问题内容
+	     	getRoute: function () {
+		        var that = this; 
+		        var obj = new Object();
+		        obj.meet_id = that.meet_id;
+		        obj.userid = that.userid;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/activityManage/getMeetById',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        	console.log(response)
+		        	console.log(response.data.data)
+		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	console.log(this.aboutData.meet_date)
+		         	if (this.aboutData.meet_date.length != 0) {
+		         		for (var i = this.aboutData.meet_date.length - 1; i >= 0; i--) {
+		         			var date = this.aboutData.meet_date[i].date.split(' ');
+		         			this.aboutData.meet_date[i].date = date[0]
+		         			console.log(this.aboutData.meet_date[i].date)
+		         			for (var z = this.aboutData.meet_date[i].meet_class.length - 1; z >= 0; z--) {
+		         				var meet_class_begin = this.aboutData.meet_date[i].meet_class[z].meet_class_begin
+		         				var meet_class_end = this.aboutData.meet_date[i].meet_class[z].meet_class_end
+		         				meet_class_begin = meet_class_begin.slice(0,5);
+		         				meet_class_end = meet_class_end.slice(0,5);
+		         				this.aboutData.meet_date[i].meet_class[z].meet_class_begin = meet_class_begin;
+		         				this.aboutData.meet_date[i].meet_class[z].meet_class_end = meet_class_end;
+		         			}
+		         		}
+		         	}
+		         	// var meet_class = response.data.data.meet_date.length == 0 ? '' : response.data.data.meet_date[0].meet_class;
+		        	// console.log(meet_class)
+		         	// this.meet_class = meet_class
+		         	this.meet_date = response.data.data.meet_date;
+		         	if (this.aboutData.isfinish != 1 || this.aboutData.is_attend != 0) {
+				    	this.SFbao = true
+			   		}
+		         	
+		        },function (error) {
+		         	alert(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+
+		    },
+	     }
+
+	   });
+		// 自定义过滤器
+		// Vue.filter('DateDiff',function(input) {
+		// 	var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+		// 	var minute = 1000 * 60;
+		// 	var hour = minute * 60;
+		// 	var day = hour * 24;
+		// 	var halfamonth = day * 15;
+		// 	var month = day * 30;
+		// 	var now = new Date().getTime();
+		// 	var diffValue = now - dateTimeStamp;
+		// 	if(diffValue < 0){return;}
+		// 	var monthC =diffValue/month;
+		// 	var weekC =diffValue/(7*day);
+		// 	var dayC =diffValue/day;
+		// 	var hourC =diffValue/hour;
+		// 	var minC =diffValue/minute;
+		// 	if(monthC>=1){
+		// 		result="" + parseInt(monthC) + " 月前";
+		// 	}
+		// 	else if(weekC>=1){
+		// 		result="" + parseInt(weekC) + " 周前";
+		// 	}
+		// 	else if(dayC>=1){
+		// 		result=""+ parseInt(dayC) +" 天前";
+		// 	}
+		// 	else if(hourC>=1){
+		// 		result=""+ parseInt(hourC) +" 小时前";
+		// 	}
+		// 	else if(minC>=1){
+		// 		result=""+ parseInt(minC) +" 分钟前";
+		// 	}else
+		// 	result="刚刚";
+		// 	return result;
+		// })
+	</script>
+	<script>
+		$(function(){
+		  let swiper1 = new Swiper('#caseTitle',{
+		      watchSlidesProgress : true,         //开启这个参数来计算每个slide的progress(进度),以便判断是否最后一帧
+		      watchSlidesVisibility : true,       //为每个可见的slide增加一个classname：‘ swiper-slide-visible ’
+		      slidesPerView: 'auto',              //设置slider容器能够同时显示的slides数量，'auto'则自动根据slides的宽度来设定数量
+		      freeMode: true,                     //为true则变为free模式，slide会根据惯性滑动可能不止一格且不会贴合
+		      on:{
+		          tap: function(){                //点击 tab 时，跳转相应的内容页
+		              swiper2.slideTo( swiper1.clickedIndex)
+		          }
+		      }
+		  })
+		  let swiper2 = new Swiper('#caseContainer',{
+		      slidesPerView: 'auto',              // 最后一帧宽度小，故设为自动识别
+		      on:{
+		          slideChangeTransitionStart: function(){       //内容页开始滑动时 响应导航栏
+		              updateNavPosition()
+		          },
+		          touchEnd: function(){
+		              //左滑查看更多
+		              let prg = this.progress                   //进度
+		              let index = this.snapIndex,               //当前序号
+		                  length = this.slides.length-1         //内容页 页数-1
+		              if(prg>1 && index===length){              //判断处于最后一帧，且进度超过 1 (倒数第二帧滑动时也可能使进度超过1)
+		                  // do something
+		                  slideMore()
+		              }
+		          },
+		      }
+		  })
+		  function updateNavPosition(){
+		      let pages = parseInt($('#caseTitle .swiper-slide').length)          //导航栏数量
+		      let currentContextIndex = swiper2.activeIndex                       //内容页活动页
+		      let to = currentContextIndex>=pages?pages-1:currentContextIndex     //内容页3,4页活动时都跳转至 导航栏的3页
+		      $('#caseTitle .active-nav').removeClass('active-nav')
+		      $('#caseTitle .swiper-slide').eq(to).addClass('active-nav');
+		      swiper1.slideTo(to)
+		  }
+
+		  function slideMore(){
+		      console.log('到底了！')
+		  }
+		})
+	</script>
+</body>
+</html>

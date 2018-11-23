@@ -1,0 +1,227 @@
+@charset "UTF-8";
+
+/**
+ * 
+ * @title --
+ * @authors goodliang
+ * @date 2016-12-22 17:02:39
+ * 
+ */
+
+
+/*公共样式*/
+
+html, body, div, span, object, button, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, a, code, em, img, q, small, strong, dd, dl, dt, li, ol, ul, fieldset, form, label, table, tbody, tr, th, td, input{
+	font-family: PingFangSC-Medium;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	color: #333;
+	box-sizing: border-box;
+    outline: none;
+  	}
+.bg_img{
+  /*background-color: #4F83E4;*/
+	/*background: #4F83E4 url(../images/bgImage.png) no-repeat center top;
+	background-size: cover;
+  background-origin:border-box;
+  background-clip:border-box;*/
+  box-sizing:border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+  -webkit-box-sizing:border-box; /* Safari */
+}
+html,body{
+  height: 100%;
+}
+#app{
+	min-height: 100%;
+}
+#app{
+	text-align: center;
+	color: #fff;
+	font-size: 1.4em;
+	padding: 1px 0px;
+}
+a{
+    text-decoration: none;
+}
+a:focus{
+    outline:none;
+}
+.btn{
+	display: inline-block;
+	background: #5bb7ff;
+	box-shadow: 0 2px 0 0 #3ba9ff;
+	border-radius: 100px;
+	color: #fff;
+	font-size: .9em;
+	padding: .45em 2em;
+	margin-top: 3.7em;
+}
+.form{
+	background: #fff;
+	display: inline-block;
+	border-radius: 6px;
+	width: 90%;
+	margin-top: 6em;
+	padding: 10px 0;
+}
+.form-tit{
+	color: #333;
+	font-size: 18px;
+	margin-top: 1.5em;
+	margin-bottom: 1em;
+	font-weight: bold;
+}
+input{
+  	display: none;
+}
+label.ques{
+  	display: inline-block;
+  	width: 80%;
+  	background: #ECF5FF;
+  	border-radius: 2px;
+  	color: #2DA3FF;
+  	font-size: 18px;
+  	padding: 10px 0;
+}
+input:checked+label.ques{
+    background-color: #2DA3FF;
+    color: #ECF5FF;
+}
+/* 考试 */
+.btn.default{
+	background: #ccc;
+	color: #999;
+	box-shadow: 0 2px 0 0 #ccc;
+}
+  	.check_item label{
+	display: inline-block;
+	/*background: #FFFFFF;*/
+	/*box-shadow: 0 2px 2px 0 rgba(37,112,252,0.39);*/
+	/*border-radius: 100px;*/
+	font-size: 18px;
+	/*color: #4F83E4;*/
+	width: 85%;
+	padding: 15px 10px 15px 35px;
+	margin-bottom: 6px;
+	position: relative;
+	text-align: left;
+}
+.check_item input+label span{
+  color: #fff;
+  /*font-weight: bold;*/
+  vertical-align: middle;
+}
+.check_item input:checked+label span{
+  	/*background: #47F0B3;*/
+  	/*box-shadow: 0 2px 2px 0 rgba(37,112,252,0.39);*/
+  	color: #47F0B3;
+    /*font-weight: bold;*/
+}
+.check_item input+label:after{
+    position: absolute;
+    top: 23px;
+    left: 6px;
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    border:2px solid #fff;
+    vertical-align: middle;
+
+}
+.check_item input:checked+label:after{
+  	background: #47F0B3;
+
+}
+.exa_form .exa_form_tit{
+  	margin-bottom: 1.5em;
+  	font-size: 18px;
+  	color: #FFFFFF;
+  	text-shadow: 0 1px 2px #2064E2;
+  	margin-top: 1.3em;
+    padding: 0px 30px;
+    text-align: left;
+}
+.exa_form_tit .checkbox{
+  	font-size: 12px;
+  	color: #FBC858;
+}
+.exa_form_tit .radio{
+  	font-size: 12px;
+  	color: #47F0B3;
+}
+  	/* 最后得分 */
+.score{
+  	font-size: 5em;
+  	color: #47F0B3;
+  	text-shadow: 0 2px 4px rgba(20,98,242,0.58);
+  	letter-spacing: -0.61px;
+  	margin-top: 1em;
+}
+.score+span{
+	font-size: 14px;
+	color: #FFFFFF;
+	text-shadow: 0 2px 2px #185EE4;
+}
+.cue{
+  	font-size: 18px;
+  	color: #FFFFFF;
+  	text-shadow: 0 2px 2px #2064E2;
+  	margin-top:7em;
+}
+/* 护士投票 */
+.img_tit{
+  	position: relative;
+}
+.img_tit .img_bt{
+  	position: absolute;
+  	top: 1em;
+  	left: 11.5%
+}
+.list{
+  	/*margin-top: -3em;*/
+  	position: relative;
+  	z-index: 99;
+  	text-align: left;
+}
+.list .item{
+  	border: 1px solid #000;
+  	background: #fff;
+  	display: inline-block;
+  	margin-left: .55em;
+  	margin-top: 15px;
+  	width: 45%;
+}
+.item .i_inner{
+  	padding: 0px 5px 5px 8px;
+  	/*margin-top: -10px;*/
+}
+.item .i_inner span{
+  	font-size: 12px;
+}
+.item .i_inner p{
+  	font-size: 11px;
+}
+.ballot{
+  	display: inline-block;
+  	vertical-align: middle;
+  	color: #959595;
+  	font-size: 10px;
+  	margin-bottom: 15px;
+}
+.ballot+img{
+  	float: right;
+}
+.more{
+  	display: inline-block;
+  	padding: 5px 10px;
+  	background: #EDB7BF;
+  	border-radius: 50%;
+  	color: #fff;
+  	font-size: 13px;
+  	margin-bottom: 1em;
+}
