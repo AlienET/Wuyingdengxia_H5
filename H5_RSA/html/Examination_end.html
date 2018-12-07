@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <title>科室考试</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  	.btn{
+  		background: #5BB7FF;
+  		padding: .45em 4em;
+  		margin: 4em 0em;
+  	}
+  	html{
+  		background: #4F83E4;
+  	}
+  </style>
+ </head>
+<body>
+	<div id="app" v-cloak>
+		<div class="form" v-if='score.totalscore == 0'>
+			<!-- <img src="images/bgImage.png" style="position: absolute;top: 0px;right: 0px;bottom: 0px;left: 0px;width: 100%;height: 100%;z-index: -1;"> -->
+			<p style="font-size: 30px;margin-top: 2em">感谢您的参与</p>
+			<p style="font-size: 13px;margin-top: 30px;color: #979797;">您的评价我们已经收到，我们会努力做到更好</p>
+			<a class="btn" href='javascript:;' @click='back'>确认</a>
+		</div>
+		<div v-else>
+			<div class="score">
+				{{score.totalscore}}
+			</div>
+			<span>本次得分</span>
+			<div class="cue">
+				&bull; &nbsp; 本次测验满分为100分
+			</div>
+			<button class="btn" @click='back'>返回</button>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/vue-resource.min.js"></script>
+	<script type="text/javascript" src="js/vue-router.min.js"></script>
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	score:'',
+	     	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     mounted:function () { 
+	     	
+	     },
+	     created: function () {
+	     	this.getUrlParam();
+	     	this.aboutData();
+	     },
+	     methods: {
+	     	aboutData:function() {
+	     		var that = this;
+	     		var posts = localStorage.getItem('StoragePostData')
+	     		var postss = JSON.parse(posts);
+	     		this.score = postss;
+	     		postss.totalscore = postss.totalscore.toString();
+	     		postss = JSON.stringify(postss);// 转JSON字符串
+	     		console.log(posts)
+	     		console.log(postss)
+	     		var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        var encrypted = encrypt.encryptLong(postss)// 加密对象
+	     		that.$http.post('https://www.wydx.top/usermanage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function(response){
+		      		console.log(response)
+		      		localStorage.removeItem('StoragePostData');
+		      		localStorage.removeItem('StorageGetData');
+		      	},function(error) {
+		      		console.log(error)
+		      	})
+	     	},
+	     	back:function() {
+	     		var type = this.score.from_type=="2"?'bannerId':'meetId'
+	     		window.location.href='Examination.html?userid='+this.score.userid+'&ballot_id='+this.score.ballotid+'&'+type+'='+this.score.from_id;
+	     	},
+	     	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+	     }
+		})
+	</script>
+</body>
+</html>

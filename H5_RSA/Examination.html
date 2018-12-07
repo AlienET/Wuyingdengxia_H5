@@ -75,7 +75,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
-		        that.$http.post('https://www.wydx.top/userManage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        that.$http.post('https://www.wydx.top/usermanage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		         	console.log(response);
 		         	console.log(response.data.data);
 		         	that.aboutData = response.data.data;

@@ -9,6 +9,10 @@
   	[v-cloak]{
   		display: none;
   	}
+  	.article_content a{
+  		color: #1397ff !important;
+    	text-decoration: underline !important;
+  	}
   </style>
 </head>
 <body>
@@ -133,7 +137,7 @@
 			    }, 250);
 			    setTimeout(function() {
 			        location.reload();
-			    }, 1000);
+			    }, 500);
 	     	},
 	     	// 举报切换
 	     	luelue:function (item,index) {
@@ -150,7 +154,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
-		        that.$http.post('https://www.wydx.top/homePageManage/getArticleById',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        that.$http.post('https://www.wydx.top/homepagemanage/getArticleById',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		        	console.log(response)
 		        	console.log(response.data.data)
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
@@ -246,65 +250,65 @@
 		    UserInformation:function (u) {
 		    	window.webkit.messageHandlers.asd.postMessage(u);
 		    },
-	      	// 关注
-	      	follow:function (argument) {
-	      		var that = this;
-	      		if (this.aboutData.is_follow > 0) {
-		      		that.$http.post('https://yszg.org/index.php/API/post_cel_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true}).then(function(response){
-		      			console.log(response)
-		      			this.aboutData.is_follow = null;
-		      		},function(error) {
-		      			// body...
-		      			console.log(error)
-		      		})
-	      		}else{
-	      			that.$http.post('https://yszg.org/index.php/API/post_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true})
-	      			.then(function(response){
-		      			console.log(response)
-		      			this.aboutData.is_follow = true;
-		      		},function(error) {
-		      			console.log(error)
-		      		})
-	      		}
+	      	// // 关注
+	      	// follow:function (argument) {
+	      	// 	var that = this;
+	      	// 	if (this.aboutData.is_follow > 0) {
+		      // 		that.$http.post('https://yszg.org/index.php/API/post_cel_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true}).then(function(response){
+		      // 			console.log(response)
+		      // 			this.aboutData.is_follow = null;
+		      // 		},function(error) {
+		      // 			// body...
+		      // 			console.log(error)
+		      // 		})
+	      	// 	}else{
+	      	// 		that.$http.post('https://yszg.org/index.php/API/post_follow',{userid:this.userid,befollid:this.aboutData.user_id},{emulateJSON: true})
+	      	// 		.then(function(response){
+		      // 			console.log(response)
+		      // 			this.aboutData.is_follow = true;
+		      // 		},function(error) {
+		      // 			console.log(error)
+		      // 		})
+	      	// 	}
 
-	      	},
-	      	// 点赞
-	      	like:function (item,index) {
-	      		var that = this;
+	      	// },
+	      	// // 点赞
+	      	// like:function (item,index) {
+	      	// 	var that = this;
 
-	      		if (item.is_support>0) {
-	      			that.$http.post('https://yszg.org/index.php/API/post_cel_support',{userid:this.userid,toid:item.comment_id,supType:5},{emulateJSON:true}).then(function (response) {
-	      				item.comment_support_num  -=1;
-	      				item.is_support = false;
-	      				console.log(response)
-	      			},function (error) {
-	      				console.log(error)
-	      			})
-	      		}else{
-	      			that.$http({
-	      				method:'GET',
-	      				url:'https://yszg.org/index.php/API/get_support?userid='+this.userid+'&toid='+item.comment_id+'&supType=5',
-	      			}).then(function (response) {
-	      				item.comment_support_num  = parseInt(item.comment_support_num );
-		      			item.comment_support_num  +=1;
-		      			item.is_support = true;
-		      			console.log(response)
-	      			},function (error) {
-	      				console.log(error)
-	      			})
-	      		}
-	      	},
-	      	// 举报Icon
-	      	report:function(item,index) {
-	      		var that = this;
-	      		that.$http.post('https://yszg.org/index.php/API/post_report',{user_id:this.userid,to_id:item.comment_id,type:0,to_type:0,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
-	      			this.mask = true;
-	      			item.jubao = !item.jubao;
-	      			console.log(argument)
-	      		},function(argument) {
-	      			console.log(argument)
-	      		});
-	      	}
+	      	// 	if (item.is_support>0) {
+	      	// 		that.$http.post('https://yszg.org/index.php/API/post_cel_support',{userid:this.userid,toid:item.comment_id,supType:5},{emulateJSON:true}).then(function (response) {
+	      	// 			item.comment_support_num  -=1;
+	      	// 			item.is_support = false;
+	      	// 			console.log(response)
+	      	// 		},function (error) {
+	      	// 			console.log(error)
+	      	// 		})
+	      	// 	}else{
+	      	// 		that.$http({
+	      	// 			method:'GET',
+	      	// 			url:'https://yszg.org/index.php/API/get_support?userid='+this.userid+'&toid='+item.comment_id+'&supType=5',
+	      	// 		}).then(function (response) {
+	      	// 			item.comment_support_num  = parseInt(item.comment_support_num );
+		      // 			item.comment_support_num  +=1;
+		      // 			item.is_support = true;
+		      // 			console.log(response)
+	      	// 		},function (error) {
+	      	// 			console.log(error)
+	      	// 		})
+	      	// 	}
+	      	// },
+	      	// // 举报Icon
+	      	// report:function(item,index) {
+	      	// 	var that = this;
+	      	// 	that.$http.post('https://yszg.org/index.php/API/post_report',{user_id:this.userid,to_id:item.comment_id,type:0,to_type:0,content:item.comment_content},{emulateJSON:true}).then(function (argument) {
+	      	// 		this.mask = true;
+	      	// 		item.jubao = !item.jubao;
+	      	// 		console.log(argument)
+	      	// 	},function(argument) {
+	      	// 		console.log(argument)
+	      	// 	});
+	      	// }
 	     }
 
 	   });

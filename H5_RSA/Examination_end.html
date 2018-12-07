@@ -72,7 +72,7 @@
 	     		var encrypt = new JSEncrypt(); //新建RSA对象
 		        encrypt.setPublicKey(that.modulus); // 设置私钥
 		        var encrypted = encrypt.encryptLong(postss)// 加密对象
-	     		that.$http.post('https://www.wydx.top/userManage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function(response){
+	     		that.$http.post('https://www.wydx.top/usermanage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function(response){
 		      		console.log(response)
 		      		localStorage.removeItem('StoragePostData');
 		      		localStorage.removeItem('StorageGetData');

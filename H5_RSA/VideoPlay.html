@@ -170,14 +170,14 @@
 			        var encrypted = encrypt.encrypt(obj)// 加密对象
 			        console.log(obj)
 			        if (this.aboutData.is_support>0) {
-			        	that.$http.post('https://www.wydx.top/userManage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
+			        	that.$http.post('https://www.wydx.top/usermanage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
 			        		console.log(response);
 			        		this.aboutData.is_support = 0;
 			        	},function(error) {
 	      					console.log(error)
 	      				})
 			        }else{
-			        	that.$http.post('https://www.wydx.top/userManage/addSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
+			        	that.$http.post('https://www.wydx.top/usermanage/addSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
 			        		console.log(response);
 			        		this.aboutData.is_support = 1;
 			        	},function(error) {
@@ -199,14 +199,14 @@
 			        console.log(obj)
 
 			    	if (this.aboutData.is_collection >0){
-			    		that.$http.post('https://www.wydx.top/userManage/cancelCollection',{data:encrypted},{emulateJSON: true}).then(function(response){
+			    		that.$http.post('https://www.wydx.top/usermanage/cancelCollection',{data:encrypted},{emulateJSON: true}).then(function(response){
 				      			this.aboutData.is_collection = 0;
 				      		console.log(response)
 			      		},function(error) {
 			      			console.log(error)
 			      		})
 			    	}else{
-			      		that.$http.post('https://www.wydx.top/userManage/addCollection',{data:encrypted},{emulateJSON: true}).then(function(response){
+			      		that.$http.post('https://www.wydx.top/usermanage/addCollection',{data:encrypted},{emulateJSON: true}).then(function(response){
 				      			this.aboutData.is_collection = 1;
 				      		console.log(response)
 			      		},function(error) {
@@ -259,7 +259,7 @@
 			        var encrypted = encrypt.encrypt(obj)// 加密对象
 			        console.log(obj)
 		      		if (item.is_support>0) {
-		      			that.$http.post('https://www.wydx.top/userManage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      			that.$http.post('https://www.wydx.top/usermanage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		      				item.comment_support_num -=1;
 		      				item.is_support = 0;
 		      				console.log(response)
@@ -267,7 +267,7 @@
 		      				console.log(error)
 		      			})
 		      		}else{
-		      			that.$http.post('https://www.wydx.top/userManage/addSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      			that.$http.post('https://www.wydx.top/usermanage/addSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		      				item.comment_support_num = parseInt(item.comment_support_num);
 		      				item.comment_support_num +=1;
 			      			item.is_support = 1;
@@ -297,7 +297,7 @@
 			        obj = JSON.stringify(obj);// 转JSON字符串
 			        var encrypted = encrypt.encryptLong(obj)// 加密对象
 			        console.log(obj)
-		      		that.$http.post('https://www.wydx.top/userManage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      		that.$http.post('https://www.wydx.top/usermanage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		      			console.log(response)
 	      				that.mask_jubao = response.data.msg;
 		      			this.mask = true;
@@ -317,7 +317,7 @@
 			        obj = JSON.stringify(obj);// 转JSON字符串
 			        var encrypted = encrypt.encrypt(obj)// 加密对象
 			        console.log(obj)
-			        that.$http.post('https://www.wydx.top/activityManage/getReplayDetailInfo',{data:encrypted},{emulateJSON:true}).then(function (response) {
+			        that.$http.post('https://www.wydx.top/activitymanage/getReplayDetailInfo',{data:encrypted},{emulateJSON:true}).then(function (response) {
 			        	console.log(response.data.data)
 			         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 			         	var Videol= response.data.data.cutting_title.split(',');
@@ -353,7 +353,7 @@
 			        var encrypted = encrypt.encrypt(obj)// 加密对象
 			        console.log(obj)
 		      		var u = u;
-		      		that.$http.post('https://www.wydx.top/userManage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      		that.$http.post('https://www.wydx.top/usermanage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 			         	// 	response.data.data[response.data.data.length-1].jubao = false;
 			         	// this.commentData.unshift(response.data.data[response.data.data.length-1])
@@ -390,7 +390,7 @@
 			        obj = JSON.stringify(obj);// 转JSON字符串
 			        var encrypted = encrypt.encrypt(obj)// 加密对象
 			        console.log(obj)
-		      		that.$http.post('https://www.wydx.top/userManage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      		that.$http.post('https://www.wydx.top/usermanage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		      			console.log(response.data.data)
 			         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
 			         	for (var i = response.data.data.length - 1; i >= 0; i--) {

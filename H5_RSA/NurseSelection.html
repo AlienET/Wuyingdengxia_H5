@@ -189,7 +189,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
-		        that.$http.post('https://www.wydx.top/userManage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        that.$http.post('https://www.wydx.top/usermanage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		         	console.log(response.data.data);
 		         	for (var i = response.data.data.questiondata.length - 1; i >= 0; i--) {
 		         		// console.log(response.data.data.questiondata[i].optiondata.length)
@@ -270,7 +270,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encryptLong(obj)// 加密对象
 		        console.log(obj)
-		        that.$http.post('https://www.wydx.top/userManage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        that.$http.post('https://www.wydx.top/usermanage/commitBallot',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		        	console.log(response)
 		        },function (error) {
 		         	alert(error);

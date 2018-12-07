@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <title>文章详情</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  </style>
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div v-show='aboutData.video_url!=""' style="position: fixed;top: 0px;left: 0px;z-index: 10;background-color: #fff;width: 100%;">
+			<video :src='aboutData.video_url' width="100%" height="200px" controls></video>
+			<h1 class="title" style="padding-left: 20px">{{aboutData.article_title}}</h1>
+		</div>
+		<div class="article" :style="aboutData.video_url==''?'':'margin-top:220px;'">
+			<span class="zztl" v-if='DiscussDetails'>正在讨论</span>
+			<div> 
+				<h1 v-show='aboutData.video_url==""' class="title" :class='{wtxq_tit:DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy}'>{{aboutData.article_title}}</h1>
+				<div class="wtxq_moon" v-if='DetailsProblemAnonym||DetailsProblem||DetailsProblemMy||AnswerDetailsMy'>
+					<img src="images/icon/yueliangbi.png">
+					<span>15</span>
+				</div>
+			</div>
+			<div class="author" v-if='DetailsArticle||DetailsProblem||DetailsArticleMy'>
+				<span @click='UserInformation(aboutData.user_id)' class="author_img">
+					<img width="100%" height="100%" :src="aboutData.headimg" alt="">
+				</span>
+				<div class="author_xx" @click='UserInformation(aboutData.user_id)'>
+					<div>
+						<span class="author_name">{{aboutData.article_author}}</span>
+					</div>
+					<div>
+						<span class="author_time">{{aboutData.ctime | DateDiff}}</span>
+					</div>
+				</div>
+				<button class="author_btn" :class="aboutData.is_follow > 0?'y-author_btn':''" v-if='DetailsArticle' @click='follow'>{{aboutData.is_follow > 0?'已关注':'关注'}}</button>
+				<span class="dsh" v-if='DetailsArticleMy'>待审核</span>
+			</div>
+			<div class="author_time m-tb-md" v-if='DetailsProblemAnonym||DiscussDetails||DetailsProblemMy||AnswerDetailsMy'>2018-1-24</div>
+			<div class="article_content">
+				<div v-html='aboutData.article_content'></div>
+				<!-- <img v-for='item in aboutData.article_img' :src="item"> -->
+			</div>
+			<div class="article_content_label" v-if='!DiscussDetails'>
+				<span v-for='item in aboutData.article_tags'>{{item==''?false:item}}</span>
+				<!-- <span>儿科医生</span> -->
+				<!-- <span>资讯</span> -->
+			</div>
+		</div>
+		<div style="height: 20px;background: #F3F4F8;"></div>
+		<div class="comment_list">
+			<div class="comment_num">
+				全部评论 {{commentData.length}} 
+			</div>
+			<div class="item" v-for='(item,index) in commentData'>
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
+					<img :src="item.headimg">
+				</a>
+				<div class="item_xx">
+					<div>
+						<span @click='UserInformation(item.user_id)' class="item_name" v-text='item.user_name == ""?"匿名用户":item.user_name'></span>
+						<div class="fl-r">
+							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
+								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
+								<span class="report" v-show='item.jubao' @click='report(item,index)'>
+									举报
+								</span>
+							</span>
+							
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
+							<span class="likes_num">
+								{{item.comment_support_num }}
+							</span>
+						</div>
+					</div>
+					<div class="item_inner">
+						{{item.comment_content}}
+					</div>
+					<div class="mt-sm">
+						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
+						<a :href="'replay.html?comment_id='+item.comment_id+'&userid='+userid+'&content='+item.comment_content+'&follow_user_id='+item.user_id+'&ctime='+item.ctime+'&headimg='+item.headimg+'&user_name='+item.user_name+'&title='+aboutData.article_title+'&type=0'" class="item_hf" v-if='DetailsArticle||DetailsProblemAnonym||DetailsProblem||DetailsArticleMy'>回复</a>
+					</div>
+				</div>
+				<img class="ycn" v-if='DetailsProblemMy||AnswerDetailsMy' src="images/icon/cainaicon.png">
+			</div>
+			<div v-if='commentData.length ==0' style="color: #999;text-align: center;padding: 20px;">
+				暂无评论...
+			</div>
+		</div>
+		<div style="position: fixed;top: 0;right: 0;bottom: 0;left: 0;text-align: center;background-color: rgba(0,0,0,0.2);z-index: 99" @click='mask=false' v-show='mask'>
+			<div style="margin:60% auto 0 auto;background: #F9F9F9;padding: 20px;display: inline-block;border-radius: 5px;color: #000;">
+				{{mask_jubao}}
+			</div>
+		</div>
+	</div>
+	
+	<!-- 
+		讨论详情 			  DiscussDetails
+		文章详情 			  DetailsArticle
+		问题详情/匿名 		  DetailsProblemAnonym
+		问题详情/未匿名 	  DetailsProblem
+		文章详情/个人中心 	  DetailsArticleMy
+		我的问题详情/个人中心 DetailsProblemMy
+		我的回答详情/个人中心 AnswerDetailsMy
+	 -->
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
+	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<!-- <script type="text/javascript" src="js/vue-router.min.js"></script> -->
+	<script type="text/javascript" src="js/vue-router.js"></script>
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	// 讨论详情
+	     	DiscussDetails:'',
+	     	//文章详情
+	     	DetailsArticle:'1',
+	     	//问题详情/匿名
+	     	DetailsProblemAnonym:'',
+	     	//问题详情/未匿名
+	     	DetailsProblem:'',
+	     	//文章详情/个人中心
+	     	DetailsArticleMy:'',
+	     	//我的问题详情/个人中心
+	     	DetailsProblemMy:'',
+	     	//我的回答详情/个人中心
+	     	AnswerDetailsMy:'',
+	     	//文章接口数据
+	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	//评论接口数据
+	      	commentData:[],
+	      	// 没点赞
+	      	likeIconN:'images/icon/dianzan.png',
+	      	// 已点赞
+	      	likeIcon:'images/icon/dadianzan.png',
+	      	// 传参
+	      	// articleid:'',
+	      	// 用户id
+	      	// userid:'',
+	      	// 关注btn
+	      	// btn_follow:''
+	      	//遮罩层
+	      	mask:'',
+	      	//举报提示
+	      	mask_jubao:'',
+	      	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+
+	     },
+	     mounted:function () { window.refreshcomment = this.refreshcomment; },
+	     created: function () {
+	      this.getUrlParam()
+	      this.getRoute();
+	      this.allcomment();
+	      console.log('articleid='+this.articleid);
+	      console.log('userid='+this.userid);
+	     },
+	     methods: {
+	     	// 举报切换
+	     	luelue:function (item,index) {
+	     		item.jubao = !item.jubao
+	     	},
+	     	// 文章内容
+	     	getRoute: function () {
+		        var that = this; 
+		        var obj = new Object();
+		        obj.userid = that.userid;
+		        obj.articleid = that.articleid;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/homepagemanage/getArticleById',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        	console.log(response)
+		        	console.log(response.data.data)
+	      			this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	var articleTags = this.aboutData.article_tags;
+		         	this.aboutData.article_tags=[];
+		         	articleTags = articleTags.split(',');//this.aboutData.article_tags
+		         	for (var i = articleTags.length - 1; i >= 0; i--) {
+		         		if (articleTags[i]!='') {
+		         			that.aboutData.article_tags.push(articleTags[i])
+		         		}
+		         	}
+		         	console.log(this.aboutData);
+		         	if (this.aboutData.article_img != '') {
+		         		var article_img = this.aboutData.article_img;
+		         		// this.aboutData.article_img = article_img.split(',')
+		         	}
+	      		},function(error){
+	      			console.log(error)
+	      		})
+	      	},
+	      	// 评论列表
+	      	allcomment:function (argument) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.user_id = that.userid;
+		        obj.toid = that.articleid;
+		        obj.comType = "0";
+		        obj.comment_to_type = "0";
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		that.$http.post('https://www.wydx.top/usermanage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        	console.log(response)
+	      			 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		response.data.data[i].jubao = false;
+		         		// this.commentData.push(response.data.data[i])
+		         	}
+		         	this.commentData = response.data.data;
+		         	console.log(this.commentData)
+	      		},function(error){
+	      			console.log(error)
+	      		})
+	      	},
+	      	// 评论列表
+	      	refreshcomment:function (u) {
+	      		var that = this;
+	      		var u = u;
+	      		var obj = new Object();
+		        obj.user_id = that.userid;
+		        obj.toid = that.articleid;
+		        obj.comType = "0";
+		        obj.comment_to_type = "0";
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		that.$http.post('https://www.wydx.top/usermanage/getCommentList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	if (response.data.data.length == 1) {
+		         		response.data.data[0].jubao = false;
+		         		this.commentData = response.data.data
+		         	}else{
+			         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+			         		if (response.data.data[i].user_id == this.userid) {
+			         			if (response.data.data[i].comment_content == u) {
+				         			response.data.data[i].jubao = false;
+				         			var refresh = [];
+				         			refresh = response.data.data.splice(i,1);
+				         			this.commentData.unshift(refresh[0]);
+				         			return;
+				         		}
+			         		}
+			         	}
+		         	}
+		         	console.log(this.commentData)
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	console.log(u)
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+		    },
+	      	// 关注
+	      	follow:function (argument) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.userid = that.userid;
+		        obj.befollid = that.aboutData.user_id;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		if (this.aboutData.is_follow > 0) {
+		      		that.$http.post('https://www.wydx.top/usermanage/cancelFollow',{data:encrypted},{emulateJSON: true}).then(function(response){
+		      			console.log(response)
+		      			this.aboutData.is_follow = null;
+		      		},function(error) {
+		      			// body...
+		      			console.log(error)
+		      		})
+	      		}else{
+	      			that.$http.post('https://www.wydx.top/usermanage/addFollow',{data:encrypted},{emulateJSON: true})
+	      			.then(function(response){
+		      			console.log(response)
+		      			this.aboutData.is_follow = true;
+		      		},function(error) {
+		      			console.log(error)
+		      		})
+	      		}
+
+	      	},
+	      	// 点赞
+	      	like:function (item,index) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.userid = that.userid;
+		        obj.toid = item.comment_id;
+		        obj.supType = '5';
+		        obj.toUserId = item.user_id;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+
+	      		if (item.is_support>0) {
+	      			that.$http.post('https://www.wydx.top/usermanage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+	      				console.log(response);
+	      				item.comment_support_num  -=1;
+	      				item.is_support = false;
+	      			},function (error) {
+	      				console.log(error)
+	      			})
+	      		}else{
+	      			that.$http.post('https://www.wydx.top/usermanage/addSupport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+	      				console.log(response);
+	      				item.comment_support_num  = parseInt(item.comment_support_num );
+		      			item.comment_support_num  +=1;
+		      			item.is_support = true;
+	      			},function (error) {
+	      				console.log(error)
+	      			})
+	      		}
+	      	},
+	      	// 举报Icon
+	      	report:function(item,index) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.user_id = that.userid;
+		        obj.to_id = item.comment_id;
+		        obj.type = '0';
+		        obj.to_type = '0';
+		        obj.content = item.comment_content;
+		        obj.title = that.aboutData.article_title;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encryptLong(obj)// 加密对象
+		        console.log(obj)
+	      		that.$http.post('https://www.wydx.top/usermanage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+	      			console.log(response.data.msg)
+	      			that.mask_jubao = response.data.msg;
+	      			this.mask = true;
+	      			item.jubao = !item.jubao;
+	      		},function(argument) {
+	      			console.log(argument)
+	      		});
+	      	}
+	     }
+
+	   });
+		// 自定义过滤器
+		Vue.filter('DateDiff',function(input) {
+			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if(diffValue < 0){return;}
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+				result="" + parseInt(monthC) + " 月前";
+			}
+			else if(weekC>=1){
+				result="" + parseInt(weekC) + " 周前";
+			}
+			else if(dayC>=1){
+				result=""+ parseInt(dayC) +" 天前";
+			}
+			else if(hourC>=1){
+				result=""+ parseInt(hourC) +" 小时前";
+			}
+			else if(minC>=1){
+				result=""+ parseInt(minC) +" 分钟前";
+			}else
+			result="刚刚";
+			return result;
+		});
+	</script>
+</body>
+</html>

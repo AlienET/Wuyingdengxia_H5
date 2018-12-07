@@ -261,7 +261,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
-		        that.$http.post('https://www.wydx.top/activityManage/getMeetById',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		        that.$http.post('https://www.wydx.top/activitymanage/getMeetById',{data:encrypted},{emulateJSON:true}).then(function (response) {
 		        	console.log(response)
 		        	console.log(response.data.data)
 		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里

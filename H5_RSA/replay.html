@@ -146,7 +146,7 @@
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
 	     		var u = u;
-	     		that.$http.post('https://www.wydx.top/userManage/getReplyList',{data:encrypted},{emulateJSON:true}).then(function(response) {
+	     		that.$http.post('https://www.wydx.top/usermanage/getReplyList',{data:encrypted},{emulateJSON:true}).then(function(response) {
 				    console.log(response.data.data.array[response.data.data.array.length-1])
 				    // response.data.data[response.data.data.length-1].jubao =false;
 				    // this.aboutData.unshift(response.data.data[response.data.data.length-1])
@@ -185,7 +185,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
-	     		that.$http.post('https://www.wydx.top/userManage/getReplyList',{data:encrypted},{emulateJSON:true}).then(function(response) {
+	     		that.$http.post('https://www.wydx.top/usermanage/getReplyList',{data:encrypted},{emulateJSON:true}).then(function(response) {
 	     			console.log(response.data.data)
 		         	 // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
 		         	for (var i = response.data.data.array.length - 1; i >= 0; i--) {
@@ -243,14 +243,14 @@
 		        var encrypted = encrypt.encrypt(obj)// 加密对象
 		        console.log(obj)
 	      		if (this.aboutData.is_follow < 1) {
-	      			that.$http.post('https://www.wydx.top/userManage/addFollow',{data:encrypted},{emulateJSON:true}).then(function(response){
+	      			that.$http.post('https://www.wydx.top/usermanage/addFollow',{data:encrypted},{emulateJSON:true}).then(function(response){
 		      			console.log(response)
 		      			this.aboutData.is_follow = 1;
 		      		},function(error) {
 		      			console.log(error)
 		      		})
 	      		}else{
-	      			that.$http.post('https://www.wydx.top/userManage/cancelFollow',{data:encrypted},{emulateJSON:true}).then(function(response){
+	      			that.$http.post('https://www.wydx.top/usermanage/cancelFollow',{data:encrypted},{emulateJSON:true}).then(function(response){
 		      			console.log(response)
 		      			this.aboutData.is_follow = 0;
 		      		},function(error) {
@@ -298,7 +298,7 @@
 		        obj = JSON.stringify(obj);// 转JSON字符串
 		        var encrypted = encrypt.encryptLong(obj)// 加密对象
 		        console.log(obj)
-	      		that.$http.post('https://www.wydx.top/userManage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+	      		that.$http.post('https://www.wydx.top/usermanage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
 	      			console.log(response)
 	      			that.mask_jubao = response.data.msg;
 	      			this.mask = true;

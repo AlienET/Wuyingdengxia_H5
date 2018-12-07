@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <title>我的回答详情/个人中心</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  </style>
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="article">
+			<div> <!-- 问题详情 加 wtxq_ -->
+				<h1 class="title wtxq_tit">{{aboutData.question_title}}</h1>
+				<div class="wtxq_moon" >
+					<img src="images/icon/yueliangbi.png">
+					<span>{{aboutData.moon_cash}}</span>
+				</div>
+			</div>
+			<div class="author" v-show='aboutData.is_public > 0'>
+				<a href="javascript:;" class="author_img"  @click='UserInformation(aboutData.user_id)'>
+					<img width="100%" height="100%" :src="aboutData.headimg" alt="">
+				</a>
+				<a href="javascript:;" class="author_xx" style="display: inline-block;" @click='UserInformation(aboutData.user_id)'>
+					<div>
+						<span class="author_name">{{aboutData.username}}</span>
+					</div>
+					<div>
+						<span class="author_time">{{aboutData.ctime | DateDiff}}</span>
+					</div>
+				</a>
+			</div>
+			<div class="author_time m-tb-md" v-show='aboutData.is_public < 1'>{{aboutData.ctime | DateDiff}}</div>
+			<div class="article_content">
+				<div v-html='aboutData.question_content'></div>
+				<img class="inner_img" v-for='item in aboutData.question_image' :src="item">
+			</div>
+			<div class="article_content_label">
+				<span v-for='item in aboutData.question_tags'>{{item}}</span>
+			</div>
+		</div>
+		<div style="height: 20px;background: #F3F4F8;"></div>
+		<div class="comment_list">
+			<div class="comment_num">
+				全部回答 {{commentData.length}}
+			</div>
+			<div v-show='commentData.length == 0' style="text-align:center;padding:20px;color: #B9B9B9;">
+				暂无回答 ...
+			</div>
+			<div class="item" v-for='(item,index) in commentData'>
+				<a href="javascript:;" @click='UserInformation(item.user_id)'>
+					<img :src="item.headimg">
+				</a>
+				<div class="item_xx">
+					<div>
+						<span class="item_name" @click='UserInformation(item.user_id)'>{{item.user_name}}</span>
+						<div class="fl-r">
+							<span style="position: relative;vertical-align: middle;margin-right: 14px;">
+								<img @click='luelue(item,index)' style="vertical-align: middle;" height='14px' src="images/icon/luelue.png">
+								<span class="report" v-show='item.jubao' @click='report(item,index)'>
+									举报
+								</span>
+							</span>
+							<img class="likes" @click='like(item,index)' :src="item.is_support>0?likeIcon:likeIconN">
+							<span class="likes_num">
+								{{item.support_num}}
+							</span>
+						</div>
+					</div>
+					<div class="item_inner">
+						{{item.answer_content}}
+					</div>
+					<div class="mt-sm">
+						<span class="item_time">{{item.ctime | DateDiff}} &nbsp; &bull; &nbsp;</span>
+						<a :href="'replay.html?comment_id='+item.answer_id+'&userid='+userid+'&content='+item.answer_content+'&follow_user_id='+item.user_id+'&ctime='+item.ctime+'&headimg='+item.headimg+'&user_name='+item.user_name+'&title='+aboutData.article_title+'&type=5'" class="item_hf">回复</a>
+						<span v-show='item.is_take == 0 && isTake' class="cn_btn" @click='caina(item,index)' >采纳</span>
+					</div>
+				</div>
+				<img v-show='item.is_take > 0' class="ycn" src="images/icon/cainaicon.png">
+			</div>
+		</div>
+		<div style="position: fixed;top: 0;right: 0;bottom: 0;left: 0;text-align: center;background-color: rgba(0,0,0,0.2);" @click='mask=false' v-show='mask'>
+			<div style="margin:60% auto 0 auto;background: #F9F9F9;padding: 20px;display: inline-block;border-radius: 5px;color: #000;">
+				{{mask_jubao}}
+			</div>
+		</div>
+	</div>
+	<!-- 
+		讨论详情 			  DiscussDetails
+		文章详情 			  DetailsArticle
+		问题详情/匿名 		  DetailsProblemAnonym
+		问题详情/未匿名 	  DetailsProblem
+		文章详情/个人中心 	  DetailsArticleMy
+		我的问题详情/个人中心 DetailsProblemMy
+		我的回答详情/个人中心 AnswerDetailsMy
+	 -->
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="js/vue-resource.js"></script>
+	<!-- <script src="//cdn.bootcss.com/vue-resource/1.0.3/vue-resource.js" type="text/javascript" charset="utf-8"></script> -->
+	<!-- <script src="js/jsencrypt.min.js"></script> -->
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	//接口数据
+	      	aboutData:[], //建一个空数组，用来保存调用接口获取的数据
+	      	// Url 参数
+	      	quesid:'',
+	      	//评论列 接口数据
+	      	commentData:[],
+	      	// 没点赞
+	      	likeIconN:'images/icon/dianzan.png',
+	      	// 已点赞
+	      	likeIcon:'images/icon/dadianzan.png',
+	      	// 用户id
+	      	userid:'',
+	      	//遮罩层
+	      	mask:'',
+	      	// 是否采纳
+	      	isTake:true,
+	      	//举报提示
+	      	mask_jubao:'',
+	      	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     mounted:function () { window.refreshcomment = this.refreshcomment; },
+	     created: function () {
+	     	// 获取 Url 参数
+	     	this.getUrlParam();
+	     	//回答详情 接口数据
+	      this.getRoute();
+	      //评论列表 接口数据
+	      this.allcomment();
+	     },
+	     methods: {
+	     	// 举报切换
+	     	luelue:function (item,index) {
+	     		item.jubao = !item.jubao
+	     	},
+	     	getRoute: function () {
+		        var that = this; 
+		        var obj = new Object();
+		        obj.quesid = that.quesid;
+		        obj.userid = that.userid;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj);// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/questionsmanage/getQuestionByQuesId',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	this.aboutData = response.data.data; // promise的then成功之后，将response返回的数据data，保存到aboutData数组里
+		         	var questionTags = this.aboutData.question_tags;
+		         	console.log(questionTags)
+		         	// questionTags = questionTags.split(',');//this.aboutData.question_tags
+		         	this.aboutData.question_tags=[];
+		         	for (var i = questionTags.length - 1; i >= 0; i--) {
+		         		if (questionTags[i]!='') {
+		         			that.aboutData.question_tags.push(questionTags[i])
+		         		}
+		         	}
+		         	if(this.aboutData.question_image != ''){
+		         		var question_image = this.aboutData.question_image;
+		         		this.aboutData.question_image = question_image.split(',')
+		         	}
+		         	console.log(this.aboutData)
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+
+	      	// 评论列表
+	      	refreshcomment:function (u) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.quesid = that.quesid;
+		        obj.userid = that.userid;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		var u = u;
+	      		that.$http.post('https://www.wydx.top/questionsmanage/getAnswerList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	// 	response.data.data[response.data.data.length-1].jubao = false;
+		         	// this.commentData.unshift(response.data.data[response.data.data.length-1])
+		         	for (var i = 0; i < response.data.data.length; i++) {
+				        if (response.data.data[i].user_id == this.userid) {
+				        	if (response.data.data[i].answer_content == u) {
+					        	response.data.data[i].jubao = false;
+					        	var refresh = [];
+					        	refresh = response.data.data.splice(i,1);
+					        	this.commentData.unshift(refresh[0]);
+					        	return;
+					        }
+				        }
+				    }
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+
+	      	// 评论列表
+	      	allcomment:function (argument) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.quesid = that.quesid;
+		        obj.userid = that.userid;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		that.$http.post('https://www.wydx.top/questionsmanage/getAnswerList',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	 // promise的then成功之后，将response返回的数据data，保存到commentData数组里
+		         	for (var i = response.data.data.length - 1; i >= 0; i--) {
+		         		response.data.data[i].jubao = false;
+		         		if (response.data.data[i].is_take == 1) {
+		         			that.isTake = false;
+		         		}else{
+		         			that.isTake = true;
+		         		}
+		         		// this.commentData.push(response.data.data[i])
+		         	}
+		         	this.commentData = response.data.data;
+		         	console.log(this.commentData);
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		                console.log(value)
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+		    // 与iOS交互用户id
+		    UserInformation:function (u) {
+		    	console.log(u)
+		    	window.webkit.messageHandlers.asd.postMessage(u);
+
+		    },
+		    // 点赞
+	      	like:function (item,index) {
+	      		var that = this;
+	      		var obj = new Object();
+		        obj.userid = that.userid;
+		        obj.toid = item.answer_id;
+		        obj.supType = '6';
+		        obj.toUserId = item.user_id;
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+	      		//
+	      		var that = this;
+	      		if (item.is_support>0) {
+	      			that.$http.post('https://www.wydx.top/usermanage/cancelSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
+	      				item.support_num -=1;
+	      				item.is_support = 0;
+	      				console.log(response)
+	      			},function(error) {
+	      				console.log(error)
+	      			})
+	      		}else{
+	      			that.$http.post('https://www.wydx.top/usermanage/addSupport',{data:encrypted},{emulateJSON:true}).then(function(response) {
+	      				item.support_num = parseInt(item.support_num);
+	      				item.support_num +=1;
+		      			item.is_support = 1;
+	      				console.log(response)
+	      			},function(error) {
+	      				console.log(error)
+	      			})
+	      		}
+	      	},
+	      	// 举报Icon
+	      	report:function(item,index) {
+	      		var that = this;
+	      		if(item.is_take<1){
+		      		var obj = new Object();
+			        obj.user_id = that.userid;
+			        obj.to_id = item.answer_id;
+			        obj.type = '0';
+			        obj.to_type = '7';
+			        obj.content = item.answer_content;
+			        obj.title = that.aboutData.question_title;
+			        var encrypt = new JSEncrypt(); //新建RSA对象
+			        encrypt.setPublicKey(that.modulus); // 设置私钥
+			        obj = JSON.stringify(obj);// 转JSON字符串
+			        var encrypted = encrypt.encryptLong(obj);// 加密对象
+			        // console.log(obj)
+			        // console.log(encrypted)
+		      		that.$http.post('https://www.wydx.top/usermanage/addReport',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		      			console.log(response)
+		      			that.mask_jubao = response.data.msg;
+		      			this.mask = true;
+		      			item.jubao = !item.jubao;
+		      		},function(argument) {
+		      			console.log(argument)
+		      		});
+	      		}
+	      	}
+	     }
+
+	   });
+				// 自定义过滤器
+		Vue.filter('DateDiff',function(input) {
+			var dateTimeStamp = Date.parse(input.replace(/-/gi,"/"));
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if(diffValue < 0){return;}
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+				result="" + parseInt(monthC) + " 月前";
+			}
+			else if(weekC>=1){
+				result="" + parseInt(weekC) + " 周前";
+			}
+			else if(dayC>=1){
+				result=""+ parseInt(dayC) +" 天前";
+			}
+			else if(hourC>=1){
+				result=""+ parseInt(hourC) +" 小时前";
+			}
+			else if(minC>=1){
+				result=""+ parseInt(minC) +" 分钟前";
+			}else
+			result="刚刚";
+			return result;
+		})
+	</script>
+</body>
+</html>

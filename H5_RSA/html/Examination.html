@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <title>问卷调查</title> 
+  <style type="text/css">
+  	[v-cloak]{
+  		display: none;
+  	}
+  	.btn{
+  		background: #5BB7FF;
+  		padding: .45em 3em;
+  	}
+  	p{
+  		color: #fff;
+  		font-size: 16px;
+  		margin-top: 10px;
+  	}
+  	html{
+  		background: rgb(79, 131, 228);
+  	}
+  </style>
+ </head>
+<body>
+	<div style="background: #4F83E4" id="app" v-cloak>
+		<img src="images/Artwork.png" width="50%" style="margin-top: 35%;margin-bottom: 15%">
+		<div style="color: #fff;text-shadow: 0 2px 2px #2064E2;">
+			{{aboutData.ballot_title}}
+		</div>
+		<p>	&bull; &nbsp; 共 {{aboutData.questiondata.length}} 道题</p>
+		<a class="btn" style="margin-top:3em;" :style="aboutData.gb_is_vote>0?'background:#ccc;box-shadow:0 2px 0 0 #ccc;color:#999':''" :href="aboutData.gb_is_vote>0?'javascript:;':'Examination_checkbox.html?few=0'">{{aboutData.gb_is_vote>0?'您已答题':'开始答题'}}</a>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/vue-resource.min.js"></script>
+	<script type="text/javascript" src="js/vue-router.min.js"></script>
+	<script type="text/javascript" src="js/jsencrypt.js"></script>
+	
+	<script type="text/javascript">
+		new Vue({
+	     el: '#app',
+	     data:{
+	     	aboutData:[],
+	     	// 第几个问题
+	     	few:0,
+	     	// 分数
+	     	score:0,
+	     	// 数据
+	     	option_id:'',
+	     	ques_id:'',
+	     	// 密钥
+	      	modulus:'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7AuVQB6HFovDB7zr+pqqr5blGMt4LYCPoCW/jLq/TSkk2Tkp+QF90OUIxu/6qleyQM2WaHykqNf/nsOtlmAZi1hiC3EFit9TuTA2rPo5V2qwkYw/L/4ww2VCylkSZ/kK9kKU5to4lWsTYA7TtLEXQm4uLL2UC6ZansTq1zeb8CQIDAQAB'
+	     },
+	     mounted:function () { 
+	     	
+	     },
+	     created: function () {
+	     	this.getUrlParam();
+	      	this.getRoute();
+	     },
+	     methods: {
+	     	getRoute: function () {
+	     		var that = this; 
+	     		var from_id = that.bannerId?that.bannerId:that.meetId;
+	     		console.log(from_id)
+		        var obj = new Object();
+		        obj.ballot_id = that.ballot_id;
+		        obj.userid = that.userid;
+		        obj.from_id = from_id;
+		        obj.from_type = that.bannerId?'2':'1';
+		        var encrypt = new JSEncrypt(); //新建RSA对象
+		        encrypt.setPublicKey(that.modulus); // 设置私钥
+		        obj = JSON.stringify(obj);// 转JSON字符串
+		        var encrypted = encrypt.encrypt(obj)// 加密对象
+		        console.log(obj)
+		        that.$http.post('https://www.wydx.top/usermanage/getBallotQuestions',{data:encrypted},{emulateJSON:true}).then(function (response) {
+		         	console.log(response);
+		         	console.log(response.data.data);
+		         	that.aboutData = response.data.data;
+		         	var StoragePostData = new Object();
+		         	var StorageGetData = response.data.data;
+		         	StoragePostData.userid = that.userid;							// 需要提交的数据  StoragePostData
+		         	StoragePostData.ballotid = that.ballot_id;						// 获取用到的数据  StorageGetData
+		         	StoragePostData.totalscore = 0;
+		         	StoragePostData.moon_cash = response.data.data.moon_cash==''?'0':response.data.data.moon_cash.toString();
+		         	StoragePostData.from_id = from_id;
+		         	StoragePostData.from_type = that.bannerId?'2':'1';
+		         	StoragePostData.ballot_type = response.data.data.ballot_type;
+		         	StoragePostData.questArray = [];
+		         	StoragePostData = JSON.stringify(StoragePostData);// 转JSON字符串
+		         	StorageGetData = JSON.stringify(StorageGetData);// 转JSON字符串
+		         	localStorage.setItem('StoragePostData',StoragePostData); // 存储 localStorage
+		         	localStorage.setItem('StorageGetData',StorageGetData); // 存储 localStorage
+		         	console.log(localStorage.getItem('StoragePostData')); // 读取 localStorage
+		        },function (error) {
+		         	console.log(error);
+		        })
+	      	},
+	      	// 获取参数
+	      	getUrlParam: function () {
+		        var name,value;
+		        var str=location.href; //取得整个地址栏
+		        var num=str.indexOf("?");
+		        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+		    
+		        var arr=str.split("&"); //各个参数放到数组里
+		        for(var i=0;i < arr.length;i++){
+		            num=arr[i].indexOf("=");
+		            if(num>0){
+		                name=arr[i].substring(0,num);
+		                value=arr[i].substr(num+1);
+		                this[name]=value;
+		            }
+		        }
+		        // console.log(arr[value])
+		    },
+	     }
+		})
+	</script>
+</body>
+</html>
