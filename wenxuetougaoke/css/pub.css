@@ -1,0 +1,54 @@
+.pub_box{
+    width: 1024px;
+    margin-left: 145px;
+
+}
+.pub_cont{
+    height: 40px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.pub_cont:first-child{
+    margin-top: 20px;
+}
+.pub_cont label{
+    font-size: 16px;
+    width: 68px;
+    text-align: left ;
+    display: inline-block;
+
+}
+.pub_cont .input{
+    margin-left: 50px;
+    width: 800px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0px 10px;
+    color: #6789aa;
+    border-radius: 4px;
+    border: 1px solid #a3a3a3;
+}
+
+.pub_cont_time{
+    display: flex;
+    margin-bottom: 10px;
+}
+.time_input{
+    margin-left: 55px;
+    display: flex;
+}
+
+.time_input input{
+    width: 200px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0px 10px;
+    color: #6789aa;
+    border-radius: 4px;
+    border: 1px solid #a3a3a3;
+}
+.time_input span{
+    display: inline-block;
+    line-height: 36px;
+    margin-left: 8px;
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>文学投稿客</title>
+    <link rel="stylesheet" type="text/css" href="css/style_51_common.css" />
+    <link rel="stylesheet" type="text/css" href="css/style_51_portal_index.css" />
+    <link rel="stylesheet" type="text/css" href="css/pub.css" />
+    <link rel="stylesheet" type="text/css" href="js/jedate/skin/jedate.css" />
+    <style type="text/css">
+        .title{
+            font-size: 26px;
+            font-weight: bold;
+            padding: 20px 0;
+        }
+        .author_time span{
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .content{
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="quater_head_top">
+    <div id="quater_bar_line" class="cl">
+        <div class="wp cl">
+            <div class="hd_logo">
+                <h2><a href="index.html"><img src="picture/logo.png"></a></h2>
+            </div>
+            <div class="navi">
+                <ul>
+                    <li id="mn_N6666">
+                        <a href="index.html" hidefocus="true">首页</a>
+                    </li>
+                    <li id="mn_Nf693">
+                        <a href="index.html" hidefocus="true">热门</a>
+                    </li>
+                    <!-- <li id="mn_N67f5">
+                      <a href="#" hidefocus="true"  >空间</a>
+                    </li> -->
+                    <li id="mn_N45b8">
+                        <a href="index.html" hidefocus="true">征稿</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="lgbox y cl" style="height: 94px; line-height: 94px; margin-left: 12px;">
+                <div class="cl">
+                    <ul>
+                        <li class="z">
+                            <a href="login.html" style="font-size: 16px; color: #303030; margin-right: 20px;"><i></i>登录</a>
+                        </li>
+                        <li class="z">
+                            <a href="register.html" style="font-size: 16px; color: #303030;"><i></i>注册</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sub_nav">
+        <ul class="p_pop h_pop" id="mn_Nf693_menu" style="display: none">
+            <li>
+                <a href="#" hidefocus="true">淘帖专辑</a>
+            </li>
+            <li>
+                <a href="#" hidefocus="true">抢沙发</a>
+            </li>
+            <li>
+                <a href="#" hidefocus="true">社区论坛</a>
+            </li>
+        </ul>
+        <div class="#" id="mn_userapp_menu" style="display: none"></div>
+    </div>
+    <div class="mus_box cl" style="padding-top: 94px; margin-bottom: -94px;">
+        <div id="mu" class="wp cl">
+        </div>
+    </div>
+</div>
+<div style="margin:100px auto;max-width: 1200px;">
+   <form class="pub_box" style="padding-top: 1em;">
+       <div class="pub_cont">
+           <label for="title">征稿标题:</label>
+           <input id="title" type="text" placeholder="请输入标题" class="input" required="required">
+       </div>
+       <div class="pub_cont_time">
+           <div style="font-size: 16px;">征稿时间:</div>
+           <div class="time_input">
+               <input type="date" id="begin_time" required="required">
+               <span>至</span>
+               <input type="date" id="end_time" style="margin-left: 20px" required="required">
+           </div>
+       </div>
+       <div class="pub_cont">
+           <label for="author">征稿方:</label>
+           <input id="author" type="text" placeholder="请输入征稿主办单位" class="input" required="required">
+       </div>
+       <div class="pub_cont">
+           <label for="cost">征稿稿酬:</label>
+           <input id="cost" type="text" placeholder="请输入稿酬" class="input" required="required">
+       </div>
+       <div class="pub_cont" style="height: initial;">
+           <label for="">征稿内容:</label>
+           <div id="container" style="width: 100%;height: 400px;display: inline-block"></div>
+       </div>
+       <div class="pub_cont" style="text-align: center;margin-top: 20px;">
+         <input id="btn" type="submit" value="投 稿" style="border: 1px solid #1E9B52;color: #fff;background-color: #1E9B52;font-size: 18px;padding:3px 15px;border-radius: 100px;outline: none;">
+       </div>
+   </form>
+</div>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
+
+<script type="text/javascript" src="js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="js/ueditor/ueditor.all.js"></script>
+
+<script>
+//    富文本
+//实例化编辑器；
+        var addTheme = UE.getEditor('container',{
+        maximumWords:10000,       //允许的最大字符数
+        wordCountMsg:'当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符',
+        wordOverFlowMsg:'<span style="color:red;">你输入的字符个数已经超出最大允许值，服务器可能会拒绝保存！</span>',
+        elementPathEnabled : false,
+        initialFrameHeight:400,  //初始化编辑器高度
+        enableContextMenu: false,//右键菜单
+        enableAutoSave: false,//这个参数貌似不管用，自动保存js在ueditor.all.js末函数中，被人为禁止掉了
+        toolbars: [
+        [
+        'bold', //加粗
+        'italic', //斜体
+        'underline', //下划线
+        'removeformat', //清除格式
+        'fontfamily', //字体
+        'fontsize', //字号
+        'forecolor',
+        'justifyleft', //居左对齐
+        'justifyright', //居右对齐
+        'justifycenter', //居中对齐
+        'justifyjustify', //两端对齐
+        'lineheight', //行间距
+        'insertorderedlist', //有序列表
+        'insertunorderedlist', //无序列表
+        'insertimage', //多图上传
+        'link', //超链接
+        'unlink' //取消链接
+
+        ]
+        ]
+
+        });
+        //投稿
+        document.getElementById('btn').onclick=function(){
+          console.log(UE.getEditor('container').hasContents());
+          var is_container = UE.getEditor('container').hasContents();
+          //富文本编译器字段
+          var container = UE.getEditor('container').getContent();
+          // document.setweb.info.value=UE.getEditor('container').getContent();
+          var title = document.getElementById('title').value;
+          var begin_time = document.getElementById('begin_time').value;
+          var end_time = document.getElementById('end_time').value;
+          var author = document.getElementById('author').value;
+          var cost = document.getElementById('cost').value;
+          console.log(begin_time)
+          if (title != ''&& begin_time != '' && end_time != '' && author != '' && cost != '' && is_container) {
+            alert('投稿成功')
+          }else{
+            // 上传内容 ：  title/标题
+            //              begin_time/开始时间
+            //              end_time/结束时间
+            //              author/征稿方
+            //              cost/征稿稿酬
+            //              container/富文本
+            alert('请完善填写内容')
+          }
+
+        }
+</script>

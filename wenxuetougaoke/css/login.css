@@ -1,0 +1,32 @@
+﻿/*header*/
+.liang_hover:hover{text-decoration: inherit!important;}
+/*buy_login*/
+.buy_login{width:250px;height:150px;}
+.buy_login .tsy{}
+.buy_login p{font-size:14px;padding:8px;text-align: center;}
+.buy_login .buy{background-color: #FF9600;color: #FFF !important;    border: 1px solid #999;    box-shadow: 0 1px 0 #E5E5E5;cursor: pointer;padding:2px 5px}
+.but_buy{width:80%;margin:0 auto;text-align: center;}
+.but_buy a:hover {text-decoration: inherit;}
+
+/*liang_login*/
+.liang_login{background-color: #fff;margin:0 auto;font-family: 'Microsoft Yahei', "Helvetica Neue", Helvetica, Arial, sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', Verdana;}
+.dzl_help{width: 240px;}
+.dzl_number{width: 720px;}
+.dzl_help .help{width: 200px;float:left;padding: 20px;margin-bottom: 10px;}
+.dzl_help .help.dz1{background: #FFF;border: 1px solid #e7e7e7;width: 198px;}
+.dzl_help .help h1{font-size: 18px;font-weight: normal;}
+.dzl_help .dz1 h1{border-bottom: 1px dotted #dbdada;}
+.dzl_help .dz2{margin-bottom: 10px;}
+.dzl_help .help p{line-height: 24px;margin-top:10px;}
+.liang_icon{background: url(../images/sprite_icons.png);width: 18px;height: 18px;background-position: -559px 0;display: inline-block;margin: 5px;vertical-align: bottom;}
+.searchnum{background: #f7f7f7;}
+#snum{width:500px; padding:5px;}
+#ssnum{padding:5px 10px; margin-left:5px; font-size:13px;}
+.ssnum{padding: 10px 40px;}
+.liang_num li{width: 179px;float: left;border: 1px solid #e7e7e7;margin: 0 -1px -1px 0; position: relative;text-align: center}
+.liang_num li:hover{border: 1px solid #FE9D1F;z-index: 2;}
+.liang_num p{text-align: center; margin: 10px 5px;}
+.liang_num li h1{font-size: 18px;font-weight: 800;margin: 10px 5px;}
+.liang_num a:hover{text-decoration: initial;}
+.multi{ display: table!important;margin: 0px auto!important;}
+/*forum*/
